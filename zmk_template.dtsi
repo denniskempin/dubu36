@@ -1,0 +1,57 @@
+#include <behaviors.dtsi>
+#include <dt-bindings/zmk/keys.h>
+#include <dt-bindings/zmk/bt.h>
+
+/ {
+    behaviors {
+        // Customized mod_tap and layer_tap:
+        // - Enables quick_tap. Useful for backspace/space.
+        // - Switch to balanced flavor to allow for fast (back)space + character rollovers.
+        mt_: custom_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "MOD_TAP";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+                        quick_tap_ms = <500>;
+            bindings = <&kp>, <&kp>;
+        };
+        lt_: custom_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "balanced";
+            tapping-term-ms = <200>;
+                        quick_tap_ms = <500>;
+            bindings = <&mo>, <&kp>;
+        };
+    };
+
+        keymap {
+                compatible = "zmk,keymap";
+
+                default_layer {
+                        bindings = <
+#LAYER_0#                  
+                        >;
+                };
+
+                lower_layer {
+                        bindings = <
+#LAYER_1#
+                        >;
+                };
+
+                raise_layer {
+                        bindings = <
+#LAYER_2#
+                        >;
+                };
+                
+                adjust_layer {
+                      bindings = <
+#LAYER_3#
+                     >;
+              };
+        };
+};
