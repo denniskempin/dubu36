@@ -19,12 +19,16 @@ commonly used characters in day-to-day writing.
 
 ## Default Layer (Hold)
 
-|     |     |     |      |     |     |      |     |     |     |     |
-| --- | --- | --- | ---- | --- | --- | ---- | --- | --- | --- | --- |
-| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
-| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
-| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
-|     |     | cmd | shft | lwr |     | ctrl | rse | alt |     |     |
+Modifiers used primarily in shortcuts have been mapped to the home-row.
+The modifiers and layer shifts used primarily in fluent writing remain
+on thumb keys to reduce issues hold-tap timing.
+
+|     |     |      |      |     |     |     |     |      |     |     |
+| --- | --- | ---- | ---- | --- | --- | --- | --- | ---- | --- | --- |
+| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
+| ☐   | alt | ctrl | cmd  | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
+| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
+|     |     |      | shft | lwr |     |     | rse |      |     |     |
 
 ## Raise Layer (Navigation + Numbers)
 
@@ -33,7 +37,7 @@ commonly used characters in day-to-day writing.
 | ☐   | 7   | 8   | 9      | ☐       |     | HOME  | WORD_L | UP      | WORD_R | END   |
 | ☐   | 4   | 5   | 6      | ☐       |     | FWD   | LEFT   | DOWN    | RIGHT  | BCK   |
 | 0   | 1   | 2   | 3      | ☐       |     | SPC_L | TAB_L  | NXT_WIN | TAB_R  | SPC_R |
-|     |     | ☐   | F_SRCH | CMD_RET |     | adj     | ☐      | ☐       |        |       |
+|     |     | ☐   | F_SRCH | CMD_RET |     | adj   | ☐      | ☐       |        |       |
 
 ## Lower Layer (Symbols)
 
