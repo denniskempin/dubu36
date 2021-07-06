@@ -28,14 +28,14 @@ on thumb keys to reduce issues hold-tap timing.
 | ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
 | ☐   | alt | ctrl | cmd | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
 | ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
-|     |     |      |     | lwr |     |     | rse |      |     |     |
+|     |     | ☐    | ☐   | lwr |     | ☐   | rse | ☐    |     |     |
 
 ### Default Layer (Combos)
 
 No combos currently as they would conflict with mod-tap behavior.
 
-|  |  |  |  |
-|--|--|--|--|
+|     |     |     |     |
+| --- | --- | --- | --- |
 
 ## Raise Layer (Navigation + Numbers)
 
