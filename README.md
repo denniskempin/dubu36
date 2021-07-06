@@ -10,16 +10,21 @@ keymaps using the `generate_keymaps.py` script.
 The default layer is Colemak. With special characters remapped to prioritize
 commonly used characters in day-to-day writing.
 
-All modifier and layer change keys are on the thumb keys via hold-tap keys.
-Hold to trigger the modifier, tap to generate the key listed in the row above.
+|     |     |     |      |     |     |     |     |      |     |     |
+| --- | --- | --- | ---- | --- | --- | --- | --- | ---- | --- | --- |
+| Q   | W   | F   | P    | G   |     | J   | L   | U    | Y   | \*  |
+| A   | R   | S   | T    | D   |     | H   | N   | E    | I   | O   |
+| Z   | X   | C   | V    | B   |     | K   | M   | ,    | .   | '   |
+|     |     | ESC | SRCH | RET |     | TAB | SPC | BKSP |     |     |
 
-|     |     |     |      |     |     |      |     |      |     |     |
-| --- | --- | --- | ---- | --- | --- | ---- | --- | ---- | --- | --- |
-| Q   | W   | F   | P    | G   |     | J    | L   | U    | Y   | \*  |
-| A   | R   | S   | T    | D   |     | H    | N   | E    | I   | O   |
-| Z   | X   | C   | V    | B   |     | K    | M   | ,    | .   | '   |
-|     |     | ESC | SRCH | RET |     | TAB  | SPC | BKSP |     |     |
-|     |     | cmd | shft | lwr |     | ctrl | rse | alt  |     |     |
+## Default Layer (Hold)
+
+|     |     |     |      |     |     |      |     |     |     |     |
+| --- | --- | --- | ---- | --- | --- | ---- | --- | --- | --- | --- |
+| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
+| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
+| ☐   | ☐   | ☐   | ☐    | ☐   |     | ☐    | ☐   | ☐   | ☐   | ☐   |
+|     |     | cmd | shft | lwr |     | ctrl | rse | alt |     |     |
 
 ## Raise Layer (Navigation + Numbers)
 
@@ -28,8 +33,7 @@ Hold to trigger the modifier, tap to generate the key listed in the row above.
 | ☐   | 7   | 8   | 9      | ☐       |     | HOME  | WORD_L | UP      | WORD_R | END   |
 | ☐   | 4   | 5   | 6      | ☐       |     | FWD   | LEFT   | DOWN    | RIGHT  | BCK   |
 | 0   | 1   | 2   | 3      | ☐       |     | SPC_L | TAB_L  | NXT_WIN | TAB_R  | SPC_R |
-|     |     | ☐   | F_SRCH | CMD_RET |     | ☐     | ☐      | ☐       |        |       |
-|     |     | ☐   | ☐      | ☐       |     | adj   | ☐      | ☐       |        |       |
+|     |     | ☐   | F_SRCH | CMD_RET |     | adj     | ☐      | ☐       |        |       |
 
 ## Lower Layer (Symbols)
 
@@ -37,8 +41,7 @@ Hold to trigger the modifier, tap to generate the key listed in the row above.
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- |
 | ~   | ^   | @   | $   | %   |     | &   | /   | \   | PIPE | `   |
 | UML | <   | [   | (   | {   |     | -   | \_  | :   | ;    | #   |
-|  ☐  | >   | ]   | )   | }   |     | +   | =   | ?   | !    | "   |
-|     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ☐   |      |     |
+| ☐   | >   | ]   | )   | }   |     | +   | =   | ?   | !    | "   |
 |     |     | ☐   | ☐   | ☐   |     | ☐   | adj | ☐   |      |     |
 
 ## Adjust Layer (Bluetooth)
@@ -48,7 +51,6 @@ Hold to trigger the modifier, tap to generate the key listed in the row above.
 | BT_CLR | BT_0 | BT_1 | BT_2 | BT_3 |     | ☐   | ☐   | ☐   | ☐   | ☐   |
 | ☐      | ☐    | ☐    | ☐    | ☐    |     | ☐   | ☐   | ☐   | ☐   | ☐   |
 | ☐      | ☐    | ☐    | ☐    | ☐    |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-|        |      | ☐    | ☐    | ☐    |     | ☐   | ☐   | ☐   |     |     |
 |        |      | ☐    | ☐    | ☐    |     | ☐   | ☐   | ☐   |     |     |
 
 ## Keyboards
