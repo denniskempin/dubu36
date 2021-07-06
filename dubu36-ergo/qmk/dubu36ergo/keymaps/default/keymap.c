@@ -4,9 +4,9 @@
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT(
 KC_Q, KC_W, KC_F, KC_P, KC_G, KC_J, KC_L, KC_U, KC_Y, KC_ASTERISK,
-KC_A, MT(MOD_LALT,KC_R), MT(MOD_LCTL,KC_S), MT(MOD_LGUI,KC_T), KC_D, KC_H, MT(MOD_LGUI,KC_N), MT(MOD_LCTL,KC_E), MT(MOD_LALT,KC_I), KC_O,
+MT(MOD_LALT,KC_A), MT(MOD_LCTL,KC_R), KC_S, KC_T, KC_D, KC_H, KC_N, KC_E, MT(MOD_LCTL,KC_I), MT(MOD_LALT,KC_O),
 KC_Z, KC_X, KC_C, KC_V, KC_B, KC_K, KC_M, KC_COMMA, KC_DOT, KC_QUOTE,
-KC_ESC, KC_LSFT, LT(2,KC_ENT), KC_TAB, LT(1,KC_SPC), KC_BSPC
+MT(MOD_LGUI,KC_F24), KC_LSFT, LT(2,KC_ENT), KC_TAB, LT(1,KC_SPC), KC_BSPC
 	),
 	[1] = LAYOUT(
 KC_NO, KC_7, KC_8, KC_9, KC_NO, KC_HOME, A(KC_LEFT), KC_UP, A(KC_RIGHT), KC_END,
@@ -23,15 +23,15 @@ KC_NO, KC_NO, KC_NO, KC_NO, MO(3), KC_NO
 };
 
 
-const uint16_t PROGMEM combo0[] = {KC_NO, COMBO_END};
-const uint16_t PROGMEM combo1[] = {KC_NO, COMBO_END};
+const uint16_t PROGMEM combo0[] = {KC_N, KC_E, COMBO_END};
+const uint16_t PROGMEM combo1[] = {KC_S, KC_T, COMBO_END};
 const uint16_t PROGMEM combo2[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo3[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo4[] = {KC_NO, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
-	COMBO(combo0, KC_NO),
-	COMBO(combo1, KC_NO),
+	COMBO(combo0, KC_ESC),
+	COMBO(combo1, KC_ESC),
 	COMBO(combo2, KC_NO),
 	COMBO(combo3, KC_NO),
 	COMBO(combo4, KC_NO)

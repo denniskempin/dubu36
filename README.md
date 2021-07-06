@@ -10,12 +10,12 @@ keymaps using the `generate_keymaps.py` script.
 The default layer is Colemak. With special characters remapped to prioritize
 commonly used characters in day-to-day writing.
 
-|     |     |     |      |     |     |     |     |      |     |     |
-| --- | --- | --- | ---- | --- | --- | --- | --- | ---- | --- | --- |
-| Q   | W   | F   | P    | G   |     | J   | L   | U    | Y   | \*  |
-| A   | R   | S   | T    | D   |     | H   | N   | E    | I   | O   |
-| Z   | X   | C   | V    | B   |     | K   | M   | ,    | .   | '   |
-|     |     | ESC | shft | RET |     | TAB | SPC | BKSP |     |     |
+|     |     |      |     |     |     |     |     |      |     |     |
+| --- | --- | ---- | --- | --- | --- | --- | --- | ---- | --- | --- |
+| Q   | W   | F    | P   | G   |     | J   | L   | U    | Y   | \*  |
+| A   | R   | S    | T   | D   |     | H   | N   | E    | I   | O   |
+| Z   | X   | C    | V   | B   |     | K   | M   | ,    | .   | '   |
+|     |     | SRCH | ☐   | RET |     | TAB | SPC | BKSP |     |     |
 
 ### Default Layer (Hold)
 
@@ -23,19 +23,19 @@ Modifiers used primarily in shortcuts have been mapped to the home-row.
 The modifiers and layer shifts used primarily in fluent writing remain
 on thumb keys to reduce issues hold-tap timing.
 
-|     |     |      |     |     |     |     |     |      |     |     |
-| --- | --- | ---- | --- | --- | --- | --- | --- | ---- | --- | --- |
-| ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
-| ☐   | alt | ctrl | cmd | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
-| ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
-|     |     | ☐    | ☐   | lwr |     | ☐   | rse | ☐    |     |     |
+|     |      |     |      |     |     |     |     |     |      |     |
+| --- | ---- | --- | ---- | --- | --- | --- | --- | --- | ---- | --- |
+| ☐   | ☐    | ☐   | ☐    | ☐   |     | ☐   | ☐   | ☐   | ☐    | ☐   |
+| alt | ctrl | ☐   | ☐    | ☐   |     | ☐   | ☐   | ☐   | ctrl | alt |
+| ☐   | ☐    | ☐   | ☐    | ☐   |     | ☐   | ☐   | ☐   | ☐    | ☐   |
+|     |      | cmd | shft | lwr |     | ☐   | rse | ☐   |      |     |
 
 ### Default Layer (Combos)
 
-No combos currently as they would conflict with mod-tap behavior.
-
 |     |     |     |     |
 | --- | --- | --- | --- |
+| N   | E   | ->  | ESC |
+| S   | T   | ->  | ESC |
 
 ## Raise Layer (Navigation + Numbers)
 
