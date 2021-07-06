@@ -24,6 +24,8 @@
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE 5
 
+#define COMBO_COUNT 5
+
 /* 
  * Tap-Hold configuration
  * Strongly biased to prefer tap over hold to make home-row mods usable

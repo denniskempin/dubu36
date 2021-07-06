@@ -141,6 +141,12 @@ def map_tap_hold_key_to_qmk(tap, hold):
     raise KeyError(f"Cannot map thumb key ({tap}, {hold}) to qmk.")
 
 
+def generate_qmk_combo(combo):
+    if not combo:
+        return ('KC_NO', 'KC_NO')
+    return (", ".join((map_key_label_to_qmk(combo.a), map_key_label_to_qmk(combo.b))), map_key_label_to_qmk(combo.result))
+
+
 def generate_qmk_layer(markdown_layer):
     rows = []
     for markdown_row in markdown_layer.rows:
@@ -193,6 +199,11 @@ def map_tap_hold_key_to_zmk(tap, hold):
     raise KeyError(f"Cannot map thumb key ({tap}, {hold}) to zmk.")
 
 
+def generate_zmk_combo(combo):
+    # TODO: Implement combos for ZMK
+    return ('0 0', '&trans')
+
+
 def generate_zmk_layer(markdown_layer):
     rows = []
     for markdown_row in markdown_layer.rows[:3]:
@@ -214,6 +225,7 @@ def generate_zmk_layer(markdown_layer):
 ## Markdown Table Parsing
 
 TapHold = namedtuple("TapHold", ("tap", "hold"))
+Combo = namedtuple("Combo", ("a", "b", "result"))
 
 
 class MarkdownLayer(object):
@@ -239,6 +251,8 @@ class MarkdownLayer(object):
                 else:
                     if "hold" in title.lower():
                         layers[-1].add_hold_table(table)
+                    elif "combos" in title.lower():
+                        layers[-1].add_combos_table(table)
                     else:
                         layers.append(cls(table))
                     table = None
@@ -253,6 +267,7 @@ class MarkdownLayer(object):
             [TapHold(k, None) for k in row]
             for row in self.extract_labels(markdown_table)
         ]
+        self.combos = []
 
     def extract_labels(self, markdown_table):
         for row in markdown_table[:3]:
@@ -266,6 +281,9 @@ class MarkdownLayer(object):
                 if key:
                     self.rows[i][j] = TapHold(self.rows[i][j].tap, key)
 
+    def add_combos_table(self, markdown_table):
+        self.combos = [Combo(r[1], r[2], r[4]) for r in markdown_table]
+
     def __repr__(self) -> str:
         return repr(self.rows)
 
@@ -273,13 +291,19 @@ class MarkdownLayer(object):
 ## Generate Keymaps
 
 
-def generate_keymap(markdown_layers, template_path, generate_layer_fn):
+def generate_keymap(markdown_layers, template_path, generate_layer_fn, generate_combo_fn):
     with open(template_path, "r") as template_file:
         template = template_file.read()
+        combos = []
         for i, markdown_layer in enumerate(markdown_layers):
             template = template.replace(
                 f"#LAYER_{i}#", generate_layer_fn(markdown_layer)
             )
+            combos.extend(markdown_layer.combos)
+        for combo_id in range(5):
+            (trigger, result) = generate_combo_fn(combos[combo_id] if combo_id < len(combos) else None)
+            template = template.replace(f"#COMBO_TRIGGER_{combo_id}#", trigger)
+            template = template.replace(f"#COMBO_RESULT_{combo_id}#", result)
         return HEADER + template
 
 
@@ -297,6 +321,7 @@ def main(type):
                     markdown_layers,
                     os.path.join(root_dir, "zmk_template.dtsi"),
                     generate_zmk_layer,
+                    generate_zmk_combo,
                 )
             )
         elif type == "qmk":
@@ -305,6 +330,7 @@ def main(type):
                     markdown_layers,
                     os.path.join(root_dir, "qmk_template.c"),
                     generate_qmk_layer,
+                    generate_qmk_combo,
                 )
             )
         else:

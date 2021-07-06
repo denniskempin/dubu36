@@ -17,7 +17,7 @@ commonly used characters in day-to-day writing.
 | Z   | X   | C   | V    | B   |     | K   | M   | ,    | .   | '   |
 |     |     | ESC | shft | RET |     | TAB | SPC | BKSP |     |     |
 
-## Default Layer (Hold)
+### Default Layer (Hold)
 
 Modifiers used primarily in shortcuts have been mapped to the home-row.
 The modifiers and layer shifts used primarily in fluent writing remain
@@ -29,6 +29,13 @@ on thumb keys to reduce issues hold-tap timing.
 | ☐   | alt | ctrl | cmd | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
 | ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
 |     |     |      |     | lwr |     |     | rse |      |     |     |
+
+### Default Layer (Combos)
+
+No combos currently as they would conflict with mod-tap behavior.
+
+|  |  |  |  |
+|--|--|--|--|
 
 ## Raise Layer (Navigation + Numbers)
 
