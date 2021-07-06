@@ -73,8 +73,8 @@ KEY_PRESS_CODES = {
     "?": ("LS(FSLH)", "KC_QUESTION"),
     # Modifiers
     "CMD": ("LGUI", "KC_LGUI"),
-    "SHFT": ("LSHFT", "KC_LSHIFT"),
-    "CTRL": ("LCTRL", "KC_LCTRL"),
+    "SHFT": ("LSHFT", "KC_LSFT"),
+    "CTRL": ("LCTRL", "KC_LCTL"),
     "ALT": ("LALT", "KC_LALT"),
 }
 
@@ -134,6 +134,7 @@ def map_tap_hold_key_to_qmk(tap, hold):
     hold_code = get_qmk_key_press_code(hold)
     if tap_code:
         if hold_code:
+            hold_code = hold_code.replace("KC_", "MOD_")
             return f"MT({hold_code},{tap_code})"
         if hold in LAYER_LABELS:
             return f"LT({LAYER_LABELS[hold]},{tap_code})"

@@ -15,7 +15,7 @@ commonly used characters in day-to-day writing.
 | Q   | W   | F   | P    | G   |     | J   | L   | U    | Y   | \*  |
 | A   | R   | S   | T    | D   |     | H   | N   | E    | I   | O   |
 | Z   | X   | C   | V    | B   |     | K   | M   | ,    | .   | '   |
-|     |     | ESC | SRCH | RET |     | TAB | SPC | BKSP |     |     |
+|     |     | ESC | shft | RET |     | TAB | SPC | BKSP |     |     |
 
 ## Default Layer (Hold)
 
@@ -23,12 +23,12 @@ Modifiers used primarily in shortcuts have been mapped to the home-row.
 The modifiers and layer shifts used primarily in fluent writing remain
 on thumb keys to reduce issues hold-tap timing.
 
-|     |     |      |      |     |     |     |     |      |     |     |
-| --- | --- | ---- | ---- | --- | --- | --- | --- | ---- | --- | --- |
-| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
-| ☐   | alt | ctrl | cmd  | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
-| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
-|     |     |      | shft | lwr |     |     | rse |      |     |     |
+|     |     |      |     |     |     |     |     |      |     |     |
+| --- | --- | ---- | --- | --- | --- | --- | --- | ---- | --- | --- |
+| ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
+| ☐   | alt | ctrl | cmd | ☐   |     | ☐   | cmd | ctrl | alt | ☐   |
+| ☐   | ☐   | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐    | ☐   | ☐   |
+|     |     |      |     | lwr |     |     | rse |      |     |     |
 
 ## Raise Layer (Navigation + Numbers)
 

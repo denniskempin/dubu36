@@ -23,3 +23,10 @@
 
 /* Set 0 if debouncing isn't needed */
 #define DEBOUNCE 5
+
+/* 
+ * Tap-Hold configuration
+ * Strongly biased to prefer tap over hold to make home-row mods usable
+ */
+#define TAPPING_TERM 200
+#define IGNORE_MOD_TAP_INTERRUPT
