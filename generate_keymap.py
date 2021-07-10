@@ -15,6 +15,7 @@ KEY_PRESS_CODES = {
     "SPC": ("SPC", "KC_SPC"),
     "BKSP": ("BKSP", "KC_BSPC"),
     "CMD_RET": ("LG(RET)", "S(KC_ENT)"),
+    "ALT_BKSP": ("LA(BKSP)", "A(KC_BSPC)"),
     # Text Navigatioh Keys
     "LEFT": ("LEFT", "KC_LEFT"),
     "RIGHT": ("RIGHT", "KC_RIGHT"),
@@ -76,6 +77,7 @@ KEY_PRESS_CODES = {
     "SHFT": ("LSHFT", "KC_LSFT"),
     "CTRL": ("LCTRL", "KC_LCTL"),
     "ALT": ("LALT", "KC_LALT"),
+    "HYPR": ("TODO", "KC_HYPR"),
 }
 
 # Maps labels from the markdown table to special instructions for ZMK and QMK.

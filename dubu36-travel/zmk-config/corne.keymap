@@ -34,9 +34,9 @@
                 default_layer {
                         bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
-&trans &mt_ LALT A &mt_ LCTRL R &kp S &kp T &kp D &kp H &kp N &kp E &mt_ LCTRL I &mt_ LALT O &trans
+&trans &kp A &mt_ LALT R &mt_ LCTRL S &mt_ TODO T &kp D &kp H &mt_ TODO N &mt_ LCTRL E &mt_ LALT I &kp O &trans
 &trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
-&mt_ LGUI F24 &kp LSHFT &lt_ 2 RET &kp TAB &lt_ 1 SPC &kp BKSP                  
+&mt_ LGUI ESC &kp LSHFT &lt_ 2 RET &kp TAB &lt_ 1 SPC &kp BKSP                  
                         >;
                 };
 
@@ -45,7 +45,7 @@
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
 &trans &trans &kp N4 &kp N5 &kp N6 &trans &kp LG(LBKT) &kp LEFT &kp DOWN &kp RIGHT &kp LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LC(LEFT) &kp LG(LS(LBKT)) &kp LC(F4) &kp LG(LS(RBKT)) &kp LC(RIGHT) &trans
-&trans &kp LG(F24) &kp LG(RET) &mo 3 &trans &trans
+&trans &trans &kp LG(RET) &mo 3 &trans &trans
                         >;
                 };
 
@@ -54,7 +54,7 @@
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
 &trans &kp LA(U) &kp LS(COMMA) &kp LBKT &kp LS(N9) &kp LS(LBKT) &kp KP_MINUS &kp LS(MINUS) &kp LS(SEMI) &kp SEMI &kp LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
-&trans &trans &trans &trans &mo 3 &trans
+&trans &trans &trans &trans &mo 3 &kp LA(BKSP)
                         >;
                 };
                 
