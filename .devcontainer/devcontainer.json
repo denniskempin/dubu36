@@ -1,0 +1,6 @@
+{
+	"name": "dubu36",
+	"build": {
+		"dockerfile": "Dockerfile",
+	},
+}

@@ -12,7 +12,7 @@
             compatible = "zmk,behavior-hold-tap";
             label = "MOD_TAP";
             #binding-cells = <2>;
-            flavor = "balanced";
+            flavor = "tap-preferred";
             tapping-term-ms = <200>;
                         quick_tap_ms = <500>;
             bindings = <&kp>, <&kp>;
@@ -34,7 +34,7 @@
                 default_layer {
                         bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
-&trans &kp A &mt_ LALT R &mt_ LCTRL S &mt_ TODO T &kp D &kp H &mt_ TODO N &mt_ LCTRL E &mt_ LALT I &kp O &trans
+&trans &kp A &mt_ LALT R &mt_ LCTRL S &mt_ LA(LS(LC(LGUI))) T &kp D &kp H &mt_ LA(LS(LC(LGUI))) N &mt_ LCTRL E &mt_ LALT I &kp O &trans
 &trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
 &mt_ LGUI ESC &kp LSHFT &lt_ 2 RET &kp TAB &lt_ 1 SPC &kp BKSP                  
                         >;

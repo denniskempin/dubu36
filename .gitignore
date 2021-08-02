@@ -1,1 +1,7 @@
 .DS_Store
+dubu36-travel/zmk-config/.west
+dubu36-travel/zmk-config/build
+dubu36-travel/zmk-config/modules
+dubu36-travel/zmk-config/tools
+dubu36-travel/zmk-config/zephyr
+dubu36-travel/zmk-config/zmk

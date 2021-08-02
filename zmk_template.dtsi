@@ -6,14 +6,15 @@
     behaviors {
         // Customized mod_tap and layer_tap:
         // - Enables quick_tap. Useful for backspace/space.
-        // - Switch to balanced flavor to allow for fast (back)space + character rollovers.
+        // - mod_tap is tap preferred as it's used on home-row
+        // - layer_tap uses balanced flavor  
         mt_: custom_mod_tap {
             compatible = "zmk,behavior-hold-tap";
             label = "MOD_TAP";
             #binding-cells = <2>;
-            flavor = "balanced";
+            flavor = "tap-preferred";
             tapping-term-ms = <200>;
-                        quick_tap_ms = <500>;
+            quick_tap_ms = <500>;
             bindings = <&kp>, <&kp>;
         };
         lt_: custom_layer_tap {
