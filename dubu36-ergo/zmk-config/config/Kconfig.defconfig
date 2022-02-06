@@ -1,0 +1,6 @@
+if SHIELD_CORNE_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "Dubu36Ergo"
+
+endif
