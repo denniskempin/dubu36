@@ -6,7 +6,7 @@
 / {
     behaviors {
         // Customized mod_tap and layer_tap:
-        // - mod_tap is tap preferred as it's used on home-row
+        // - mod_tap is 'tap preferred' as it's used on home-row
         // - layer_tap uses balanced flavor
         mt_: custom_mod_tap {
             compatible = "zmk,behavior-hold-tap";
@@ -22,7 +22,6 @@
             #binding-cells = <2>;
             flavor = "balanced";
             tapping-term-ms = <200>;
-                        quick_tap_ms = <500>;
             bindings = <&mo>, <&kp>;
         };
     };
@@ -59,8 +58,8 @@
 
                 adjust_layer {
                       bindings = <
-&trans &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &trans &trans &trans &trans &trans &trans &trans &trans
+&trans &bt BT_CLR &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 &trans &trans &trans &trans &trans &trans
                      >;

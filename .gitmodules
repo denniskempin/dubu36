@@ -1,3 +1,0 @@
-[submodule "dubu36-ergo/qmk/qmk_firmware"]
-	path = dubu36-ergo/qmk/qmk_firmware
-	url = https://github.com/qmk/qmk_firmware
