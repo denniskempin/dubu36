@@ -3,4 +3,7 @@
 	"build": {
 		"dockerfile": "Dockerfile",
 	},
+	"mounts": [
+		"source=/Volumes,target=/Volumes,type=bind"
+	]
 }

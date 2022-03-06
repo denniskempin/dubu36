@@ -23,12 +23,12 @@ Modifiers used primarily in shortcuts have been mapped to the home-row.
 The modifiers and layer shifts used primarily in fluent writing remain
 on thumb keys to reduce issues hold-tap timing.
 
-|     |     |      |      |     |     |     |      |      |     |     |
-| --- | --- | ---- | ---- | --- | --- | --- | ---- | ---- | --- | --- |
-| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐    | ☐    | ☐   | ☐   |
-| ☐   | alt | ctrl | hypr | ☐   |     | ☐   | hypr | ctrl | alt | ☐   |
-| ☐   | ☐   | ☐    | ☐    | ☐   |     | ☐   | ☐    | ☐    | ☐   | ☐   |
-|     |     | cmd  | shft | lwr |     | ☐   | rse  | ☐    |     |     |
+|      |      |     |      |      |     |      |     |     |      |      |
+| ---- | ---- | --- | ---- | ---- | --- | ---- | --- | --- | ---- | ---- |
+| ☐    | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐    |
+| shft | ctrl | alt | cmd  | hypr |     | hypr | cmd | alt | ctrl | shft |
+| adj  | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj  |
+|      |      | ☐   | shft | lwr  |     | ☐    | rse | ☐   |      |      |
 
 ### Default Layer (Combos)
 
@@ -42,7 +42,7 @@ on thumb keys to reduce issues hold-tap timing.
 | ☐   | 7   | 8   | 9   | ☐       |     | HOME  | WORD_L | UP      | WORD_R | END   |
 | ☐   | 4   | 5   | 6   | ☐       |     | FWD   | LEFT   | DOWN    | RIGHT  | BCK   |
 | 0   | 1   | 2   | 3   | ☐       |     | SPC_L | TAB_L  | NXT_WIN | TAB_R  | SPC_R |
-|     |     | ☐   | ☐   | CMD_RET |     | adj   | ☐      | ☐       |        |       |
+|     |     | ☐   | ☐   | CMD_RET |     | ☐     | ☐      | ☐       |        |       |
 
 ## Lower Layer (Symbols)
 
@@ -51,7 +51,7 @@ on thumb keys to reduce issues hold-tap timing.
 | ~   | ^   | @   | $   | %   |     | &   | /   | \        | PIPE | `   |
 | UML | <   | [   | (   | {   |     | -   | \_  | :        | ;    | #   |
 | ☐   | >   | ]   | )   | }   |     | +   | =   | ?        | !    | "   |
-|     |     | ☐   | ☐   | ☐   |     | ☐   | adj | ALT_BKSP |      |     |
+|     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ALT_BKSP |      |     |
 
 ## Adjust Layer (Bluetooth)
 

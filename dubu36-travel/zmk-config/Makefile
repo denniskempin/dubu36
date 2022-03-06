@@ -1,3 +1,5 @@
+BOARD=nice_nano
+
 all: build/left.uf2 build/right.uf2
 
 setup:
@@ -13,12 +15,20 @@ config/corne.keymap: ../../generate_keymap.py ../../README.md
 
 keymap: config/corne.keymap
 
-build/left.uf2: config/corne.keymap config/corne.conf
-	west build -d build/left -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
+build/left.uf2: config/*
+	west build -d build/left -s zmk/app -b $(BOARD) -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
 	cp build/left/zephyr/zmk.uf2 build/left.uf2
 
-build/right.uf2: config/corne.keymap config/corne.conf
-	west build -d build/right -s zmk/app -b nice_nano -- -DSHIELD=corne_right -DZMK_CONFIG="`pwd`/config" || exit
+build/right.uf2: config/*
+	west build -d build/right -s zmk/app -b $(BOARD) -- -DSHIELD=corne_right -DZMK_CONFIG="`pwd`/config" || exit
 	cp build/right/zephyr/zmk.uf2 build/right.uf2
 
-.PHONY: setup clean keymap
+flash-left: build/left.uf2
+	cp build/left.uf2 /Volumes/NICENANO/
+
+flash-right: build/right.uf2
+	cp build/right.uf2 /Volumes/NICENANO/
+
+
+.PHONY: setup clean keymap flash-left flash-right
+
