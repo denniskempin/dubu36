@@ -100,7 +100,7 @@ LAYER_LABELS = {
 
 
 ################################################################################
-## Mapping to QMK
+# Mapping to QMK
 
 
 def get_qmk_key_press_code(label):
@@ -152,12 +152,13 @@ def generate_qmk_combo(combo):
 def generate_qmk_layer(markdown_layer):
     rows = []
     for markdown_row in markdown_layer.rows:
-        rows.append(", ".join(map_tap_hold_key_to_qmk(tap, hold) for tap, hold in markdown_row))
+        rows.append(", ".join(map_tap_hold_key_to_qmk(tap, hold)
+                    for tap, hold in markdown_row))
     return ",\n".join(rows)
 
 
 ################################################################################
-## Mapping to ZMK
+# Mapping to ZMK
 
 
 def get_zmk_key_press_code(label):
@@ -212,7 +213,8 @@ def generate_zmk_layer(markdown_layer):
         # Add padding since this is a 5 row layout with a 6 row corne firmware
         rows.append(
             "&trans "
-            + " ".join(map_tap_hold_key_to_zmk(tap, hold) for tap, hold in markdown_row)
+            + " ".join(map_tap_hold_key_to_zmk(tap, hold)
+                       for tap, hold in markdown_row)
             + " &trans"
         )
     rows.append(
@@ -224,7 +226,7 @@ def generate_zmk_layer(markdown_layer):
 
 
 ################################################################################
-## Markdown Table Parsing
+# Markdown Table Parsing
 
 TapHold = namedtuple("TapHold", ("tap", "hold"))
 Combo = namedtuple("Combo", ("a", "b", "result"))
@@ -290,7 +292,7 @@ class MarkdownLayer(object):
         return repr(self.rows)
 
 ################################################################################
-## Generate Keymaps
+# Generate Keymaps
 
 
 def generate_keymap(markdown_layers, template_path, generate_layer_fn, generate_combo_fn):
@@ -303,7 +305,8 @@ def generate_keymap(markdown_layers, template_path, generate_layer_fn, generate_
             )
             combos.extend(markdown_layer.combos)
         for combo_id in range(5):
-            (trigger, result) = generate_combo_fn(combos[combo_id] if combo_id < len(combos) else None)
+            (trigger, result) = generate_combo_fn(
+                combos[combo_id] if combo_id < len(combos) else None)
             template = template.replace(f"#COMBO_TRIGGER_{combo_id}#", trigger)
             template = template.replace(f"#COMBO_RESULT_{combo_id}#", result)
         return HEADER + template
@@ -313,14 +316,13 @@ def usage():
     print(f"Usage: {sys.argv[0]} qmk|zmk")
 
 
-def main(type):
+def main(type: str):
     root_dir = os.path.dirname(__file__)
     with open(os.path.join(root_dir, "README.md"), "r") as source:
         markdown_layers = MarkdownLayer.parse(source.readlines())
         if type == "zmk":
             print(
-                generate_keymap(
-                    markdown_layers,
+                generate_keymap(                    markdown_layers,
                     os.path.join(root_dir, "zmk_template.dtsi"),
                     generate_zmk_layer,
                     generate_zmk_combo,

@@ -1,1 +1,1 @@
-FROM zmkfirmware/zmk-dev-arm:2.5
+FROM denniskempin-zmk
