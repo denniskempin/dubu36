@@ -96,6 +96,7 @@ LAYER_LABELS = {
     "RSE": 1,
     "LWR": 2,
     "ADJ": 3,
+    "MOU": 4,
 }
 
 
@@ -104,7 +105,9 @@ LAYER_LABELS = {
 
 
 def get_qmk_key_press_code(label):
-    if len(label) == 1 and (label.isalpha() or label.isdigit()):
+    if label.startswith('CMD_'):
+        return f"G({get_qmk_key_press_code(label[4:])})"
+    elif len(label) == 1 and (label.isalpha() or label.isdigit()):
         return f"KC_{label}"
     elif label in KEY_PRESS_CODES:
         return KEY_PRESS_CODES[label][1]
@@ -162,7 +165,9 @@ def generate_qmk_layer(markdown_layer):
 
 
 def get_zmk_key_press_code(label):
-    if label.isalpha() and len(label) == 1:
+    if label.startswith('CMD_'):
+        return f"LG({get_zmk_key_press_code(label[4:])})"
+    elif label.isalpha() and len(label) == 1:
         return label
     elif label.isdigit() and len(label) == 1:
         return f"N{label}"

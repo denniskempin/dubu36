@@ -28,7 +28,7 @@ on thumb keys to reduce issues hold-tap timing.
 | ☐    | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐    |
 | shft | ctrl | alt | cmd  | hypr |     | hypr | cmd | alt | ctrl | shft |
 | adj  | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj  |
-|      |      | ☐   | shft | lwr  |     | ☐    | rse | ☐   |      |      |
+|      |      | mou | shft | lwr  |     | ☐    | rse | ☐   |      |      |
 
 ### Default Layer (Combos)
 
@@ -61,6 +61,16 @@ on thumb keys to reduce issues hold-tap timing.
 | BT_CLR | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
 | ☐      | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
 |        |      | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   |     |     |
+
+## Mouse Layer (Left hand only keyboard shortcuts)
+
+|       |       |       |       |     |     |     |     |     |     |     |
+| ----- | ----- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- |
+| CMD_Q | CMD_W | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
+| ☐     | ☐     | CMD_S | CMD_T | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
+| CMD_Z | CMD_X | CMD_C | CMD_V | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
+|       |       | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   |     |     |
+
 
 ## Keyboards
 

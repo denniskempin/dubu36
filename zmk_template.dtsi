@@ -25,31 +25,37 @@
         };
     };
 
-        keymap {
-                compatible = "zmk,keymap";
+    keymap {
+            compatible = "zmk,keymap";
 
-                default_layer {
-                        bindings = <
+            default_layer {
+                    bindings = <
 #LAYER_0#
-                        >;
-                };
+                    >;
+            };
 
-                lower_layer {
-                        bindings = <
+            lower_layer {
+                    bindings = <
 #LAYER_1#
-                        >;
-                };
+                    >;
+            };
 
-                raise_layer {
-                        bindings = <
+            raise_layer {
+                    bindings = <
 #LAYER_2#
-                        >;
-                };
+                    >;
+            };
 
-                adjust_layer {
-                      bindings = <
+            adjust_layer {
+                    bindings = <
 #LAYER_3#
-                     >;
-              };
+                    >;
+            };
+
+            mouse_layer {
+                    bindings = <
+#LAYER_4#
+                    >;
+            };
         };
 };
