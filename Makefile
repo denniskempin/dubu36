@@ -1,9 +1,24 @@
-all: dubu36-ergo dubu36-travel
+BOARD=nice_nano
 
-dubu36-ergo:
-	make -C dubu36-ergo/zmk-config keymap
+all: build/dubu36t_left.uf2 build/dubu36t_right.uf2
 
-dubu36-travel:
-	make -C dubu36-travel/zmk-config keymap
+setup:
+	west init -l config || exit
+	west update || exit
+	west zephyr-export || exit
 
-.PHONY: dubu36-ergo dubu36-travel
+clean:
+	rm -rf build
+
+config/corne.keymap: generate_keymap.py README.md
+	python3 generate_keymap.py zmk > config/corne.keymap
+
+build/dubu36t_left.uf2: config/*
+	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/dubu36t_right.uf2: config/*
+	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_right -DZMK_CONFIG="`pwd`/config" || exit
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+.PHONY: setup clean

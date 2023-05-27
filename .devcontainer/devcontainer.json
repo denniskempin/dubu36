@@ -1,9 +1,22 @@
 {
-	"name": "dubu36",
-	"build": {
-		"dockerfile": "Dockerfile",
+	"name": "ZMK Development",
+	"dockerFile": "Dockerfile",
+	"runArgs": [
+		"--security-opt",
+		"label=disable"
+	],
+	"containerEnv": {
+		"WORKSPACE_DIR": "${containerWorkspaceFolder}",
+		"PROMPT_COMMAND": "history -a"
 	},
 	"mounts": [
-		"source=/Volumes,target=/Volumes,type=bind"
+		"type=volume,source=zmk-root-user,target=/root",
+		"type=volume,source=zmk-config,target=/workspaces/zmk-config",
+		"type=volume,source=zmk-zephyr,target=${containerWorkspaceFolder}/zephyr",
+		"type=volume,source=zmk-zephyr-modules,target=${containerWorkspaceFolder}/modules",
+		"type=volume,source=zmk-zephyr-tools,target=${containerWorkspaceFolder}/tools"
+	],
+	"forwardPorts": [
+		3000
 	]
 }

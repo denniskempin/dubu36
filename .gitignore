@@ -5,4 +5,10 @@
 **/zmk-config/tools
 **/zmk-config/zephyr
 **/zmk-config/zmk
+.west
+build
+modules
+tools
+zephyr
+zmk
 artifacts
