@@ -1,10 +1,10 @@
 /*
- * Copyright (c) 2020 Pete Johanson
+ * Copyright (c) 2023 Dennis Kempin
  *
  * SPDX-License-Identifier: MIT
  */
 
-#include "corne.dtsi"
+#include "dubu36e.dtsi"
 
 &kscan0 {
 	col-gpios

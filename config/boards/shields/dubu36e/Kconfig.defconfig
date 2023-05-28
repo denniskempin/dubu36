@@ -1,0 +1,16 @@
+if SHIELD_DUBU36E_LEFT
+
+config ZMK_KEYBOARD_NAME
+    default "Dubu36ergo"
+
+config ZMK_SPLIT_ROLE_CENTRAL
+    default y
+
+endif
+
+if SHIELD_DUBU36E_LEFT || SHIELD_DUBU36E_RIGHT
+
+config ZMK_SPLIT
+    default y
+
+endif

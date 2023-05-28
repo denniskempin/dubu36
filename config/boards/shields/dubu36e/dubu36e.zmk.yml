@@ -1,0 +1,11 @@
+file_format: "1"
+id: dubu36e
+name: Dubu36ergo
+type: shield
+url: http://github.com/denniskempin/dubu36
+requires: [pro_micro]
+features:
+  - keys
+siblings:
+  - dubu36e_left
+  - dubu36e_right
