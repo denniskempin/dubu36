@@ -22,12 +22,12 @@ characters in day-to-day writing.
 Modifiers used primarily in shortcuts have been mapped to the home-row. The modifiers and layer
 shifts used primarily in fluent writing remain on thumb keys to reduce issues hold-tap timing.
 
-|      |      |     |      |      |     |      |     |     |      |      |
-| ---- | ---- | --- | ---- | ---- | --- | ---- | --- | --- | ---- | ---- |
-| ☐    | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐    |
-| shft | ctrl | alt | cmd  | hypr |     | hypr | cmd | alt | ctrl | shft |
-| adj  | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj  |
-|      |      | mou | shft | lwr  |     | ☐    | rse | ☐   |      |      |
+|     |      |     |      |      |     |      |     |     |      |     |
+| --- | ---- | --- | ---- | ---- | --- | ---- | --- | --- | ---- | --- |
+| ☐   | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
+| hyp | shft | alt | cmd  | ctrl |     | ctrl | cmd | alt | shft | hyp |
+| adj | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj |
+|     |      | mou | shft | lwr  |     | ☐    | rse | hyp |      |     |
 
 ### Default Layer (Combos)
 
@@ -36,12 +36,12 @@ shifts used primarily in fluent writing remain on thumb keys to reduce issues ho
 
 ## Raise Layer (Navigation + Numbers)
 
-|     |     |     |     |         |     |       |        |         |        |       |
-| --- | --- | --- | --- | ------- | --- | ----- | ------ | ------- | ------ | ----- |
-| ☐   | 7   | 8   | 9   | ☐       |     | HOME  | WORD_L | UP      | WORD_R | END   |
-| ☐   | 4   | 5   | 6   | ☐       |     | FWD   | LEFT   | DOWN    | RIGHT  | BCK   |
-| 0   | 1   | 2   | 3   | ☐       |     | SPC_L | TAB_L  | NXT_WIN | TAB_R  | SPC_R |
-|     |     | ☐   | ☐   | CMD_RET |     | ☐     | ☐      | ☐       |        |       |
+|     |     |     |     |     |     |         |        |      |        |     |
+| --- | --- | --- | --- | --- | --- | ------- | ------ | ---- | ------ | --- |
+| ☐   | 7   | 8   | 9   | ☐   |     | HOME    | WORD_L | UP   | WORD_R | END |
+| ☐   | 4   | 5   | 6   | ☐   |     | FWD     | LEFT   | DOWN | RIGHT  | BCK |
+| 0   | 1   | 2   | 3   | ☐   |     | ☐       | HYP_[  | ☐    | HYP_]  | ☐   |
+|     |     | ☐   | ☐   | ☐   |     | CMD_RET | ☐      | ☐    |        |     |
 
 ## Lower Layer (Symbols)
 
@@ -51,6 +51,15 @@ shifts used primarily in fluent writing remain on thumb keys to reduce issues ho
 | UML | <   | [   | (   | {   |     | -   | \_  | :        | ;    | #   |
 | ☐   | >   | ]   | )   | }   |     | +   | =   | ?        | !    | "   |
 |     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ALT_BKSP |      |     |
+
+## Hyper Layer
+
+|       |       |       |       |       |     |       |          |          |           |       |
+| ----- | ----- | ----- | ----- | ----- | --- | ----- | -------- | -------- | --------- | ----- |
+| HYP_Q | HYP_W | HYP_F | HYP_P | HYP_G |     | HYP_1 | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
+| HYP_A | HYP_R | HYP_S | HYP_T | HYP_D |     | ☐     | HYP_LEFT | HYP_DOWN | HYP_RIGHT | ☐     |
+| HYP_Z | HYP_X | HYP_C | HYP_V | HYP_B |     | ☐     | HYP_[    | ☐        | HYP_]     | ☐     |
+|       |       | ☐     | ☐     | ☐     |     | ☐     | ☐        | ☐        |           |       |
 
 ## Adjust Layer (Bluetooth)
 

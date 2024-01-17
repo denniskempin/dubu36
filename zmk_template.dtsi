@@ -46,15 +46,21 @@
                     >;
             };
 
-            adjust_layer {
+            hyper_layer {
                     bindings = <
 #LAYER_3#
                     >;
             };
 
-            mouse_layer {
+            adjust_layer {
                     bindings = <
 #LAYER_4#
+                    >;
+            };
+
+            mouse_layer {
+                    bindings = <
+#LAYER_5#
                     >;
             };
         };
