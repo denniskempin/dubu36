@@ -34,7 +34,7 @@
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &mt_ LSHFT A &mt_ LCTRL R &mt_ LALT S &mt_ LGUI T &mt_ LA(LS(LC(LGUI))) D &mt_ LA(LS(LC(LGUI))) H &mt_ LGUI N &mt_ LALT E &mt_ LCTRL I &mt_ LSHFT O &trans
 &trans &lt_ 3 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_ 3 SQT &trans
-&lt_ 4 ESC &kp LSHFT &lt_ 2 RET &kp TAB &lt_ 1 SPC &kp BKSP
+&lt_ 4 ESC &kp LSHFT &mo 2 &kp RET &lt_ 1 SPC &kp BKSP
                     >;
             };
 
