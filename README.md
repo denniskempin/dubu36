@@ -17,7 +17,7 @@ characters in day-to-day writing.
 | Z   | X   | C   | V   | B   |     | K   | M   | ,    | .   | '   |
 |     |     | ESC | ☐   | TAB |     | RET | SPC | BKSP |     |     |
 
-### Default Layer (Hold)
+### Default Layer Hold
 
 Modifiers used primarily in shortcuts have been mapped to the home-row. The modifiers and layer
 shifts used primarily in fluent writing remain on thumb keys to reduce issues hold-tap timing.
@@ -36,12 +36,21 @@ shifts used primarily in fluent writing remain on thumb keys to reduce issues ho
 
 ## Raise Layer (Navigation + Numbers)
 
-|     |     |     |     |     |     |         |        |      |        |     |
-| --- | --- | --- | --- | --- | --- | ------- | ------ | ---- | ------ | --- |
-| ☐   | 7   | 8   | 9   | ☐   |     | HOME    | WORD_L | UP   | WORD_R | END |
-| ☐   | 4   | 5   | 6   | ☐   |     | FWD     | LEFT   | DOWN | RIGHT  | BCK |
-| 0   | 1   | 2   | 3   | ☐   |     | ☐       | HYP_[  | ☐    | HYP_]  | ☐   |
-|     |     | ☐   | ☐   | ☐   |     | CMD_RET | ☐      | ☐    |        |     |
+|     |     |     |     |     |     |       |        |        |        |       |
+| --- | --- | --- | --- | --- | --- | ----- | ------ | ------ | ------ | ----- |
+| ☐   | 7   | 8   | 9   | ☐   |     | HOME  | WORD_L | UP     | WORD_R | END   |
+| ☐   | 4   | 5   | 6   | ☐   |     | FWD   | LEFT   | DOWN   | RIGHT  | BCK   |
+| 0   | 1   | 2   | 3   | ☐   |     | TAB_L | HYP\_[ | HYP\_\ | HYP\_] | TAB_R |
+|     |     | ☐   | ☐   | ☐   |     | ☐     | ☐      | ☐      |        |       |
+
+## Raise Layer Hold
+
+|     |      |     |     |      |     |      |     |     |      |     |
+| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
+| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
+| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
+| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
+|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
 
 ## Lower Layer (Symbols)
 
@@ -52,13 +61,22 @@ shifts used primarily in fluent writing remain on thumb keys to reduce issues ho
 | ☐   | >   | ]   | )   | }   |     | +   | =   | ?        | !    | "   |
 |     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ALT_BKSP |      |     |
 
+## Lower Layer Hold
+
+|     |      |     |     |      |     |      |     |     |      |     |
+| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
+| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
+| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
+| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
+|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
+
 ## Hyper Layer
 
 |       |       |       |       |       |     |       |          |          |           |       |
 | ----- | ----- | ----- | ----- | ----- | --- | ----- | -------- | -------- | --------- | ----- |
 | HYP_Q | HYP_W | HYP_F | HYP_P | HYP_G |     | HYP_1 | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
-| HYP_A | HYP_R | HYP_S | HYP_T | HYP_D |     | ☐     | HYP_LEFT | HYP_DOWN | HYP_RIGHT | ☐     |
-| HYP_Z | HYP_X | HYP_C | HYP_V | HYP_B |     | ☐     | HYP_[    | ☐        | HYP_]     | ☐     |
+| HYP_A | HYP_R | HYP_S | HYP_T | HYP_D |     | ☐     | HYP_LEFT | HYP_UP   | HYP_RIGHT | ☐     |
+| HYP_Z | HYP_X | HYP_C | HYP_V | HYP_B |     | ☐     | HYP\_;   | HYP_DOWN | HYP\_'    | ☐     |
 |       |       | ☐     | ☐     | ☐     |     | ☐     | ☐        | ☐        |           |       |
 
 ## Adjust Layer (Bluetooth)

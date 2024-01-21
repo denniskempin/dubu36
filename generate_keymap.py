@@ -31,12 +31,12 @@ KEY_PRESS_CODES = {
     "SPC_L": ("LC(LEFT)", "C(KC_LEFT)"),
     "SPC_R": ("LC(RIGHT)", "C(KC_RIGHT)"),
     "NXT_WIN": ("LC(F4)", "C(KC_F4)"),
-    # (File) Search Key
-    "SRCH": ("F24", "KC_F24"),
-    "F_SRCH": ("LG(F24)", "G(KC_F24)"),
     # Forward / Backwards (GUI + Bracket)
     "FWD": ("LG(LBKT)", "G(KC_LBRC)"),
     "BCK": ("LG(RBKT)", "G(KC_RBRC)"),
+    # Prev / Next Tab (GUI + Shift Bracket)
+    "TAB_L": ("LG(LS(LBKT))", "G(S(KC_LBRC))"),
+    "TAB_R": ("LG(LS(RBKT))", "G(S(KC_RBRC))"),
     # Umlaut key
     "UML": ("LA(U)", "A(KC_U)"),
     # Symbols
@@ -107,6 +107,8 @@ LAYER_LABELS = {
 def get_qmk_key_press_code(label):
     if label.startswith('CMD_'):
         return f"G({get_qmk_key_press_code(label[4:])})"
+    elif label.startswith('HYP\\_'):
+        return f"G(S(A(C({get_qmk_key_press_code(label[5:])}))))"
     elif label.startswith('HYP_'):
         return f"G(S(A(C({get_qmk_key_press_code(label[4:])}))))"
     elif len(label) == 1 and (label.isalpha() or label.isdigit()):
@@ -171,6 +173,8 @@ def get_zmk_key_press_code(label):
         return f"LG({get_zmk_key_press_code(label[4:])})"
     elif label.startswith('HYP_'):
         return f"LA(LS(LC(LG({get_zmk_key_press_code(label[4:])}))))"
+    elif label.startswith('HYP\\_'):
+        return f"LA(LS(LC(LG({get_zmk_key_press_code(label[5:])}))))"
     elif label.isalpha() and len(label) == 1:
         return label
     elif label.isdigit() and len(label) == 1:

@@ -41,16 +41,16 @@
             lower_layer {
                     bindings = <
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
-&trans &trans &kp N4 &kp N5 &kp N6 &trans &kp LG(LBKT) &kp LEFT &kp DOWN &kp RIGHT &kp LG(RBKT) &trans
-&trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &trans &kp LA(LS(LC(LG(LBKT)))) &trans &kp LA(LS(LC(LG(RBKT)))) &trans &trans
-&trans &trans &trans &kp LG(RET) &trans &trans
+&trans &mo 3 &mt_ LSHFT N4 &mt_ LALT N5 &mt_ LGUI N6 &kp LCTRL &mt_ LCTRL LG(LBKT) &mt_ LGUI LEFT &mt_ LALT DOWN &mt_ LSHFT RIGHT &lt_ 3 LG(RBKT) &trans
+&trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
+&trans &trans &trans &trans &trans &trans
                     >;
             };
 
             raise_layer {
                     bindings = <
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
-&trans &kp LA(U) &kp LS(COMMA) &kp LBKT &kp LS(N9) &kp LS(LBKT) &kp KP_MINUS &kp LS(MINUS) &kp LS(SEMI) &kp SEMI &kp LS(N3) &trans
+&trans &lt_ 3 LA(U) &mt_ LSHFT LS(COMMA) &mt_ LALT LBKT &mt_ LGUI LS(N9) &mt_ LCTRL LS(LBKT) &mt_ LCTRL KP_MINUS &mt_ LGUI LS(MINUS) &mt_ LALT LS(SEMI) &mt_ LSHFT SEMI &lt_ 3 LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
 &trans &trans &trans &trans &trans &kp LA(BKSP)
                     >;
@@ -59,8 +59,8 @@
             hyper_layer {
                     bindings = <
 &trans &kp LA(LS(LC(LG(Q)))) &kp LA(LS(LC(LG(W)))) &kp LA(LS(LC(LG(F)))) &kp LA(LS(LC(LG(P)))) &kp LA(LS(LC(LG(G)))) &kp LA(LS(LC(LG(N1)))) &kp LA(LS(LC(LG(N2)))) &kp LA(LS(LC(LG(N3)))) &kp LA(LS(LC(LG(N4)))) &kp LA(LS(LC(LG(N5)))) &trans
-&trans &kp LA(LS(LC(LG(A)))) &kp LA(LS(LC(LG(R)))) &kp LA(LS(LC(LG(S)))) &kp LA(LS(LC(LG(T)))) &kp LA(LS(LC(LG(D)))) &trans &kp LA(LS(LC(LG(LEFT)))) &kp LA(LS(LC(LG(DOWN)))) &kp LA(LS(LC(LG(RIGHT)))) &trans &trans
-&trans &kp LA(LS(LC(LG(Z)))) &kp LA(LS(LC(LG(X)))) &kp LA(LS(LC(LG(C)))) &kp LA(LS(LC(LG(V)))) &kp LA(LS(LC(LG(B)))) &trans &kp LA(LS(LC(LG(LBKT)))) &trans &kp LA(LS(LC(LG(RBKT)))) &trans &trans
+&trans &kp LA(LS(LC(LG(A)))) &kp LA(LS(LC(LG(R)))) &kp LA(LS(LC(LG(S)))) &kp LA(LS(LC(LG(T)))) &kp LA(LS(LC(LG(D)))) &trans &kp LA(LS(LC(LG(LEFT)))) &kp LA(LS(LC(LG(UP)))) &kp LA(LS(LC(LG(RIGHT)))) &trans &trans
+&trans &kp LA(LS(LC(LG(Z)))) &kp LA(LS(LC(LG(X)))) &kp LA(LS(LC(LG(C)))) &kp LA(LS(LC(LG(V)))) &kp LA(LS(LC(LG(B)))) &trans &kp LA(LS(LC(LG(SEMI)))) &kp LA(LS(LC(LG(DOWN)))) &kp LA(LS(LC(LG(SQT)))) &trans &trans
 &trans &trans &trans &trans &trans &trans
                     >;
             };
