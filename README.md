@@ -72,12 +72,12 @@ shifts used primarily in fluent writing remain on thumb keys to reduce issues ho
 
 ## Hyper Layer
 
-|       |       |       |       |       |     |       |          |          |           |       |
-| ----- | ----- | ----- | ----- | ----- | --- | ----- | -------- | -------- | --------- | ----- |
-| HYP_Q | HYP_W | HYP_F | HYP_P | HYP_G |     | HYP_1 | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
-| HYP_A | HYP_R | HYP_S | HYP_T | HYP_D |     | ☐     | HYP_LEFT | HYP_UP   | HYP_RIGHT | ☐     |
-| HYP_Z | HYP_X | HYP_C | HYP_V | HYP_B |     | ☐     | HYP\_;   | HYP_DOWN | HYP\_'    | ☐     |
-|       |       | ☐     | ☐     | ☐     |     | ☐     | ☐        | ☐        |           |       |
+|       |       |         |       |         |     |         |          |          |           |       |
+| ----- | ----- | ------- | ----- | ------- | --- | ------- | -------- | -------- | --------- | ----- |
+| HYP_Q | HYP_W | HYP_F   | HYP_P | HYP_G   |     | HYP_1   | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
+| HYP_A | HYP_R | HYP_S   | HYP_T | HYP_D   |     | ☐       | HYP_LEFT | HYP_UP   | HYP_RIGHT | ☐     |
+| HYP_Z | HYP_X | HYP_C   | HYP_V | HYP_B   |     | ☐       | HYP\_;   | HYP_DOWN | HYP\_'    | ☐     |
+|       |       | HYP_ESC | ☐     | HYP_TAB |     | HYP_RET | HYP_SPC  | HYP_BKSP |           |       |
 
 ## Adjust Layer (Bluetooth)
 

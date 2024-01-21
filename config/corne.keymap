@@ -61,7 +61,7 @@
 &trans &kp LA(LS(LC(LG(Q)))) &kp LA(LS(LC(LG(W)))) &kp LA(LS(LC(LG(F)))) &kp LA(LS(LC(LG(P)))) &kp LA(LS(LC(LG(G)))) &kp LA(LS(LC(LG(N1)))) &kp LA(LS(LC(LG(N2)))) &kp LA(LS(LC(LG(N3)))) &kp LA(LS(LC(LG(N4)))) &kp LA(LS(LC(LG(N5)))) &trans
 &trans &kp LA(LS(LC(LG(A)))) &kp LA(LS(LC(LG(R)))) &kp LA(LS(LC(LG(S)))) &kp LA(LS(LC(LG(T)))) &kp LA(LS(LC(LG(D)))) &trans &kp LA(LS(LC(LG(LEFT)))) &kp LA(LS(LC(LG(UP)))) &kp LA(LS(LC(LG(RIGHT)))) &trans &trans
 &trans &kp LA(LS(LC(LG(Z)))) &kp LA(LS(LC(LG(X)))) &kp LA(LS(LC(LG(C)))) &kp LA(LS(LC(LG(V)))) &kp LA(LS(LC(LG(B)))) &trans &kp LA(LS(LC(LG(SEMI)))) &kp LA(LS(LC(LG(DOWN)))) &kp LA(LS(LC(LG(SQT)))) &trans &trans
-&trans &trans &trans &trans &trans &trans
+&kp LA(LS(LC(LG(ESC)))) &trans &kp LA(LS(LC(LG(TAB)))) &kp LA(LS(LC(LG(RET)))) &kp LA(LS(LC(LG(SPC)))) &kp LA(LS(LC(LG(BKSP))))
                     >;
             };
 
