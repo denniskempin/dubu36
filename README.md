@@ -43,7 +43,11 @@ timing issues.
 
 - `layout.ortho_layout` — 3×5 split + 3 thumbs per side
 - `layers` — ordered mapping; order defines firmware layer indices
-- keys are either a string (`"Q"`) or `{t: Tab, h: Lower}` for tap/hold
+- keys are either a string (`"Q"`) or `{t: Tab, h: Lower, type: hold-preferred}` for tap/hold
+- hold `type` is diagram-only styling:
+  - `tap-preferred` — outline box (home-row mod-taps)
+  - `hold-preferred` — solid box (layer-taps)
+  - `sticky` — larger solid box (sticky tap-hold)
 - `combos` — reserved for future combo definitions
 
 Firmware-specific codes are **not** stored in the YAML. [`generate_keymap.py`](generate_keymap.py)

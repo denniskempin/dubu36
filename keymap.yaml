@@ -1,6 +1,11 @@
 # Dubu36 keymap — firmware-independent source of truth (keymap-drawer YAML).
 # See: https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md
 #
+# Hold `type` values (diagram styling only; ignored by firmware codegen):
+#   tap-preferred  — outline box (mod-tap, ZMK mt_ tap-preferred)
+#   hold-preferred — solid box  (layer-tap, ZMK lt_ balanced)
+#   sticky         — large solid box (sticky tap-hold)
+#
 # Edit this file, then:
 #   make keymaps   # regenerate ZMK/QMK
 #   make diagrams  # regenerate SVG diagrams
@@ -15,17 +20,17 @@ layout:
 layers:
   Default:
     - [Q, W, F, P, G, J, L, U, Y, "*"]
-    - - {t: A, h: Hyper}
-      - {t: R, h: Shift}
-      - {t: S, h: Alt}
-      - {t: T, h: Cmd}
-      - {t: D, h: Ctrl}
-      - {t: H, h: Ctrl}
-      - {t: N, h: Cmd}
-      - {t: E, h: Alt}
-      - {t: I, h: Shift}
-      - {t: O, h: Hyper}
-    - - {t: Z, h: Adjust}
+    - - {t: A, h: Hyper, type: hold-preferred}
+      - {t: R, h: Shift, type: tap-preferred}
+      - {t: S, h: Alt, type: tap-preferred}
+      - {t: T, h: Cmd, type: tap-preferred}
+      - {t: D, h: Ctrl, type: tap-preferred}
+      - {t: H, h: Ctrl, type: tap-preferred}
+      - {t: N, h: Cmd, type: tap-preferred}
+      - {t: E, h: Alt, type: tap-preferred}
+      - {t: I, h: Shift, type: tap-preferred}
+      - {t: O, h: Hyper, type: hold-preferred}
+    - - {t: Z, h: Adjust, type: hold-preferred}
       - X
       - C
       - V
@@ -34,41 +39,41 @@ layers:
       - M
       - ","
       - .
-      - {t: "'", h: Adjust}
-    - - {t: Esc, h: Mouse}
-      - {t: "", h: Shift}
-      - {t: Tab, h: Lower}
+      - {t: "'", h: Adjust, type: hold-preferred}
+    - - {t: Esc, h: Mouse, type: hold-preferred}
+      - {t: "", h: Shift, type: tap-preferred}
+      - {t: Tab, h: Lower, type: hold-preferred}
       - Ret
-      - {t: Spc, h: Raise}
-      - {t: Bksp, h: Hyper}
+      - {t: Spc, h: Raise, type: hold-preferred}
+      - {t: Bksp, h: Hyper, type: hold-preferred}
 
   Raise:
     - ["", "7", "8", "9", "", Home, WordL, Up, WordR, End]
-    - - {t: "", h: Hyper}
-      - {t: "4", h: Shift}
-      - {t: "5", h: Alt}
-      - {t: "6", h: Cmd}
-      - {t: "", h: Ctrl}
-      - {t: Fwd, h: Ctrl}
-      - {t: Left, h: Cmd}
-      - {t: Down, h: Alt}
-      - {t: Right, h: Shift}
-      - {t: Bck, h: Hyper}
+    - - {t: "", h: Hyper, type: hold-preferred}
+      - {t: "4", h: Shift, type: tap-preferred}
+      - {t: "5", h: Alt, type: tap-preferred}
+      - {t: "6", h: Cmd, type: tap-preferred}
+      - {t: "", h: Ctrl, type: tap-preferred}
+      - {t: Fwd, h: Ctrl, type: tap-preferred}
+      - {t: Left, h: Cmd, type: tap-preferred}
+      - {t: Down, h: Alt, type: tap-preferred}
+      - {t: Right, h: Shift, type: tap-preferred}
+      - {t: Bck, h: Hyper, type: hold-preferred}
     - ["0", "1", "2", "3", "", TabL, "Hyp_[", "Hyp_\\", "Hyp_]", TabR]
     - ["", "", "", "", "", ""]
 
   Lower:
     - ["~", "^", "@", "$", "%", "&", "/", "\\", "|", "`"]
-    - - {t: Uml, h: Hyper}
-      - {t: "<", h: Shift}
-      - {t: "[", h: Alt}
-      - {t: "(", h: Cmd}
-      - {t: "{", h: Ctrl}
-      - {t: "-", h: Ctrl}
-      - {t: "_", h: Cmd}
-      - {t: ":", h: Alt}
-      - {t: ";", h: Shift}
-      - {t: "#", h: Hyper}
+    - - {t: Uml, h: Hyper, type: hold-preferred}
+      - {t: "<", h: Shift, type: tap-preferred}
+      - {t: "[", h: Alt, type: tap-preferred}
+      - {t: "(", h: Cmd, type: tap-preferred}
+      - {t: "{", h: Ctrl, type: tap-preferred}
+      - {t: "-", h: Ctrl, type: tap-preferred}
+      - {t: "_", h: Cmd, type: tap-preferred}
+      - {t: ":", h: Alt, type: tap-preferred}
+      - {t: ";", h: Shift, type: tap-preferred}
+      - {t: "#", h: Hyper, type: hold-preferred}
     - ["", ">", "]", ")", "}", "+", "=", "?", "!", '"']
     - ["", "", "", "", "", AltBksp]
 
@@ -97,12 +102,73 @@ draw_config:
   n_columns: 1
   footer_text: Dubu36
   style_layer_activators: true
+  key_rx: 8
+  key_ry: 8
+  shrink_wide_legends: 5
+  # Catppuccin-mocha-like reference card styling
   svg_extra_style: |
-    /* Stacked reference: symbols (purple), raise/nav+num (orange), holds (muted) */
-    text.tr, use.tr { fill: #cba6f7; }
-    text.br, use.br { fill: #fab387; }
-    text.bl, use.bl { fill: #fab387; }
+    svg.keymap {
+      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
+      background-color: #1e1e2e;
+    }
+    rect.key {
+      fill: #313244;
+      stroke: #45475a;
+      stroke-width: 1.25;
+    }
+    rect.key.trans {
+      fill: #1e1e2e;
+      stroke: #313244;
+      stroke-dasharray: 3 3;
+    }
+    text.tap { fill: #cdd6f4; font-size: 15px; font-weight: 600; }
     text.hold { fill: #a6adc8; font-size: 10px; }
-    text.tap { fill: #cdd6f4; }
-    rect.held, rect.comboheld { fill: #89b4fa; }
-    .layer-Adjust, .layer-Mouse { opacity: 0.95; }
+    text.tl { fill: #cdd6f4; font-size: 12px; font-weight: 600; }
+    text.tr, use.tr { fill: #cba6f7; font-size: 11px; }
+    text.br, use.br, text.bl, use.bl { fill: #fab387; font-size: 11px; }
+    text.layer-activator { text-decoration: none; fill: #89b4fa; font-size: 10px; font-weight: 600; }
+
+    /* Tap/hold preference boxes (drawn behind center legend) */
+    rect.mod-box {
+      rx: 3;
+      ry: 3;
+      stroke-width: 1.35;
+    }
+    /* Empty outline = tap-preferred */
+    rect.mod-box.tap-preferred {
+      fill: none;
+      stroke: #cdd6f4;
+    }
+    text.tap.tap-preferred {
+      fill: #cdd6f4;
+      font-size: 10px;
+      font-weight: 600;
+    }
+    /* Solid fill = hold-preferred */
+    rect.mod-box.hold-preferred {
+      fill: #a6adc8;
+      stroke: #a6adc8;
+    }
+    text.tap.hold-preferred {
+      fill: #1e1e2e;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    /* Larger solid = sticky tap-hold */
+    rect.mod-box.sticky {
+      fill: #cdd6f4;
+      stroke: #cdd6f4;
+      stroke-width: 1.5;
+    }
+    text.tap.sticky {
+      fill: #1e1e2e;
+      font-size: 11px;
+      font-weight: 700;
+    }
+
+    /* Thumb layer activator fills */
+    rect.key.thumb-raise { fill: #3f2e1e; stroke: #fab387; }
+    rect.key.thumb-lower { fill: #1e2a3f; stroke: #89b4fa; }
+    rect.key.thumb-hyper { fill: #3f1e2a; stroke: #f38ba8; }
+    rect.key.thumb-mouse { fill: #1e3f28; stroke: #a6e3a1; }
+    rect.key.thumb-adjust { fill: #2a1e3f; stroke: #cba6f7; }
