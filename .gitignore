@@ -12,3 +12,5 @@ tools
 zephyr
 zmk
 artifacts
+__pycache__/
+*.pyc
