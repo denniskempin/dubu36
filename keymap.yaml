@@ -1,0 +1,108 @@
+# Dubu36 keymap — firmware-independent source of truth (keymap-drawer YAML).
+# See: https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md
+#
+# Edit this file, then:
+#   make keymaps   # regenerate ZMK/QMK
+#   make diagrams  # regenerate SVG diagrams
+
+layout:
+  ortho_layout:
+    split: true
+    rows: 3
+    columns: 5
+    thumbs: 3
+
+layers:
+  Default:
+    - [Q, W, F, P, G, J, L, U, Y, "*"]
+    - - {t: A, h: Hyper}
+      - {t: R, h: Shift}
+      - {t: S, h: Alt}
+      - {t: T, h: Cmd}
+      - {t: D, h: Ctrl}
+      - {t: H, h: Ctrl}
+      - {t: N, h: Cmd}
+      - {t: E, h: Alt}
+      - {t: I, h: Shift}
+      - {t: O, h: Hyper}
+    - - {t: Z, h: Adjust}
+      - X
+      - C
+      - V
+      - B
+      - K
+      - M
+      - ","
+      - .
+      - {t: "'", h: Adjust}
+    - - {t: Esc, h: Mouse}
+      - {t: "", h: Shift}
+      - {t: Tab, h: Lower}
+      - Ret
+      - {t: Spc, h: Raise}
+      - {t: Bksp, h: Hyper}
+
+  Raise:
+    - ["", "7", "8", "9", "", Home, WordL, Up, WordR, End]
+    - - {t: "", h: Hyper}
+      - {t: "4", h: Shift}
+      - {t: "5", h: Alt}
+      - {t: "6", h: Cmd}
+      - {t: "", h: Ctrl}
+      - {t: Fwd, h: Ctrl}
+      - {t: Left, h: Cmd}
+      - {t: Down, h: Alt}
+      - {t: Right, h: Shift}
+      - {t: Bck, h: Hyper}
+    - ["0", "1", "2", "3", "", TabL, "Hyp_[", "Hyp_\\", "Hyp_]", TabR]
+    - ["", "", "", "", "", ""]
+
+  Lower:
+    - ["~", "^", "@", "$", "%", "&", "/", "\\", "|", "`"]
+    - - {t: Uml, h: Hyper}
+      - {t: "<", h: Shift}
+      - {t: "[", h: Alt}
+      - {t: "(", h: Cmd}
+      - {t: "{", h: Ctrl}
+      - {t: "-", h: Ctrl}
+      - {t: "_", h: Cmd}
+      - {t: ":", h: Alt}
+      - {t: ";", h: Shift}
+      - {t: "#", h: Hyper}
+    - ["", ">", "]", ")", "}", "+", "=", "?", "!", '"']
+    - ["", "", "", "", "", AltBksp]
+
+  Hyper:
+    - [Hyp_Q, Hyp_W, Hyp_F, Hyp_P, Hyp_G, Hyp_1, Hyp_2, Hyp_3, Hyp_4, Hyp_5]
+    - [Hyp_A, Hyp_R, Hyp_S, Hyp_T, Hyp_D, "", Hyp_Left, Hyp_Up, Hyp_Right, ""]
+    - [Hyp_Z, Hyp_X, Hyp_C, Hyp_V, Hyp_B, "", "Hyp_;", Hyp_Down, "Hyp_'", ""]
+    - [Hyp_Esc, "", Hyp_Tab, Hyp_Ret, Hyp_Spc, Hyp_Bksp]
+
+  Adjust:
+    - [Bt0, Bt1, Bt2, "", "", "", "", "", "", ""]
+    - [BtClr, "", "", "", "", "", "", "", "", ""]
+    - ["", "", "", "", "", "", "", "", "", ""]
+    - ["", "", "", "", "", ""]
+
+  Mouse:
+    - [Cmd_Q, Cmd_W, "", "", "", "", "", "", "", ""]
+    - ["", "", Cmd_S, Cmd_T, "", "", "", "", "", ""]
+    - [Cmd_Z, Cmd_X, Cmd_C, Cmd_V, "", "", "", "", "", ""]
+    - ["", "", "", "", "", ""]
+
+combos: []
+
+draw_config:
+  dark_mode: true
+  n_columns: 1
+  footer_text: Dubu36
+  style_layer_activators: true
+  svg_extra_style: |
+    /* Stacked reference: symbols (purple), raise/nav+num (orange), holds (muted) */
+    text.tr, use.tr { fill: #cba6f7; }
+    text.br, use.br { fill: #fab387; }
+    text.bl, use.bl { fill: #fab387; }
+    text.hold { fill: #a6adc8; font-size: 10px; }
+    text.tap { fill: #cdd6f4; }
+    rect.held, rect.comboheld { fill: #89b4fa; }
+    .layer-Adjust, .layer-Mouse { opacity: 0.95; }

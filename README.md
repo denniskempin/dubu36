@@ -1,109 +1,63 @@
 # Dubu36 Keyboard Layout
 
-This repository contains my work-in-progress keyboard layout for 36 key keyboards.
+This repository contains my work-in-progress keyboard layout for 36-key keyboards.
 
-The keyboard layout is specified in markdown below, and converted into ZMK and QMK keymaps using the
-`generate_keymaps.py` script.
+The keymap is specified in firmware-independent [keymap-drawer YAML](https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md)
+([`keymap.yaml`](keymap.yaml)). That file is the source of truth for:
 
-## Default Layer
+- ZMK and QMK firmware (`python3 generate_keymap.py zmk|qmk`)
+- SVG diagrams (`python3 render_keymap.py`) — per-layer boards plus a stacked reference card
 
-The default layer is Colemak. With special characters remapped to prioritize commonly used
-characters in day-to-day writing.
+```bash
+pip install -r requirements.txt
+make keymaps    # regenerate ZMK keymaps from keymap.yaml
+make diagrams   # regenerate diagrams/*.svg
+```
 
-|     |     |     |     |     |     |     |     |      |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- |
-| Q   | W   | F   | P   | G   |     | J   | L   | U    | Y   | \*  |
-| A   | R   | S   | T   | D   |     | H   | N   | E    | I   | O   |
-| Z   | X   | C   | V   | B   |     | K   | M   | ,    | .   | '   |
-|     |     | ESC | ☐   | TAB |     | RET | SPC | BKSP |     |     |
+## Layout diagrams
 
-### Default Layer Hold
+Stacked reference (Default center, Hyper top-left, Lower/symbols top-right, Raise/nav+num bottom-right):
 
-Modifiers used primarily in shortcuts have been mapped to the home-row. The modifiers and layer
-shifts used primarily in fluent writing remain on thumb keys to reduce issues hold-tap timing.
+![Dubu36 reference keymap](diagrams/reference.svg)
 
-|     |      |     |      |      |     |      |     |     |      |     |
-| --- | ---- | --- | ---- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd  | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| adj | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj |
-|     |      | mou | shft | lwr  |     | ☐    | rse | hyp |      |     |
+| Layer | Diagram |
+| ----- | ------- |
+| Default | ![Default](diagrams/layer-default.svg) |
+| Raise (nav + numbers) | ![Raise](diagrams/layer-raise.svg) |
+| Lower (symbols) | ![Lower](diagrams/layer-lower.svg) |
+| Hyper | ![Hyper](diagrams/layer-hyper.svg) |
+| Adjust (Bluetooth) | ![Adjust](diagrams/layer-adjust.svg) |
+| Mouse (left-hand shortcuts) | ![Mouse](diagrams/layer-mouse.svg) |
 
-### Default Layer (Combos)
+## Design notes
 
-|     |     |     |     |
-| --- | --- | --- | --- |
+The default layer is Colemak, with symbols remapped toward day-to-day writing.
 
-## Raise Layer (Navigation + Numbers)
+Modifiers used primarily in shortcuts live on the home row. Modifiers and layer
+shifts used primarily in fluent writing stay on thumb keys to reduce hold-tap
+timing issues.
 
-|     |     |     |     |     |     |       |        |        |        |       |
-| --- | --- | --- | --- | --- | --- | ----- | ------ | ------ | ------ | ----- |
-| ☐   | 7   | 8   | 9   | ☐   |     | HOME  | WORD_L | UP     | WORD_R | END   |
-| ☐   | 4   | 5   | 6   | ☐   |     | FWD   | LEFT   | DOWN   | RIGHT  | BCK   |
-| 0   | 1   | 2   | 3   | ☐   |     | TAB_L | HYP\_[ | HYP\_\ | HYP\_] | TAB_R |
-|     |     | ☐   | ☐   | ☐   |     | ☐     | ☐      | ☐      |        |       |
+## Keymap format
 
-## Raise Layer Hold
+[`keymap.yaml`](keymap.yaml) follows the keymap-drawer schema:
 
-|     |      |     |     |      |     |      |     |     |      |     |
-| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
+- `layout.ortho_layout` — 3×5 split + 3 thumbs per side
+- `layers` — ordered mapping; order defines firmware layer indices
+- keys are either a string (`"Q"`) or `{t: Tab, h: Lower}` for tap/hold
+- `combos` — reserved for future combo definitions
 
-## Lower Layer (Symbols)
+Firmware-specific codes are **not** stored in the YAML. [`generate_keymap.py`](generate_keymap.py)
+maps labels such as `WordL`, `Hyp_Q`, `Bt0`, and layer holds (`Raise`, `Lower`, …) to ZMK/QMK.
 
-|     |     |     |     |     |     |     |     |          |      |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | -------- | ---- | --- |
-| ~   | ^   | @   | $   | %   |     | &   | /   | \        | PIPE | `   |
-| UML | <   | [   | (   | {   |     | -   | \_  | :        | ;    | #   |
-| ☐   | >   | ]   | )   | }   |     | +   | =   | ?        | !    | "   |
-|     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ALT_BKSP |      |     |
-
-## Lower Layer Hold
-
-|     |      |     |     |      |     |      |     |     |      |     |
-| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
-
-## Hyper Layer
-
-|       |       |         |       |         |     |         |          |          |           |       |
-| ----- | ----- | ------- | ----- | ------- | --- | ------- | -------- | -------- | --------- | ----- |
-| HYP_Q | HYP_W | HYP_F   | HYP_P | HYP_G   |     | HYP_1   | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
-| HYP_A | HYP_R | HYP_S   | HYP_T | HYP_D   |     | ☐       | HYP_LEFT | HYP_UP   | HYP_RIGHT | ☐     |
-| HYP_Z | HYP_X | HYP_C   | HYP_V | HYP_B   |     | ☐       | HYP\_;   | HYP_DOWN | HYP\_'    | ☐     |
-|       |       | HYP_ESC | ☐     | HYP_TAB |     | HYP_RET | HYP_SPC  | HYP_BKSP |           |       |
-
-## Adjust Layer (Bluetooth)
-
-|        |      |      |     |     |     |     |     |     |     |     |
-| ------ | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BT_0   | BT_1 | BT_2 | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| BT_CLR | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| ☐      | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-|        |      | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   |     |     |
-
-## Mouse Layer (Left hand only keyboard shortcuts)
-
-|       |       |       |       |     |     |     |     |     |     |     |
-| ----- | ----- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- |
-| CMD_Q | CMD_W | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| ☐     | ☐     | CMD_S | CMD_T | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| CMD_Z | CMD_X | CMD_C | CMD_V | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-|       |       | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   |     |     |
+To edit the layout: change `keymap.yaml`, then run `make keymaps diagrams`.
 
 ## Keyboards
 
-I use this layout on these keyboards
+I use this layout on these keyboards.
 
 ### dubu36-travel
 
-A wireless corne build with a custom designed case that folds up and sits on top of a standard 19mm
+A wireless Corne build with a custom designed case that folds up and sits on top of a standard 19mm
 pitch laptop keyboard (e.g. a MacBook). It can easily be used on the go and does not slide around.
 
 ![dubu36-travel picture](dubu36-travel/dubu36-travel.jpg)
