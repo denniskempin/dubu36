@@ -1,2 +1,1 @@
-keymap-drawer>=0.23.0
 PyYAML>=6.0

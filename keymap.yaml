@@ -1,10 +1,15 @@
-# Dubu36 keymap — firmware-independent source of truth (keymap-drawer YAML).
-# See: https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md
+# Dubu36 keymap — firmware-independent source of truth.
 #
-# Hold `type` values (diagram styling only; ignored by firmware codegen):
-#   tap-preferred  — outline box (mod-tap, ZMK mt_ tap-preferred)
-#   hold-preferred — solid box  (layer-tap, ZMK lt_ balanced)
-#   sticky         — large solid box (sticky tap-hold)
+# Hold `type` values (diagram styling; ignored by firmware codegen):
+#   tap-preferred  — outline box, bottom-left quadrant (ZMK mt_ tap-preferred)
+#   hold-preferred — solid box, bottom-left quadrant (ZMK lt_ balanced)
+#   sticky         — solid bar covering the full left half of the key
+#
+# Stacked reference card legend positions:
+#   top-left      Default (base)
+#   bottom-left   hold binding
+#   top-right     Lower (symbols)
+#   bottom-right  Raise (numbers / nav)
 #
 # Edit this file, then:
 #   make keymaps   # regenerate ZMK/QMK
@@ -41,7 +46,7 @@ layers:
       - .
       - {t: "'", h: Adjust, type: hold-preferred}
     - - {t: Esc, h: Mouse, type: hold-preferred}
-      - {t: "", h: Shift, type: tap-preferred}
+      - {t: "", h: Shift, type: sticky}
       - {t: Tab, h: Lower, type: hold-preferred}
       - Ret
       - {t: Spc, h: Raise, type: hold-preferred}
@@ -96,79 +101,3 @@ layers:
     - ["", "", "", "", "", ""]
 
 combos: []
-
-draw_config:
-  dark_mode: true
-  n_columns: 1
-  footer_text: Dubu36
-  style_layer_activators: true
-  key_rx: 8
-  key_ry: 8
-  shrink_wide_legends: 5
-  # Catppuccin-mocha-like reference card styling
-  svg_extra_style: |
-    svg.keymap {
-      font-family: "IBM Plex Sans", "Segoe UI", sans-serif;
-      background-color: #1e1e2e;
-    }
-    rect.key {
-      fill: #313244;
-      stroke: #45475a;
-      stroke-width: 1.25;
-    }
-    rect.key.trans {
-      fill: #1e1e2e;
-      stroke: #313244;
-      stroke-dasharray: 3 3;
-    }
-    text.tap { fill: #cdd6f4; font-size: 15px; font-weight: 600; }
-    text.hold { fill: #a6adc8; font-size: 10px; }
-    text.tl { fill: #cdd6f4; font-size: 12px; font-weight: 600; }
-    text.tr, use.tr { fill: #cba6f7; font-size: 11px; }
-    text.br, use.br, text.bl, use.bl { fill: #fab387; font-size: 11px; }
-    text.layer-activator { text-decoration: none; fill: #89b4fa; font-size: 10px; font-weight: 600; }
-
-    /* Tap/hold preference boxes (drawn behind center legend) */
-    rect.mod-box {
-      rx: 3;
-      ry: 3;
-      stroke-width: 1.35;
-    }
-    /* Empty outline = tap-preferred */
-    rect.mod-box.tap-preferred {
-      fill: none;
-      stroke: #cdd6f4;
-    }
-    text.tap.tap-preferred {
-      fill: #cdd6f4;
-      font-size: 10px;
-      font-weight: 600;
-    }
-    /* Solid fill = hold-preferred */
-    rect.mod-box.hold-preferred {
-      fill: #a6adc8;
-      stroke: #a6adc8;
-    }
-    text.tap.hold-preferred {
-      fill: #1e1e2e;
-      font-size: 10px;
-      font-weight: 700;
-    }
-    /* Larger solid = sticky tap-hold */
-    rect.mod-box.sticky {
-      fill: #cdd6f4;
-      stroke: #cdd6f4;
-      stroke-width: 1.5;
-    }
-    text.tap.sticky {
-      fill: #1e1e2e;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    /* Thumb layer activator fills */
-    rect.key.thumb-raise { fill: #3f2e1e; stroke: #fab387; }
-    rect.key.thumb-lower { fill: #1e2a3f; stroke: #89b4fa; }
-    rect.key.thumb-hyper { fill: #3f1e2a; stroke: #f38ba8; }
-    rect.key.thumb-mouse { fill: #1e3f28; stroke: #a6e3a1; }
-    rect.key.thumb-adjust { fill: #2a1e3f; stroke: #cba6f7; }

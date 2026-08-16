@@ -2,8 +2,8 @@
 
 This repository contains my work-in-progress keyboard layout for 36-key keyboards.
 
-The keymap is specified in firmware-independent [keymap-drawer YAML](https://github.com/caksoylar/keymap-drawer/blob/main/KEYMAP_SPEC.md)
-([`keymap.yaml`](keymap.yaml)). That file is the source of truth for:
+The keymap is specified in firmware-independent YAML ([`keymap.yaml`](keymap.yaml)).
+That file is the source of truth for:
 
 - ZMK and QMK firmware (`python3 generate_keymap.py zmk|qmk`)
 - SVG diagrams (`python3 render_keymap.py`) — per-layer boards plus a stacked reference card
@@ -16,7 +16,22 @@ make diagrams   # regenerate diagrams/*.svg
 
 ## Layout diagrams
 
-Stacked reference (Default center, Hyper top-left, Lower/symbols top-right, Raise/nav+num bottom-right):
+Stacked reference card legend positions:
+
+| Position | Content |
+| -------- | ------- |
+| Top-left | Base (Default) |
+| Bottom-left | Hold binding |
+| Top-right | Symbols (Lower) |
+| Bottom-right | Numbers / nav (Raise) |
+
+Hold box styling (diagram `type` on a key):
+
+| Type | Style |
+| ---- | ----- |
+| `tap-preferred` | Outline box in the bottom-left quadrant |
+| `hold-preferred` | Solid box in the bottom-left quadrant |
+| `sticky` | Solid bar covering the full left half (top-left + bottom-left) |
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
 
@@ -39,15 +54,15 @@ timing issues.
 
 ## Keymap format
 
-[`keymap.yaml`](keymap.yaml) follows the keymap-drawer schema:
+[`keymap.yaml`](keymap.yaml) is a small ortholinear keymap schema (inspired by
+[keymap-drawer](https://github.com/caksoylar/keymap-drawer), but diagrams are
+rendered by a custom Selenium-style SVG generator — keymap-drawer cannot express
+the hold-box / sticky left-half styling).
 
 - `layout.ortho_layout` — 3×5 split + 3 thumbs per side
 - `layers` — ordered mapping; order defines firmware layer indices
-- keys are either a string (`"Q"`) or `{t: Tab, h: Lower, type: hold-preferred}` for tap/hold
-- hold `type` is diagram-only styling:
-  - `tap-preferred` — outline box (home-row mod-taps)
-  - `hold-preferred` — solid box (layer-taps)
-  - `sticky` — larger solid box (sticky tap-hold)
+- keys are either a string (`"Q"`) or `{t: Tab, h: Lower, type: hold-preferred}`
+- hold `type` is diagram-only (`tap-preferred` / `hold-preferred` / `sticky`)
 - `combos` — reserved for future combo definitions
 
 Firmware-specific codes are **not** stored in the YAML. [`generate_keymap.py`](generate_keymap.py)
