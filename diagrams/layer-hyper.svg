@@ -6,13 +6,11 @@
     text.hold { font-size: 11px; }
     text.sym { font-size: 13px; fill: #9999ff; }
     text.num { font-size: 13px; fill: #ee9944; }
-    text.edit { font-size: 9px; fill: #ee9944; }
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
-    use.glyph.base { stroke: #dddddd; }
     rect.hold-box { stroke-width: 1.2px; }
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }

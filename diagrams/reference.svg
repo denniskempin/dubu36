@@ -6,13 +6,11 @@
     text.hold { font-size: 11px; }
     text.sym { font-size: 13px; fill: #9999ff; }
     text.num { font-size: 13px; fill: #ee9944; }
-    text.edit { font-size: 9px; fill: #ee9944; }
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
-    use.glyph.base { stroke: #dddddd; }
     rect.hold-box { stroke-width: 1.2px; }
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
@@ -51,14 +49,12 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Q</text>
 <text class="sym" x="45.0" y="18.1344">~</text>
-<text class="edit" x="15.0" y="45.336000000000006">quit</text>
 </g>
 <g transform="translate(60.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">W</text>
 <text class="sym" x="45.0" y="18.1344">^</text>
 <text class="num" x="45.0" y="45.336000000000006">7</text>
-<text class="edit" x="15.0" y="45.336000000000006">close</text>
 </g>
 <g transform="translate(120.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -197,21 +193,18 @@
 <text class="base" x="15.0" y="18.1344">X</text>
 <text class="sym" x="45.0" y="18.1344">&gt;</text>
 <text class="num" x="45.0" y="45.336000000000006">1</text>
-<text class="edit" x="15.0" y="45.336000000000006">cut</text>
 </g>
 <g transform="translate(120.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">C</text>
 <text class="sym" x="45.0" y="18.1344">]</text>
 <text class="num" x="45.0" y="45.336000000000006">2</text>
-<text class="edit" x="15.0" y="45.336000000000006">copy</text>
 </g>
 <g transform="translate(180.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">V</text>
 <text class="sym" x="45.0" y="18.1344">)</text>
 <text class="num" x="45.0" y="45.336000000000006">3</text>
-<text class="edit" x="15.0" y="45.336000000000006">paste</text>
 </g>
 <g transform="translate(240.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
