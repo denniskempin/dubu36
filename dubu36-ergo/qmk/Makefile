@@ -4,7 +4,7 @@ qmk_firmware/keyboards/dubu36ergo:
 	ln -sf ../../dubu36ergo qmk_firmware/keyboards/dubu36ergo 	
 
 keymap: qmk_firmware/keyboards/dubu36ergo
-	uv run --directory ../.. generate-keymap qmk > dubu36ergo/keymaps/default/keymap.c
+	uv run --directory ../../keymap_generator generate-keymap qmk > dubu36ergo/keymaps/default/keymap.c
 
 setup:
 	qmk setup -H qmk_firmware
