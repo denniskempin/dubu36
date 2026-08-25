@@ -12,11 +12,11 @@ setup:
 clean:
 	rm -rf build
 
-config/corne.keymap: generate_keymap.py keymap.txt zmk_template.dtsi
-	python3 generate_keymap.py zmk > $@
+config/corne.keymap: pyproject.toml src/keymap_generator/*.py keymap.txt zmk_template.dtsi
+	uv run generate-keymap zmk > $@
 
-config/boards/shields/dubu36e/dubu36e.keymap: generate_keymap.py keymap.txt zmk_template.dtsi
-	python3 generate_keymap.py zmk > $@
+config/boards/shields/dubu36e/dubu36e.keymap: pyproject.toml src/keymap_generator/*.py keymap.txt zmk_template.dtsi
+	uv run generate-keymap zmk > $@
 
 build/dubu36t_left.uf2: config/* config/corne.keymap
 	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
