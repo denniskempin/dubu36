@@ -50,14 +50,25 @@ Hold box styling follows the keymap's hold-tap flavor:
 Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
 render as icons instead of text. Pass `--no-png` to skip PNG export.
 
-![Dubu36 reference keymap](diagrams/reference.svg)
+### Reference
 
-| Layer | Diagram |
-| ----- | ------- |
-| default | ![default](diagrams/layer-default.svg) |
-| rse (nav + numbers) | ![rse](diagrams/layer-rse.svg) |
-| lwr (symbols) | ![lwr](diagrams/layer-lwr.svg) |
-| mou (left-hand shortcuts) | ![mou](diagrams/layer-mou.svg) |
+![Dubu36 reference keymap](diagrams/reference.png)
+
+### default
+
+![default layer](diagrams/layer-default.png)
+
+### rse (nav + numbers)
+
+![rse layer](diagrams/layer-rse.png)
+
+### lwr (symbols)
+
+![lwr layer](diagrams/layer-lwr.png)
+
+### mou (left-hand shortcuts)
+
+![mou layer](diagrams/layer-mou.png)
 
 ## Keymap
 
