@@ -2,15 +2,22 @@
 """Render keymap.yaml to SVG diagrams using Selenium-style key anatomy.
 
 Per-key legend layout (matches https://onedeadkey.github.io/selenium/):
-  Top-left     base layer
-  Bottom-left  hold binding (boxed)
-  Top-right    symbol layer (Lower)
-  Bottom-right number/nav layer (Raise)
+  Top-left     base layer tap (grey)
+  Bottom-left  hold binding (grey by default, boxed)
+  Top-right    symbol layer (Lower) — purple
+  Bottom-right number/nav layer (Raise) — orange
 
 Hold box flavors:
   tap-preferred  — outline box in the bottom-left quadrant
   hold-preferred — solid box in the bottom-left quadrant
   sticky         — solid bar covering the full left half (TL+BL)
+
+Hold labels/boxes are grey by default. A hold binding that itself switches
+to the symbol (Lower) or number/nav (Raise) layer is colored like that
+layer instead, so layer-change labels always read as purple/orange.
+
+The Hyper and Adjust layers are excluded from diagram generation (their
+mod-tap holds still render elsewhere, just in the default grey).
 """
 from __future__ import annotations
 
@@ -36,6 +43,10 @@ STACK_BASE = "Default"
 STACK_SYM = "Lower"
 STACK_NUM = "Raise"
 
+# Layers excluded from diagram generation (still usable as hold targets
+# elsewhere, but they don't get their own reference/layer boards).
+EXCLUDED_LAYERS = frozenset({"Hyper", "Adjust"})
+
 HOLD_FLAVORS = frozenset({"tap-preferred", "hold-preferred", "sticky"})
 
 HOLD_DISPLAY = {
@@ -50,18 +61,16 @@ HOLD_DISPLAY = {
     "Mouse": "mou",
 }
 
-# Layer accent used for hold box / sticky fill colors.
+# Hold-box / hold-label accent. Only holds that themselves switch to the
+# symbol (Lower) or number/nav (Raise) layer borrow that layer's color, so
+# the diagram legend stays visually tied to the two colored quadrants.
+# Every other hold (plain modifiers, Hyper, Adjust, Mouse, …) falls back to
+# the neutral grey used for the base layer legend.
 HOLD_ACCENT = {
-    "Shift": "mod",
-    "Alt": "mod",
-    "Cmd": "mod",
-    "Ctrl": "mod",
-    "Hyper": "fun",
-    "Adjust": "fun",
     "Lower": "sym",
     "Raise": "nav",
-    "Mouse": "nav",
 }
+DEFAULT_HOLD_ACCENT = "mod"
 
 NAV_GLYPHS = {
     "Up": "up",
@@ -202,7 +211,7 @@ def build_stacked_specs(data: dict) -> list[dict]:
                 "base": key_tap(b),
                 "hold": hold,
                 "flavor": flavor,
-                "accent": HOLD_ACCENT.get(hold, "mod"),
+                "accent": HOLD_ACCENT.get(hold, DEFAULT_HOLD_ACCENT),
                 "sym": sym_text,
                 "sym_glyph": None,
                 "num": num_text,
@@ -225,7 +234,7 @@ def layer_specs(layer_value) -> list[dict]:
                 "base": tap,
                 "hold": hold,
                 "flavor": flavor,
-                "accent": HOLD_ACCENT.get(hold, "mod"),
+                "accent": HOLD_ACCENT.get(hold, DEFAULT_HOLD_ACCENT),
                 "sym": "",
                 "sym_glyph": None,
                 "num": "",
@@ -253,19 +262,15 @@ def svg_style() -> str:
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.tap-preferred.fun { fill: none; stroke: #ee7777; }
     rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.hold-preferred.fun { fill: #995555; stroke: #995555; }
     rect.hold-box.sticky.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.sticky.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.sticky.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.sticky.fun { fill: #995555; stroke: #995555; }
     text.hold.hold-preferred.mod, text.sticky.mod { fill: #eeeeee; font-weight: 700; }
     text.hold.hold-preferred.sym, text.sticky.sym,
-    text.hold.hold-preferred.nav, text.sticky.nav,
-    text.hold.hold-preferred.fun, text.sticky.fun { fill: #1a1a1a; font-weight: 700; }
+    text.hold.hold-preferred.nav, text.sticky.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
@@ -300,7 +305,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
     hold = spec.get("hold") or ""
     flavor = spec.get("flavor")
-    accent = spec.get("accent") or "mod"
+    accent = spec.get("accent") or DEFAULT_HOLD_ACCENT
     hold_label = HOLD_DISPLAY.get(hold, hold.lower() if hold else "")
 
     # Hold / sticky boxes (Selenium geometry).
@@ -398,6 +403,8 @@ def main(argv: list[str] | None = None) -> int:
     written: list[Path] = []
     if not args.stacked_only:
         for name, value in (data.get("layers") or {}).items():
+            if name in EXCLUDED_LAYERS:
+                continue
             path = args.out_dir / f"layer-{_slug(name)}.svg"
             path.write_text(
                 render_board(layer_specs(value), name, columns, thumbs),

@@ -18,12 +18,12 @@ make diagrams   # regenerate diagrams/*.svg
 
 Stacked reference card legend positions:
 
-| Position | Content |
-| -------- | ------- |
-| Top-left | Base (Default) |
-| Bottom-left | Hold binding |
-| Top-right | Symbols (Lower) |
-| Bottom-right | Numbers / nav (Raise) |
+| Position | Content | Color |
+| -------- | ------- | ----- |
+| Top-left | Base (Default) tap | Grey |
+| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to Lower/Raise |
+| Top-right | Symbols (Lower) | Purple |
+| Bottom-right | Numbers / nav (Raise) | Orange |
 
 Hold box styling (diagram `type` on a key):
 
@@ -31,7 +31,12 @@ Hold box styling (diagram `type` on a key):
 | ---- | ----- |
 | `tap-preferred` | Outline box in the bottom-left quadrant |
 | `hold-preferred` | Solid box in the bottom-left quadrant |
-| `sticky` | Solid bar covering the full left half (top-left + bottom-left) |
+| `sticky` | Solid bar covering the full left half (top-left + bottom-left), so the label reads across both quadrants |
+
+Hold labels/boxes are grey by default (this covers plain modifiers like
+Shift/Alt/Cmd/Ctrl, as well as Hyper/Adjust/Mouse). A hold that itself is a
+layer-change — `Lower` or `Raise` — is colored to match that layer instead,
+so it reads purple or orange like the corresponding quadrant.
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
 
@@ -40,9 +45,11 @@ Hold box styling (diagram `type` on a key):
 | Default | ![Default](diagrams/layer-default.svg) |
 | Raise (nav + numbers) | ![Raise](diagrams/layer-raise.svg) |
 | Lower (symbols) | ![Lower](diagrams/layer-lower.svg) |
-| Hyper | ![Hyper](diagrams/layer-hyper.svg) |
-| Adjust (Bluetooth) | ![Adjust](diagrams/layer-adjust.svg) |
 | Mouse (left-hand shortcuts) | ![Mouse](diagrams/layer-mouse.svg) |
+
+Hyper and Adjust are omitted from the diagrams (they're rarely used
+reference layers), though their mod-tap holds still show up — in the
+default grey — on the layers above.
 
 ## Design notes
 

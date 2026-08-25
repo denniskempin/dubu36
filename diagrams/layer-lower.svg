@@ -15,19 +15,15 @@
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.tap-preferred.fun { fill: none; stroke: #ee7777; }
     rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.hold-preferred.fun { fill: #995555; stroke: #995555; }
     rect.hold-box.sticky.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.sticky.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.sticky.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.sticky.fun { fill: #995555; stroke: #995555; }
     text.hold.hold-preferred.mod, text.sticky.mod { fill: #eeeeee; font-weight: 700; }
     text.hold.hold-preferred.sym, text.sticky.sym,
-    text.hold.hold-preferred.nav, text.sticky.nav,
-    text.hold.hold-preferred.fun, text.sticky.fun { fill: #1a1a1a; font-weight: 700; }
+    text.hold.hold-preferred.nav, text.sticky.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
 <defs>
@@ -87,9 +83,9 @@
 </g>
 <g transform="translate(0.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Uml</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -141,9 +137,9 @@
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">#</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
