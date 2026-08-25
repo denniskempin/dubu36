@@ -9,29 +9,27 @@
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
+    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.tap-preferred.fun { fill: none; stroke: #ee7777; }
     rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.hold-preferred.fun { fill: #995555; stroke: #995555; }
     rect.hold-box.sticky.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.sticky.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.sticky.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.sticky.fun { fill: #995555; stroke: #995555; }
     text.hold.hold-preferred.mod, text.sticky.mod { fill: #eeeeee; font-weight: 700; }
     text.hold.hold-preferred.sym, text.sticky.sym,
-    text.hold.hold-preferred.nav, text.sticky.nav,
-    text.hold.hold-preferred.fun, text.sticky.fun { fill: #1a1a1a; font-weight: 700; }
+    text.hold.hold-preferred.nav, text.sticky.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
+<path id="glyph_delete-word" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7"/>
 <path id="glyph_return" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,13V27H6 m8-8l-8,8l8,8"/>
 <path id="glyph_space" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24V32H6V24"/>
 <path id="glyph_escape" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24"/>
@@ -43,6 +41,10 @@
 <path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-27 m6-8l-8,8l8,8 M6,12V36"/>
 <path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,42l-28-28 m0,10v-10h10 m8-8h-26v26"/>
 <path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,6l28,28 m0-10v10h-10 m-8,8h26v-26"/>
+<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,13l10,11-10,11 M24,13l10,11-10,11"/>
+<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
+<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
+<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 </defs>
 <text class="title" x="0" y="-8">Dubu36 reference</text>
 <g transform="translate(0.00,0.00)">
@@ -83,7 +85,7 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">L</text>
 <text class="sym" x="45.0" y="18.1344">/</text>
-<use class="glyph num" href="#glyph_left" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_word-left" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(450.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -95,7 +97,7 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Y</text>
 <text class="sym" x="45.0" y="18.1344">|</text>
-<use class="glyph num" href="#glyph_right" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_word-right" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(570.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -105,10 +107,10 @@
 </g>
 <g transform="translate(0.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">hyp</text>
-<text class="sym" x="45.0" y="18.1344">Uml</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<text class="sym" x="45.0" y="18.1344">uml</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -147,7 +149,7 @@
 <text class="base" x="15.0" y="18.1344">H</text>
 <text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">ctrl</text>
 <text class="sym" x="45.0" y="18.1344">-</text>
-<use class="glyph num" href="#glyph_right" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_hist-fwd" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -175,17 +177,17 @@
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">O</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 <text class="sym" x="45.0" y="18.1344">#</text>
-<use class="glyph num" href="#glyph_left" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_hist-back" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Z</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">adj</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">adj</text>
 <text class="num" x="45.0" y="45.336000000000006">0</text>
 </g>
 <g transform="translate(60.00,113.34)">
@@ -221,60 +223,60 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">M</text>
 <text class="sym" x="45.0" y="18.1344">=</text>
-<text class="num" x="45.0" y="45.336000000000006">Hyp_[</text>
+<text class="num" x="45.0" y="45.336000000000006">HYP_[</text>
 </g>
 <g transform="translate(450.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">,</text>
 <text class="sym" x="45.0" y="18.1344">?</text>
-<text class="num" x="45.0" y="45.336000000000006">Hyp_\</text>
+<text class="num" x="45.0" y="45.336000000000006">HYP_\</text>
 </g>
 <g transform="translate(510.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">.</text>
 <text class="sym" x="45.0" y="18.1344">!</text>
-<text class="num" x="45.0" y="45.336000000000006">Hyp_]</text>
+<text class="num" x="45.0" y="45.336000000000006">HYP_]</text>
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">&#x27;</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">adj</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">adj</text>
 <text class="sym" x="45.0" y="18.1344">&quot;</text>
 <use class="glyph num" href="#glyph_tab" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Esc</text>
-<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">mou</text>
+<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<use class="glyph base" href="#glyph_escape" x="15.0" y="18.1344"/>
+<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">mou</text>
 </g>
 <g transform="translate(180.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box sticky mod" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="sticky mod" transform="translate(15.5,28.335) rotate(-90)">shft</text>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">shft</text>
 </g>
 <g transform="translate(240.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred sym" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Tab</text>
+<use class="glyph base" href="#glyph_tab" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred sym" x="15.0" y="45.336000000000006">lwr</text>
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Ret</text>
+<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(390.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Spc</text>
+<use class="glyph base" href="#glyph_space" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred fun" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Bksp</text>
-<text class="hold hold-preferred fun" x="15.0" y="45.336000000000006">hyp</text>
-<text class="sym" x="45.0" y="18.1344">AltBksp</text>
+<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<use class="glyph base" href="#glyph_backspace" x="15.0" y="18.1344"/>
+<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<use class="glyph sym" href="#glyph_delete-word" x="45.0" y="18.1344"/>
 </g>
 </svg>

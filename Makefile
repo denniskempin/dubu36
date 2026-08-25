@@ -14,14 +14,14 @@ setup:
 clean:
 	rm -rf build
 
-config/corne.keymap: generate_keymap.py keymap.yaml
-	python3 generate_keymap.py zmk > $@
+config/corne.keymap: pyproject.toml src/keymap_generator/*.py keymap.txt zmk_template.dtsi
+	uv run generate-keymap zmk > $@
 
-config/boards/shields/dubu36e/dubu36e.keymap: generate_keymap.py keymap.yaml
-	python3 generate_keymap.py zmk > $@
+config/boards/shields/dubu36e/dubu36e.keymap: pyproject.toml src/keymap_generator/*.py keymap.txt zmk_template.dtsi
+	uv run generate-keymap zmk > $@
 
-diagrams/reference.svg: render_keymap.py keymap.yaml requirements.txt
-	python3 render_keymap.py -o diagrams
+diagrams/reference.svg: pyproject.toml src/keymap_generator/*.py keymap.txt uv.lock
+	uv run --group diagrams generate-keymap diagrams --out-dir diagrams
 
 build/dubu36t_left.uf2: config/* config/corne.keymap
 	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
