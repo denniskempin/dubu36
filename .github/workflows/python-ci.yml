@@ -17,16 +17,21 @@ jobs:
           enable-cache: true
 
       - name: Sync dependencies
+        working-directory: keymap_generator
         run: uv sync --locked
 
       - name: Ruff check
+        working-directory: keymap_generator
         run: uv run ruff check src tests
 
       - name: Ruff format
+        working-directory: keymap_generator
         run: uv run ruff format --check src tests
 
       - name: Type check
+        working-directory: keymap_generator
         run: uv run ty check
 
       - name: Tests
+        working-directory: keymap_generator
         run: uv run pytest

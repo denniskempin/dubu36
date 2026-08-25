@@ -3,25 +3,7 @@
 This repository contains my work-in-progress keyboard layout for 36 key keyboards.
 
 The keyboard layout is specified in [`keymap.txt`](keymap.txt), and converted into ZMK and QMK
-keymaps using the `generate-keymap` tool.
-
-## Development
-
-The keymap generator is a small Python package managed with
-[uv](https://docs.astral.sh/uv/). Install uv, then from the repo root:
-
-```sh
-uv sync
-uv run generate-keymap zmk   # print the ZMK keymap
-uv run generate-keymap qmk   # print the QMK keymap
-uv run pytest                # run the test suite
-uv run ruff check            # lint
-uv run ruff format           # format
-uv run ty check              # type check
-```
-
-Regenerating the committed keymaps via `make keymaps` (repo root) or
-`make keymap` (under `dubu36-ergo/qmk/`) also requires `uv` on `PATH`.
+keymaps using the [`keymap_generator`](keymap_generator/) tool.
 
 ## Keymap
 
