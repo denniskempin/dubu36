@@ -11,8 +11,10 @@ That file is the source of truth for:
 ```bash
 pip install -r requirements.txt
 make keymaps    # regenerate ZMK keymaps from keymap.yaml
-make diagrams   # regenerate diagrams/*.svg
+make diagrams   # regenerate diagrams/*.svg (+ a .png next to each, for easy previewing)
 ```
+
+Pass `--no-png` to `render_keymap.py` to skip the PNG export.
 
 ## Layout diagrams
 

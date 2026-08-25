@@ -32,6 +32,10 @@ ROOT = Path(__file__).resolve().parent
 DEFAULT_KEYMAP = ROOT / "keymap.yaml"
 DEFAULT_OUT = ROOT / "diagrams"
 
+# PNG raster scale relative to the SVG's native (CSS-pixel) size — 3x gives
+# crisp previews on retina displays without huge file sizes.
+PNG_SCALE = 3.0
+
 # Physical key size (Selenium uses 60×56.67).
 KW = 60.0
 KH = 56.67
@@ -386,12 +390,31 @@ def _slug(name: str) -> str:
     return "".join(ch if ch.isalnum() else "-" for ch in name).strip("-").lower()
 
 
+def render_png(svg_path: Path) -> Path:
+    """Render svg_path to a same-named .png next to it, and return its path."""
+    try:
+        import cairosvg
+    except ImportError as exc:
+        raise RuntimeError(
+            "cairosvg is required to render PNGs (pip install -r requirements.txt)"
+        ) from exc
+
+    png_path = svg_path.with_suffix(".png")
+    cairosvg.svg2png(url=str(svg_path), write_to=str(png_path), scale=PNG_SCALE)
+    return png_path
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("-i", "--input", type=Path, default=DEFAULT_KEYMAP)
     parser.add_argument("-o", "--out-dir", type=Path, default=DEFAULT_OUT)
     parser.add_argument("--stacked-only", action="store_true")
     parser.add_argument("--layers-only", action="store_true")
+    parser.add_argument(
+        "--no-png",
+        action="store_true",
+        help="skip rendering a .png next to each .svg",
+    )
     args = parser.parse_args(argv)
 
     data = load_yaml(args.input)
@@ -424,6 +447,11 @@ def main(argv: list[str] | None = None) -> int:
             encoding="utf-8",
         )
         written.append(path)
+
+    if not args.no_png:
+        for path in list(written):
+            png_path = render_png(path)
+            written.append(png_path)
 
     for path in written:
         print(path)

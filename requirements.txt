@@ -1,1 +1,2 @@
 PyYAML>=6.0
+cairosvg>=2.7
