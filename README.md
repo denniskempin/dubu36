@@ -1,91 +1,105 @@
 # Dubu36 Keyboard Layout
 
-This repository contains my work-in-progress keyboard layout for 36-key keyboards.
+This repository contains my work-in-progress keyboard layout for 36 key keyboards.
 
-The keymap is specified in firmware-independent YAML ([`keymap.yaml`](keymap.yaml)).
-That file is the source of truth for:
+The keyboard layout is specified in [`keymap.txt`](keymap.txt), and converted into ZMK and QMK
+keymaps using the `generate-keymap` tool.
 
-- ZMK and QMK firmware (`python3 generate_keymap.py zmk|qmk`)
-- SVG diagrams (`python3 render_keymap.py`) — per-layer boards plus a stacked reference card
+## Development
 
-```bash
-pip install -r requirements.txt
-make keymaps    # regenerate ZMK keymaps from keymap.yaml
-make diagrams   # regenerate diagrams/*.svg (+ a .png next to each, for easy previewing)
+The keymap generator is a small Python package managed with
+[uv](https://docs.astral.sh/uv/). Install uv, then from the repo root:
+
+```sh
+uv sync
+uv run generate-keymap zmk        # print the ZMK keymap
+uv run generate-keymap qmk        # print the QMK keymap
+uv run --group diagrams generate-keymap diagrams   # write diagrams/*.svg (+ .png)
+uv run pytest                     # run the test suite
+uv run ruff check                 # lint
+uv run ruff format                # format
+uv run ty check                   # type check
 ```
 
-Pass `--no-png` to `render_keymap.py` to skip the PNG export.
+Regenerating the committed keymaps via `make keymaps` (repo root) or
+`make keymap` (under `dubu36-ergo/qmk/`) also requires `uv` on `PATH`.
+`make diagrams` additionally needs the `diagrams` dependency group (for PNG
+export via cairosvg).
 
 ## Layout diagrams
 
-Stacked reference card legend positions:
+`generate-keymap diagrams` writes a stacked reference card plus one board per
+layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Each key uses fixed
+legend positions:
 
 | Position | Content | Color |
 | -------- | ------- | ----- |
-| Top-left | Base (Default) tap | Grey |
-| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to Lower/Raise |
-| Top-right | Symbols (Lower) | Purple |
-| Bottom-right | Numbers / nav (Raise) | Orange |
+| Top-left | Base (`default`) tap | Grey |
+| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to `lwr`/`rse` |
+| Top-right | Symbols (`lwr`) | Purple |
+| Bottom-right | Numbers / nav (`rse`) | Orange |
 
-Hold box styling (diagram `type` on a key):
+Hold box styling follows the keymap's hold-tap flavor:
 
-| Type | Style |
-| ---- | ----- |
-| `tap-preferred` | Outline box in the bottom-left quadrant |
-| `hold-preferred` | Solid box in the bottom-left quadrant |
-| `sticky` | Solid bar covering the full left half (top-left + bottom-left), so the label reads across both quadrants |
+| Flavor | Style |
+| ------ | ----- |
+| `tp` (tap-preferred, the default) | Outline box in the bottom-left quadrant |
+| `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
+| sticky (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left) |
 
-Hold labels/boxes are grey by default (this covers plain modifiers like
-Shift/Alt/Cmd/Ctrl, as well as Hyper/Adjust/Mouse). A hold that itself is a
-layer-change — `Lower` or `Raise` — is colored to match that layer instead,
-so it reads purple or orange like the corresponding quadrant.
+Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
+render as icons instead of text. Pass `--no-png` to skip PNG export.
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
 
 | Layer | Diagram |
 | ----- | ------- |
-| Default | ![Default](diagrams/layer-default.svg) |
-| Raise (nav + numbers) | ![Raise](diagrams/layer-raise.svg) |
-| Lower (symbols) | ![Lower](diagrams/layer-lower.svg) |
-| Mouse (left-hand shortcuts) | ![Mouse](diagrams/layer-mouse.svg) |
+| default | ![default](diagrams/layer-default.svg) |
+| rse (nav + numbers) | ![rse](diagrams/layer-rse.svg) |
+| lwr (symbols) | ![lwr](diagrams/layer-lwr.svg) |
+| mou (left-hand shortcuts) | ![mou](diagrams/layer-mou.svg) |
 
-Hyper and Adjust are omitted from the diagrams (they're rarely used
-reference layers), though their mod-tap holds still show up — in the
-default grey — on the layers above.
+## Keymap
 
-## Design notes
+Each layer is a grid of the 36 keys, laid out the way they sit on the keyboard: three rows of ten
+keys, then the six thumb keys. Every whitespace separated cell is one key:
 
-The default layer is Colemak, with symbols remapped toward day-to-day writing.
+```
+layer default: homerow
+  Q      W      F      P      G          J      L      U      Y      *
+  A      R      S      T      D          H      N      E      I      O
+  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+              ESC/mou:hp  _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP/hyp:hp
+```
 
-Modifiers used primarily in shortcuts live on the home row. Modifiers and layer
-shifts used primarily in fluent writing stay on thumb keys to reduce hold-tap
-timing issues.
+A cell is either a label, or a `TAP/HOLD` pair for keys that do something else when held, such as
+`Z/adj` which types a `Z` when tapped and shifts to the adjust layer while held. `_` marks a key
+that does nothing, and a `:FLAVOR` suffix chooses how a key tells a tap from a hold:
 
-## Keymap format
+```
+  T/cmd        tap-preferred, the default, which suits the home-row
+  TAB/lwr:hp   hold-preferred, which the thumb keys use
+  shft/shft    a sticky shift when tapped, a plain shift when held
+```
 
-[`keymap.yaml`](keymap.yaml) is a small ortholinear keymap schema (inspired by
-[keymap-drawer](https://github.com/caksoylar/keymap-drawer), but diagrams are
-rendered by a custom Selenium-style SVG generator — keymap-drawer cannot express
-the hold-box / sticky left-half styling).
+Holds shared by several layers are written once as an `overlay`, which a layer picks up by listing
+it after its name, as `homerow` is listed above. This is how the home-row modifiers are shared
+between layers without repeating them; a cell can still define its own hold to override the
+inherited one, or use `/_` to drop it.
 
-- `layout.ortho_layout` — 3×5 split + 3 thumbs per side
-- `layers` — ordered mapping; order defines firmware layer indices
-- keys are either a string (`"Q"`) or `{t: Tab, h: Lower, type: hold-preferred}`
-- hold `type` is diagram-only (`tap-preferred` / `hold-preferred` / `sticky`)
-- `combos` — reserved for future combo definitions
-
-Firmware-specific codes are **not** stored in the YAML. [`generate_keymap.py`](generate_keymap.py)
-maps labels such as `WordL`, `Hyp_Q`, `Bt0`, and layer holds (`Raise`, `Lower`, …) to ZMK/QMK.
-
-To edit the layout: change `keymap.yaml`, then run `make keymaps diagrams`.
+The default layer is Colemak, with special characters remapped to prioritize commonly used
+characters in day-to-day writing. Holding a key on the home-row gives the modifiers used in
+shortcuts; the modifiers and layer shifts used in fluent writing sit on the thumbs instead, to
+reduce issues with hold-tap timing. The remaining layers cover navigation and numbers, symbols,
+window management, bluetooth, and left hand only shortcuts for when the right hand is on the mouse.
 
 ## Keyboards
 
-I use this layout on these keyboards.
+I use this layout on these keyboards
 
 ### dubu36-travel
 
-A wireless Corne build with a custom designed case that folds up and sits on top of a standard 19mm
+A wireless corne build with a custom designed case that folds up and sits on top of a standard 19mm
 pitch laptop keyboard (e.g. a MacBook). It can easily be used on the go and does not slide around.
 
 ![dubu36-travel picture](dubu36-travel/dubu36-travel.jpg)

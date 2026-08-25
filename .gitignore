@@ -12,5 +12,12 @@ tools
 zephyr
 zmk
 artifacts
+
+# Python / uv
+.venv/
 __pycache__/
-*.pyc
+*.py[cod]
+*.egg-info/
+.ruff_cache/
+.pytest_cache/
+.ty_cache/

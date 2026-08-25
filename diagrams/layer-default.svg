@@ -46,7 +46,7 @@
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 </defs>
-<text class="title" x="0" y="-8">Default</text>
+<text class="title" x="0" y="-8">default</text>
 <g transform="translate(0.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Q</text>
@@ -89,9 +89,9 @@
 </g>
 <g transform="translate(0.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
-<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -143,15 +143,15 @@
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">O</text>
-<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Z</text>
-<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">adj</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">adj</text>
 </g>
 <g transform="translate(60.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -187,9 +187,9 @@
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">&#x27;</text>
-<text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">adj</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">adj</text>
 </g>
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -199,8 +199,8 @@
 </g>
 <g transform="translate(180.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box sticky mod" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="sticky mod" transform="translate(15.5,28.335) rotate(-90)">shft</text>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">shft</text>
 </g>
 <g transform="translate(240.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>

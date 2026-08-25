@@ -46,104 +46,145 @@
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 </defs>
-<text class="title" x="0" y="-8">Mouse</text>
+<text class="title" x="0" y="-8">lwr</text>
 <g transform="translate(0.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_Q</text>
+<text class="base" x="15.0" y="18.1344">~</text>
 </g>
 <g transform="translate(60.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_W</text>
+<text class="base" x="15.0" y="18.1344">^</text>
 </g>
 <g transform="translate(120.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">@</text>
 </g>
 <g transform="translate(180.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">$</text>
 </g>
 <g transform="translate(240.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">%</text>
 </g>
 <g transform="translate(330.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">&amp;</text>
 </g>
 <g transform="translate(390.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">/</text>
 </g>
 <g transform="translate(450.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">\</text>
 </g>
 <g transform="translate(510.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">|</text>
 </g>
 <g transform="translate(570.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">`</text>
 </g>
 <g transform="translate(0.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">uml</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">&lt;</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">shft</text>
 </g>
 <g transform="translate(120.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_S</text>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">[</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">alt</text>
 </g>
 <g transform="translate(180.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_T</text>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">(</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
 </g>
 <g transform="translate(240.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">{</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">ctrl</text>
 </g>
 <g transform="translate(330.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">-</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">ctrl</text>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">_</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
 </g>
 <g transform="translate(450.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">:</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">alt</text>
 </g>
 <g transform="translate(510.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">;</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">shft</text>
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">#</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_Z</text>
 </g>
 <g transform="translate(60.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_X</text>
+<text class="base" x="15.0" y="18.1344">&gt;</text>
 </g>
 <g transform="translate(120.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_C</text>
+<text class="base" x="15.0" y="18.1344">]</text>
 </g>
 <g transform="translate(180.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Cmd_V</text>
+<text class="base" x="15.0" y="18.1344">)</text>
 </g>
 <g transform="translate(240.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">}</text>
 </g>
 <g transform="translate(330.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">+</text>
 </g>
 <g transform="translate(390.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">=</text>
 </g>
 <g transform="translate(450.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">?</text>
 </g>
 <g transform="translate(510.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">!</text>
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">&quot;</text>
 </g>
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -162,5 +203,6 @@
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<use class="glyph base" href="#glyph_delete-word" x="15.0" y="18.1344"/>
 </g>
 </svg>

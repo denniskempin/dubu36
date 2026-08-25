@@ -1,39 +1,36 @@
-#!/usr/bin/env python3
-"""Render keymap.yaml to SVG diagrams using Selenium-style key anatomy.
+"""Render keymap.txt to Selenium-style SVG (and PNG) diagrams.
 
 Per-key legend layout (matches https://onedeadkey.github.io/selenium/):
   Top-left     base layer tap (grey)
   Bottom-left  hold binding (grey by default, boxed)
-  Top-right    symbol layer (Lower) — purple
-  Bottom-right number/nav layer (Raise) — orange
+  Top-right    symbol layer (lwr) — purple
+  Bottom-right number/nav layer (rse) — orange
 
-Hold box flavors:
-  tap-preferred  — outline box in the bottom-left quadrant
-  hold-preferred — solid box in the bottom-left quadrant
-  sticky         — solid bar covering the full left half (TL+BL)
+Hold box flavors (from the keymap's hold-tap flavor / sticky form):
+  tp (tap-preferred)  — outline box in the bottom-left quadrant
+  hp (hold-preferred) — solid box in the bottom-left quadrant
+  sticky              — solid bar covering the full left half (TL+BL)
 
 Hold labels/boxes are grey by default. A hold binding that itself switches
-to the symbol (Lower) or number/nav (Raise) layer is colored like that
-layer instead, so layer-change labels always read as purple/orange.
+to the symbol (lwr) or number/nav (rse) layer is colored like that layer
+instead, so layer-change labels always read as purple/orange.
 
-The Hyper and Adjust layers are excluded from diagram generation (their
+The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
 
-Well-known taps (Tab, Ret, Bksp, Esc, Spc, arrows, Home/End, …) render as
+Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) render as
 icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
 """
+
 from __future__ import annotations
 
-import argparse
 import html
-import sys
 from pathlib import Path
 
-import yaml
+from keymap_generator.parser import Key, Layer, parse_keymap
 
-ROOT = Path(__file__).resolve().parent
-DEFAULT_KEYMAP = ROOT / "keymap.yaml"
-DEFAULT_OUT = ROOT / "diagrams"
+DEFAULT_KEYMAP = Path("keymap.txt")
+DEFAULT_OUT = Path("diagrams")
 
 # PNG raster scale relative to the SVG's native (CSS-pixel) size — 3x gives
 # crisp previews on retina displays without huge file sizes.
@@ -46,60 +43,65 @@ PAD = 1.0
 RADIUS = 4.0
 SPLIT_GAP = 30.0
 
-STACK_BASE = "Default"
-STACK_SYM = "Lower"
-STACK_NUM = "Raise"
+STACK_BASE = "default"
+STACK_SYM = "lwr"
+STACK_NUM = "rse"
 
 # Layers excluded from diagram generation (still usable as hold targets
 # elsewhere, but they don't get their own reference/layer boards).
-EXCLUDED_LAYERS = frozenset({"Hyper", "Adjust"})
+EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 
-HOLD_FLAVORS = frozenset({"tap-preferred", "hold-preferred", "sticky"})
-
+# Short hold labels shown in the bottom-left quadrant.
 HOLD_DISPLAY = {
-    "Shift": "shft",
-    "Alt": "alt",
-    "Cmd": "cmd",
-    "Ctrl": "ctrl",
-    "Hyper": "hyp",
-    "Adjust": "adj",
-    "Lower": "lwr",
-    "Raise": "rse",
-    "Mouse": "mou",
+    "SHFT": "shft",
+    "ALT": "alt",
+    "CMD": "cmd",
+    "CTRL": "ctrl",
+    "HYP": "hyp",
+    "ADJ": "adj",
+    "LWR": "lwr",
+    "RSE": "rse",
+    "MOU": "mou",
 }
 
 # Hold-box / hold-label accent. Only holds that themselves switch to the
-# symbol (Lower) or number/nav (Raise) layer borrow that layer's color, so
-# the diagram legend stays visually tied to the two colored quadrants.
-# Every other hold (plain modifiers, Hyper, Adjust, Mouse, …) falls back to
-# the neutral grey used for the base layer legend.
+# symbol (lwr) or number/nav (rse) layer borrow that layer's color, so the
+# diagram legend stays visually tied to the two colored quadrants. Every
+# other hold (plain modifiers, hyp, adj, mou, …) falls back to the neutral
+# grey used for the base layer legend.
 HOLD_ACCENT = {
-    "Lower": "sym",
-    "Raise": "nav",
+    "LWR": "sym",
+    "RSE": "nav",
 }
 DEFAULT_HOLD_ACCENT = "mod"
 
 # Tap labels that get replaced with an icon (see GLYPH_PATHS) instead of
 # text, wherever they appear (base/sym/num quadrants, any layer board).
 TAP_GLYPHS = {
-    "Tab": "tab",
-    "Ret": "return",
-    "Bksp": "backspace",
-    "AltBksp": "delete-word",
-    "Esc": "escape",
-    "Spc": "space",
-    "Up": "up",
-    "Down": "down",
-    "Left": "left",
-    "Right": "right",
-    "Home": "home",
-    "End": "end",
-    "WordL": "word-left",
-    "WordR": "word-right",
-    "Fwd": "hist-fwd",
-    "Bck": "hist-back",
-    "TabL": "btab",
-    "TabR": "tab",
+    "TAB": "tab",
+    "RET": "return",
+    "BKSP": "backspace",
+    "ALT_BKSP": "delete-word",
+    "ESC": "escape",
+    "SPC": "space",
+    "UP": "up",
+    "DOWN": "down",
+    "LEFT": "left",
+    "RIGHT": "right",
+    "HOME": "home",
+    "END": "end",
+    "WORD_L": "word-left",
+    "WORD_R": "word-right",
+    "FWD": "hist-fwd",
+    "BCK": "hist-back",
+    "TAB_L": "btab",
+    "TAB_R": "tab",
+}
+
+# A few labels that read better as glyphs/symbols than as their raw codes.
+TAP_DISPLAY = {
+    "PIPE": "|",
+    "UML": "uml",
 }
 
 GLYPH_PATHS = {
@@ -107,7 +109,7 @@ GLYPH_PATHS = {
     # The backspace box's own point already reads as one chevron; add a
     # second, matching chevron just outside it to turn that into a double
     # chevron (delete "further back") while keeping the X for "delete".
-    "delete-word": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7",
+    "delete-word": ("M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7"),
     "return": "M42,13V27H6 m8-8l-8,8l8,8",
     "space": "M42,24V32H6V24",
     "escape": "M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24",
@@ -130,82 +132,51 @@ GLYPH_PATHS = {
 }
 
 
-def load_yaml(path: Path) -> dict:
-    with path.open(encoding="utf-8") as f:
-        return yaml.safe_load(f)
-
-
-def flatten_keys(layer_value) -> list:
-    keys = []
-
-    def walk(node):
-        if isinstance(node, list):
-            for item in node:
-                walk(item)
-        else:
-            keys.append(node)
-
-    walk(layer_value)
-    return keys
-
-
-def key_field(spec, *names: str) -> str:
-    if spec is None:
-        return ""
-    if isinstance(spec, str):
-        return spec if "t" in names or "tap" in names else ""
-    for name in names:
-        if name in spec and spec[name] is not None:
-            return str(spec[name])
-    return ""
-
-
-def key_tap(spec) -> str:
-    return key_field(spec, "t", "tap", "center")
-
-
-def key_hold(spec) -> str:
-    return key_field(spec, "h", "hold", "bottom")
-
-
-def key_type(spec) -> str:
-    return key_field(spec, "type")
-
-
-def hold_flavor(type_str: str) -> str | None:
-    for token in type_str.split():
-        if token in HOLD_FLAVORS:
-            return token
-    return None
-
-
 def esc(text: str) -> str:
     return html.escape(text, quote=True)
 
 
-def tap_display(text: str) -> tuple[str, str | None]:
+def tap_display(label: str) -> tuple[str, str | None]:
     """Return (text, glyph): glyph is set (and text cleared) for known icons."""
-    if text in TAP_GLYPHS:
-        return "", TAP_GLYPHS[text]
-    return text, None
+    if label in TAP_GLYPHS:
+        return "", TAP_GLYPHS[label]
+    return TAP_DISPLAY.get(label, label), None
 
 
-def ortho_positions(columns: int = 5, thumbs: int = 3):
+def hold_flavor(key: Key) -> str | None:
+    """Map a parsed key to a diagram hold-box flavor, or None if no hold."""
+    hold = key.hold or ""
+    if not hold:
+        return None
+    if key.is_sticky:
+        return "sticky"
+    if key.flavor == "hp":
+        return "hold-preferred"
+    # Explicit tp, or an inherited/default hold with no flavor → outline box.
+    return "tap-preferred"
+
+
+def flatten_layer(layer: Layer) -> list[Key]:
+    """Flatten a layer's rows into the 36-key ortho index order."""
+    return [key for row in layer.rows for key in row]
+
+
+def layers_by_name(layers: list[Layer]) -> dict[str, Layer]:
+    return {layer.name: layer for layer in layers}
+
+
+def ortho_positions(columns: int = 5, thumbs: int = 3) -> list[tuple[float, float]]:
     """Return (x, y) for each of the 36 key indices (left then right per row)."""
-    positions = []
-    # Main matrix: 3 rows × (left cols + right cols)
+    positions: list[tuple[float, float]] = []
     for row in range(3):
         y = row * KH
         for col in range(columns):
             positions.append((col * KW, y))
         for col in range(columns):
             positions.append((columns * KW + SPLIT_GAP + col * KW, y))
-    # Thumbs under each half, inward-biased like Selenium ortho.
     thumb_y = 3 * KH + 8
     left_thumb_xs = [(columns - thumbs + i) * KW for i in range(thumbs)]
-    right_thumb_xs = [
-        columns * KW + SPLIT_GAP + i * KW for i in range(thumbs)
-    ]
+    right_thumb_xs = [columns * KW + SPLIT_GAP + i * KW for i in range(thumbs)]
     for x in left_thumb_xs + right_thumb_xs:
         positions.append((x, thumb_y))
     return positions
@@ -217,27 +188,26 @@ def board_size(columns: int = 5, thumbs: int = 3) -> tuple[float, float]:
     return width, height
 
 
-def build_stacked_specs(data: dict) -> list[dict]:
+def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     """Project semantic layers into per-key visual specs for the reference card.
 
     Every key uses the same corners:
-      TL base (Default), BL hold, TR symbols (Lower), BR numbers/nav (Raise).
+      TL base (default), BL hold, TR symbols (lwr), BR numbers/nav (rse).
     """
-    layers = data["layers"]
-    base = flatten_keys(layers[STACK_BASE])
-    sym = flatten_keys(layers.get(STACK_SYM, []))
-    num = flatten_keys(layers.get(STACK_NUM, []))
+    by_name = layers_by_name(layers)
+    base = flatten_layer(by_name[STACK_BASE])
+    sym = flatten_layer(by_name[STACK_SYM]) if STACK_SYM in by_name else []
+    num = flatten_layer(by_name[STACK_NUM]) if STACK_NUM in by_name else []
 
-    specs = []
-    for i, b in enumerate(base):
-        hold = key_hold(b)
-        flavor = hold_flavor(key_type(b))
-        base_text, base_glyph = tap_display(key_tap(b))
-        sym_raw = sym[i] if i < len(sym) else ""
-        sym_text, sym_glyph = tap_display(key_tap(sym_raw))
-        num_raw = num[i] if i < len(num) else ""
-        num_text, num_glyph = tap_display(key_tap(num_raw))
-
+    specs: list[dict] = []
+    for i, key in enumerate(base):
+        hold = key.hold or ""
+        flavor = hold_flavor(key)
+        base_text, base_glyph = tap_display(key.tap)
+        sym_key = sym[i] if i < len(sym) else Key("", "", None)
+        sym_text, sym_glyph = tap_display(sym_key.tap)
+        num_key = num[i] if i < len(num) else Key("", "", None)
+        num_text, num_glyph = tap_display(num_key.tap)
         specs.append(
             {
                 "base": base_text,
@@ -254,13 +224,13 @@ def build_stacked_specs(data: dict) -> list[dict]:
     return specs
 
 
-def layer_specs(layer_value) -> list[dict]:
-    """Per-layer view: that layer's tap at TL, hold at BL (same anchors as reference)."""
-    specs = []
-    for raw in flatten_keys(layer_value):
-        hold = key_hold(raw)
-        flavor = hold_flavor(key_type(raw))
-        base_text, base_glyph = tap_display(key_tap(raw))
+def layer_specs(layer: Layer) -> list[dict]:
+    """Per-layer view: that layer's tap at TL, hold at BL (same anchors)."""
+    specs: list[dict] = []
+    for key in flatten_layer(layer):
+        hold = key.hold or ""
+        flavor = hold_flavor(key)
+        base_text, base_glyph = tap_display(key.tap)
         specs.append(
             {
                 "base": base_text,
@@ -311,7 +281,7 @@ def svg_style() -> str:
 
 
 def glyph_defs() -> str:
-    parts = ['<defs>']
+    parts = ["<defs>"]
     for name, d in GLYPH_PATHS.items():
         parts.append(
             f'<path id="glyph_{name}" class="symbol" '
@@ -322,7 +292,7 @@ def glyph_defs() -> str:
 
 
 def draw_key(x: float, y: float, spec: dict) -> str:
-    """Draw one key with fixed legend anchors on every key:
+    """Draw one key with fixed legend anchors on every key.
 
     Top-left      base
     Bottom-left   hold (outline / solid / sticky left bar)
@@ -342,7 +312,6 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     accent = spec.get("accent") or DEFAULT_HOLD_ACCENT
     hold_label = HOLD_DISPLAY.get(hold, hold.lower() if hold else "")
 
-    # Hold / sticky boxes (Selenium geometry).
     if hold and flavor == "sticky":
         parts.append(
             f'<rect class="hold-box sticky {accent}" x="{PAD}" y="{PAD}" '
@@ -350,11 +319,11 @@ def draw_key(x: float, y: float, spec: dict) -> str:
         )
     elif hold and flavor in ("tap-preferred", "hold-preferred"):
         parts.append(
-            f'<rect class="hold-box {flavor} {accent}" x="{PAD}" y="{PAD + ikh / 2}" '
-            f'width="{ikw / 2}" height="{ikh / 2}" rx="{RADIUS}" ry="{RADIUS}"/>'
+            f'<rect class="hold-box {flavor} {accent}" x="{PAD}" '
+            f'y="{PAD + ikh / 2}" width="{ikw / 2}" height="{ikh / 2}" '
+            f'rx="{RADIUS}" ry="{RADIUS}"/>'
         )
 
-    # Fixed legend anchors — same for every key.
     x_left = KW * 0.25
     x_right = KW * 0.75
     y_top = KH * 0.32
@@ -371,15 +340,19 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
     if hold and flavor == "sticky":
         parts.append(
-            f'<text class="sticky {accent}" transform="translate({PAD + ikw / 4},{KH / 2}) '
-            f'rotate(-90)">{esc(hold_label)}</text>'
+            f'<text class="sticky {accent}" '
+            f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
+            f"{esc(hold_label)}</text>"
         )
     elif hold and flavor:
         parts.append(
-            f'<text class="hold {flavor} {accent}" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>'
+            f'<text class="hold {flavor} {accent}" x="{x_left}" y="{y_bot}">'
+            f"{esc(hold_label)}</text>"
         )
     elif hold:
-        parts.append(f'<text class="hold" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>')
+        parts.append(
+            f'<text class="hold" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>'
+        )
 
     sym = spec.get("sym") or ""
     if sym:
@@ -403,25 +376,28 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     return "\n".join(parts)
 
 
-def render_board(specs: list[dict], title: str, columns: int = 5, thumbs: int = 3) -> str:
+def render_board(
+    specs: list[dict], title: str, columns: int = 5, thumbs: int = 3
+) -> str:
     positions = ortho_positions(columns, thumbs)
     if len(specs) != len(positions):
         raise ValueError(f"Expected {len(positions)} keys, got {len(specs)}")
     width, height = board_size(columns, thumbs)
     body = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
-        f'width="{width:.0f}" height="{height:.0f}" viewBox="-10 -24 {width} {height}">',
+        f'width="{width:.0f}" height="{height:.0f}" '
+        f'viewBox="-10 -24 {width} {height}">',
         f"<style>{svg_style()}</style>",
         glyph_defs(),
         f'<text class="title" x="0" y="-8">{esc(title)}</text>',
     ]
-    for spec, (x, y) in zip(specs, positions):
+    for spec, (x, y) in zip(specs, positions, strict=True):
         body.append(draw_key(x, y, spec))
     body.append("</svg>")
     return "\n".join(body)
 
 
-def _slug(name: str) -> str:
+def slug(name: str) -> str:
     return "".join(ch if ch.isalnum() else "-" for ch in name).strip("-").lower()
 
 
@@ -431,7 +407,7 @@ def render_png(svg_path: Path) -> Path:
         import cairosvg
     except ImportError as exc:
         raise RuntimeError(
-            "cairosvg is required to render PNGs (pip install -r requirements.txt)"
+            "cairosvg is required to render PNGs (uv sync --group diagrams)"
         ) from exc
 
     png_path = svg_path.with_suffix(".png")
@@ -439,59 +415,40 @@ def render_png(svg_path: Path) -> Path:
     return png_path
 
 
-def main(argv: list[str] | None = None) -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("-i", "--input", type=Path, default=DEFAULT_KEYMAP)
-    parser.add_argument("-o", "--out-dir", type=Path, default=DEFAULT_OUT)
-    parser.add_argument("--stacked-only", action="store_true")
-    parser.add_argument("--layers-only", action="store_true")
-    parser.add_argument(
-        "--no-png",
-        action="store_true",
-        help="skip rendering a .png next to each .svg",
-    )
-    args = parser.parse_args(argv)
-
-    data = load_yaml(args.input)
-    ortho = data.get("layout", {}).get("ortho_layout", {})
-    columns = int(ortho.get("columns", 5))
-    thumbs = int(ortho.get("thumbs", 3))
-    args.out_dir.mkdir(parents=True, exist_ok=True)
+def render_diagrams(
+    keymap_path: Path,
+    out_dir: Path,
+    *,
+    stacked_only: bool = False,
+    layers_only: bool = False,
+    no_png: bool = False,
+) -> list[Path]:
+    """Render SVG (+ optional PNG) diagrams for `keymap_path` into `out_dir`."""
+    layers, _combos = parse_keymap(keymap_path)
+    out_dir.mkdir(parents=True, exist_ok=True)
 
     written: list[Path] = []
-    if not args.stacked_only:
-        for name, value in (data.get("layers") or {}).items():
-            if name in EXCLUDED_LAYERS:
+    if not stacked_only:
+        for layer in layers:
+            if layer.name in EXCLUDED_LAYERS:
                 continue
-            path = args.out_dir / f"layer-{_slug(name)}.svg"
+            path = out_dir / f"layer-{slug(layer.name)}.svg"
             path.write_text(
-                render_board(layer_specs(value), name, columns, thumbs),
+                render_board(layer_specs(layer), layer.name),
                 encoding="utf-8",
             )
             written.append(path)
 
-    if not args.layers_only:
-        path = args.out_dir / "reference.svg"
+    if not layers_only:
+        path = out_dir / "reference.svg"
         path.write_text(
-            render_board(
-                build_stacked_specs(data),
-                "Dubu36 reference",
-                columns,
-                thumbs,
-            ),
+            render_board(build_stacked_specs(layers), "Dubu36 reference"),
             encoding="utf-8",
         )
         written.append(path)
 
-    if not args.no_png:
+    if not no_png:
         for path in list(written):
-            png_path = render_png(path)
-            written.append(png_path)
+            written.append(render_png(path))
 
-    for path in written:
-        print(path)
-    return 0
-
-
-if __name__ == "__main__":
-    sys.exit(main())
+    return written
