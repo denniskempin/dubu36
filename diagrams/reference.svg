@@ -40,6 +40,10 @@
 <path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-27 m6-8l-8,8l8,8 M6,12V36"/>
 <path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,42l-28-28 m0,10v-10h10 m8-8h-26v26"/>
 <path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,6l28,28 m0-10v10h-10 m-8,8h26v-26"/>
+<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,13l10,11-10,11 M24,13l10,11-10,11"/>
+<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
+<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
+<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 </defs>
 <text class="title" x="0" y="-8">Dubu36 reference</text>
 <g transform="translate(0.00,0.00)">
@@ -80,7 +84,7 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">L</text>
 <text class="sym" x="45.0" y="18.1344">/</text>
-<use class="glyph num" href="#glyph_left" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_word-left" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(450.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -92,7 +96,7 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Y</text>
 <text class="sym" x="45.0" y="18.1344">|</text>
-<use class="glyph num" href="#glyph_right" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_word-right" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(570.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -144,7 +148,7 @@
 <text class="base" x="15.0" y="18.1344">H</text>
 <text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">ctrl</text>
 <text class="sym" x="45.0" y="18.1344">-</text>
-<use class="glyph num" href="#glyph_right" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_hist-fwd" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -176,7 +180,7 @@
 <text class="base" x="15.0" y="18.1344">O</text>
 <text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 <text class="sym" x="45.0" y="18.1344">#</text>
-<use class="glyph num" href="#glyph_left" x="45.0" y="45.336000000000006"/>
+<use class="glyph num" href="#glyph_hist-back" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>

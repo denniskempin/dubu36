@@ -40,6 +40,10 @@
 <path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-27 m6-8l-8,8l8,8 M6,12V36"/>
 <path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,42l-28-28 m0,10v-10h10 m8-8h-26v26"/>
 <path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,6l28,28 m0-10v10h-10 m-8,8h26v-26"/>
+<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,13l10,11-10,11 M24,13l10,11-10,11"/>
+<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
+<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
+<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 </defs>
 <text class="title" x="0" y="-8">Raise</text>
 <g transform="translate(0.00,0.00)">
@@ -66,7 +70,7 @@
 </g>
 <g transform="translate(390.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_left" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_word-left" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(450.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -74,7 +78,7 @@
 </g>
 <g transform="translate(510.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_right" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_word-right" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(570.00,0.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -111,7 +115,7 @@
 <g transform="translate(330.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_right" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_hist-fwd" x="15.0" y="18.1344"/>
 <text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">ctrl</text>
 </g>
 <g transform="translate(390.00,56.67)">
@@ -135,7 +139,7 @@
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_left" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_hist-back" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 </g>
 <g transform="translate(0.00,113.34)">

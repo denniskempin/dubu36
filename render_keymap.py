@@ -93,10 +93,10 @@ TAP_GLYPHS = {
     "Right": "right",
     "Home": "home",
     "End": "end",
-    "WordL": "left",
-    "WordR": "right",
-    "Fwd": "right",
-    "Bck": "left",
+    "WordL": "word-left",
+    "WordR": "word-right",
+    "Fwd": "hist-fwd",
+    "Bck": "hist-back",
     "TabL": "btab",
     "TabR": "tab",
 }
@@ -114,6 +114,14 @@ GLYPH_PATHS = {
     "btab": "M42,24h-27 m6-8l-8,8l8,8 M6,12V36",
     "home": "M42,42l-28-28 m0,10v-10h10 m8-8h-26v26",
     "end": "M6,6l28,28 m0-10v10h-10 m-8,8h26v-26",
+    # Double chevron ("»"/"«") for word-jump — visually distinct from the
+    # single-chevron cursor arrows above.
+    "word-right": "M8,13l10,11-10,11 M24,13l10,11-10,11",
+    "word-left": "M40,13l-10,11,10,11 M24,13l-10,11,10,11",
+    # Curved hook for browser history nav — distinct from both the
+    # straight cursor arrows and the word-jump chevrons.
+    "hist-fwd": "M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2",
+    "hist-back": "M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2",
 }
 
 
