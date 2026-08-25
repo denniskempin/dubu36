@@ -104,9 +104,9 @@ TAP_GLYPHS = {
 
 GLYPH_PATHS = {
     "backspace": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z",
-    # Same delete-key box as "backspace", but with a double chevron instead
-    # of the X — pairs with the word-jump chevrons to read as "delete word".
-    "delete-word": "M6,24l10,13h26v-26h-26z M28,17l-7,7l7,7 M20,17l-7,7l7,7",
+    # Same delete-key box and X as "backspace", plus one word-jump chevron
+    # in front of it — reads as "delete", by "word".
+    "delete-word": "M6,24l10,13h26v-26h-26z M20,19l-6,5l6,5 M32,19l-8,10 M32,29l-8-10",
     "return": "M42,13V27H6 m8-8l-8,8l8,8",
     "space": "M42,24V32H6V24",
     "escape": "M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24",
