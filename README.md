@@ -12,18 +12,19 @@ keys, then the six thumb keys. Every whitespace separated cell is one key:
 
 ```
 layer default: homerow
-  Q      W     F     P     G           J     L     U     Y     *
-  A      R     S     T     D           H     N     E     I     O
-  Z/adj  X     C     V     B           K     M     ,     .     '/adj
-                ESC/mou  _/shft  TAB/lwr   RET  SPC/rse  BKSP/hyp
+  Q      W      F      P      G          J      L      U      Y      *
+  A      R      S      T      D          H      N      E      I      O
+  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+              ESC/mou:hp  _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP/hyp:hp
 ```
 
 A cell is either a label, or a `TAP/HOLD` pair for keys that do something else when held, such as
 `Z/adj` which types a `Z` when tapped and shifts to the adjust layer while held. `_` marks a key
-that does nothing, and a `:FLAVOR` suffix picks the hold-tap flavor to use for that key:
+that does nothing, and a `:FLAVOR` suffix chooses how a key tells a tap from a hold:
 
 ```
-  T/cmd:hp     hold-preferred instead of the default tap-preferred
+  T/cmd        tap-preferred, the default, which suits the home-row
+  TAB/lwr:hp   hold-preferred, which the thumb keys use
   shft/shft    a sticky shift when tapped, a plain shift when held
 ```
 

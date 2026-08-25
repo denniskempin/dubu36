@@ -99,15 +99,12 @@ LAYER_LABELS = {
     "MOU": 5,
 }
 
-# Hold-tap flavors that may be used in the keymap grid, mapped to the suffix of
-# the matching behaviors in `zmk_template.dtsi`.
-FLAVORS = ("tp", "hp", "bal", "tui")
-
-# Flavor used when a key does not name one. Modifier holds are 'tap preferred'
-# as they are used on the home-row, layer holds use the balanced flavor.
-DEFAULT_MOD_FLAVOR = "tp"
-DEFAULT_LAYER_FLAVOR = "bal"
-DEFAULT_STICKY_FLAVOR = "bal"
+# Hold-tap flavors a key may ask for, matching the suffix of the behaviors in
+# `zmk_template.dtsi`. Keys default to 'tap preferred', which suits the
+# home-row; the thumb keys ask for 'hold preferred'. Sticky keys have a single
+# behavior and take no flavor.
+FLAVORS = ("tp", "hp")
+DEFAULT_FLAVOR = "tp"
 
 
 ################################################################################
@@ -215,23 +212,23 @@ def map_key_to_zmk(key):
     if not key.tap:
         return map_key_label_to_zmk(key.hold)
 
-    # Behavior names are `<kind>_<flavor>`, all defined in the ZMK template:
-    # mt/lt hold a modifier/layer, smt/slt additionally stick it on tap.
+    # All defined in the ZMK template: mt/lt hold a modifier/layer and are named
+    # after their flavor, smt/slt additionally stick it on tap.
     if key.hold in LAYER_LABELS:
         layer = LAYER_LABELS[key.hold]
         if key.is_sticky:
-            return f"&slt_{key.flavor or DEFAULT_STICKY_FLAVOR} {layer} {layer}"
+            return f"&slt_ {layer} {layer}"
         tap_code = get_zmk_key_press_code(key.tap)
         if tap_code:
-            return f"&lt_{key.flavor or DEFAULT_LAYER_FLAVOR} {layer} {tap_code}"
+            return f"&lt_{key.flavor or DEFAULT_FLAVOR} {layer} {tap_code}"
     else:
         hold_code = get_zmk_key_press_code(key.hold)
         if hold_code:
             if key.is_sticky:
-                return f"&smt_{key.flavor or DEFAULT_STICKY_FLAVOR} {hold_code} {hold_code}"
+                return f"&smt_ {hold_code} {hold_code}"
             tap_code = get_zmk_key_press_code(key.tap)
             if tap_code:
-                return f"&mt_{key.flavor or DEFAULT_MOD_FLAVOR} {hold_code} {tap_code}"
+                return f"&mt_{key.flavor or DEFAULT_FLAVOR} {hold_code} {tap_code}"
     raise KeyError(f"Cannot map hold-tap key ({key.tap}, {key.hold}) to zmk.")
 
 
@@ -432,7 +429,12 @@ class KeymapParser(object):
             # A cell without a hold of its own inherits the hold of an overlay,
             # which `apply_overlays` fills in.
             return Key(parse_label(tap), None, None)
-        return Key(parse_label(tap), *self.parse_hold(hold))
+        key = Key(parse_label(tap), *self.parse_hold(hold))
+        if key.flavor and (key.is_sticky or not key.tap):
+            # Only a key that has both a tap and a hold to choose between uses
+            # a flavor, so asking for one anywhere else is a mistake.
+            raise self.error(f"{cell!r} is not a hold-tap, so it takes no flavor")
+        return key
 
     def parse_hold(self, field):
         "Parses `HOLD` or `HOLD:FLAVOR` into a (hold, flavor) pair."

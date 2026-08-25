@@ -9,9 +9,10 @@
 //   LABEL/LABEL       taps the modifier/layer as sticky, holds it as momentary
 //   _                 nothing: a blank key, or "no hold" when used as the hold
 //
-// FLAVOR is one of tp (tap-preferred), hp (hold-preferred), bal (balanced) or
-// tui (tap-unless-interrupted). It defaults to tp for modifier holds and bal
-// for layer holds. The available flavors are defined in zmk_template.dtsi.
+// FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
+// (tap-preferred), which is the default and suits the home-row, or hp
+// (hold-preferred), which the thumb keys use. Sticky keys take no flavor. The
+// behaviors these map to are defined in zmk_template.dtsi.
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
 // cell defines its own hold. Use `LABEL/_` to drop an inherited hold.
@@ -34,7 +35,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-                ESC/mou  _/shft  TAB/lwr    RET  SPC/rse  BKSP/hyp
+              ESC/mou:hp  _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP/hyp:hp
 
 // Navigation and numbers.
 layer rse: homerow
