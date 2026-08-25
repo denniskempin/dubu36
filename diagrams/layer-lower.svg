@@ -9,6 +9,7 @@
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
+    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }

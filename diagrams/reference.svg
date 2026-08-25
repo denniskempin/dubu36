@@ -9,6 +9,7 @@
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
+    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
@@ -242,7 +243,7 @@
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Esc</text>
+<use class="glyph base" href="#glyph_escape" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">mou</text>
 </g>
 <g transform="translate(180.00,178.01)">
@@ -253,23 +254,23 @@
 <g transform="translate(240.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred sym" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Tab</text>
+<use class="glyph base" href="#glyph_tab" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred sym" x="15.0" y="45.336000000000006">lwr</text>
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Ret</text>
+<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(390.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Spc</text>
+<use class="glyph base" href="#glyph_space" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">Bksp</text>
+<use class="glyph base" href="#glyph_backspace" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
 <text class="sym" x="45.0" y="18.1344">AltBksp</text>
 </g>

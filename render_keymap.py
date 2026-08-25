@@ -18,6 +18,9 @@ layer instead, so layer-change labels always read as purple/orange.
 
 The Hyper and Adjust layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
+
+Well-known taps (Tab, Ret, Bksp, Esc, Spc, arrows, Home/End, …) render as
+icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
 """
 from __future__ import annotations
 
@@ -76,7 +79,14 @@ HOLD_ACCENT = {
 }
 DEFAULT_HOLD_ACCENT = "mod"
 
-NAV_GLYPHS = {
+# Tap labels that get replaced with an icon (see GLYPH_PATHS) instead of
+# text, wherever they appear (base/sym/num quadrants, any layer board).
+TAP_GLYPHS = {
+    "Tab": "tab",
+    "Ret": "return",
+    "Bksp": "backspace",
+    "Esc": "escape",
+    "Spc": "space",
     "Up": "up",
     "Down": "down",
     "Left": "left",
@@ -160,6 +170,13 @@ def esc(text: str) -> str:
     return html.escape(text, quote=True)
 
 
+def tap_display(text: str) -> tuple[str, str | None]:
+    """Return (text, glyph): glyph is set (and text cleared) for known icons."""
+    if text in TAP_GLYPHS:
+        return "", TAP_GLYPHS[text]
+    return text, None
+
+
 def ortho_positions(columns: int = 5, thumbs: int = 3):
     """Return (x, y) for each of the 36 key indices (left then right per row)."""
     positions = []
@@ -202,22 +219,21 @@ def build_stacked_specs(data: dict) -> list[dict]:
     for i, b in enumerate(base):
         hold = key_hold(b)
         flavor = hold_flavor(key_type(b))
-        sym_text = key_tap(sym[i]) if i < len(sym) else ""
+        base_text, base_glyph = tap_display(key_tap(b))
+        sym_raw = sym[i] if i < len(sym) else ""
+        sym_text, sym_glyph = tap_display(key_tap(sym_raw))
         num_raw = num[i] if i < len(num) else ""
-        num_tap = key_tap(num_raw)
-        if num_tap in NAV_GLYPHS:
-            num_text, num_glyph = "", NAV_GLYPHS[num_tap]
-        else:
-            num_text, num_glyph = num_tap, None
+        num_text, num_glyph = tap_display(key_tap(num_raw))
 
         specs.append(
             {
-                "base": key_tap(b),
+                "base": base_text,
+                "base_glyph": base_glyph,
                 "hold": hold,
                 "flavor": flavor,
                 "accent": HOLD_ACCENT.get(hold, DEFAULT_HOLD_ACCENT),
                 "sym": sym_text,
-                "sym_glyph": None,
+                "sym_glyph": sym_glyph,
                 "num": num_text,
                 "num_glyph": num_glyph,
             }
@@ -231,11 +247,11 @@ def layer_specs(layer_value) -> list[dict]:
     for raw in flatten_keys(layer_value):
         hold = key_hold(raw)
         flavor = hold_flavor(key_type(raw))
-        tap = key_tap(raw)
-        # Keep base as text at TL for consistency (no icon substitution).
+        base_text, base_glyph = tap_display(key_tap(raw))
         specs.append(
             {
-                "base": tap,
+                "base": base_text,
+                "base_glyph": base_glyph,
                 "hold": hold,
                 "flavor": flavor,
                 "accent": HOLD_ACCENT.get(hold, DEFAULT_HOLD_ACCENT),
@@ -260,6 +276,7 @@ def svg_style() -> str:
     text.sticky { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
+    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
@@ -333,6 +350,11 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     base = spec.get("base") or ""
     if base:
         parts.append(f'<text class="base" x="{x_left}" y="{y_top}">{esc(base)}</text>')
+    elif spec.get("base_glyph"):
+        parts.append(
+            f'<use class="glyph base" href="#glyph_{spec["base_glyph"]}" '
+            f'x="{x_left}" y="{y_top}"/>'
+        )
 
     if hold and flavor == "sticky":
         parts.append(
