@@ -1,0 +1,76 @@
+// Dubu36 keymap: the source of truth for the generated ZMK and QMK keymaps.
+//
+// Every `overlay` and `layer` block is a grid of the 36 keys: three rows of ten
+// keys, then the six thumb keys. Each whitespace separated cell is one key:
+//
+//   LABEL             tap only
+//   TAP/HOLD          taps TAP, holds HOLD (a modifier or a layer)
+//   TAP/HOLD:FLAVOR   ... using an explicit hold-tap flavor
+//   LABEL/LABEL       taps the modifier/layer as sticky, holds it as momentary
+//   _                 nothing: a blank key, or "no hold" when used as the hold
+//
+// FLAVOR is one of tp (tap-preferred), hp (hold-preferred), bal (balanced) or
+// tui (tap-unless-interrupted). It defaults to tp for modifier holds and bal
+// for layer holds. The available flavors are defined in zmk_template.dtsi.
+//
+// A layer inherits the holds of every overlay listed after its name, unless the
+// cell defines its own hold. Use `LABEL/_` to drop an inherited hold.
+//
+// Labels that clash with the `/`, `:` or `_` syntax are escaped with a
+// backslash: `\/`, `\:`, `\_`, and `\\` for the backslash key itself.
+
+// Modifiers used primarily in shortcuts, mapped to the home-row. The modifiers
+// and layer shifts used in fluent writing live on the thumb keys instead, to
+// reduce issues with hold-tap timing.
+overlay homerow
+  _      _      _      _      _          _      _      _      _      _
+  hyp    shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   hyp
+  _      _      _      _      _          _      _      _      _      _
+                _      _      _          _      _      _
+
+// Colemak, with special characters remapped to prioritize commonly used
+// characters in day-to-day writing.
+layer default: homerow
+  Q      W      F      P      G          J      L      U      Y      *
+  A      R      S      T      D          H      N      E      I      O
+  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+                ESC/mou  _/shft  TAB/lwr    RET  SPC/rse  BKSP/hyp
+
+// Navigation and numbers.
+layer rse: homerow
+  _      7      8      9      _          HOME   WORD_L  UP        WORD_R  END
+  _      4      5      6      _          FWD    LEFT    DOWN      RIGHT   BCK
+  0      1      2      3      _          TAB_L  HYP_[   HYP_\\    HYP_]   TAB_R
+                _      _      _          _      _       _
+
+// Symbols.
+layer lwr: homerow
+  ~      ^      @      $      %          &      \/     \\     PIPE   `
+  UML    <      [      (      {          -      \_     \:     ;      #
+  _      >      ]      )      }          +      =      ?      !      "
+                _      _      _          _      _      ALT_BKSP
+
+// Window management and other Hyper key shortcuts.
+layer hyp
+  HYP_Q  HYP_W  HYP_F  HYP_P  HYP_G      HYP_1    HYP_2     HYP_3     HYP_4      HYP_5
+  HYP_A  HYP_R  HYP_S  HYP_T  HYP_D      _        HYP_LEFT  HYP_UP    HYP_RIGHT  _
+  HYP_Z  HYP_X  HYP_C  HYP_V  HYP_B      _        HYP_;     HYP_DOWN  HYP_'      _
+                HYP_ESC  _  HYP_TAB      HYP_RET  HYP_SPC   HYP_BKSP
+
+// Bluetooth.
+layer adj
+  BT_0      BT_1   BT_2   _      _       _      _      _      _      _
+  BT_CLR    _      _      _      _       _      _      _      _      _
+  _         _      _      _      _       _      _      _      _      _
+                   _      _      _       _      _      _
+
+// Left hand only keyboard shortcuts, for use with a mouse in the right hand.
+layer mou
+  CMD_Q  CMD_W  _      _      _          _      _      _      _      _
+  _      _      CMD_S  CMD_T  _          _      _      _      _      _
+  CMD_Z  CMD_X  CMD_C  CMD_V  _          _      _      _      _      _
+                _      _      _          _      _      _
+
+// Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
+// the keys pressed together on the default layer.
+combos

@@ -2,100 +2,41 @@
 
 This repository contains my work-in-progress keyboard layout for 36 key keyboards.
 
-The keyboard layout is specified in markdown below, and converted into ZMK and QMK keymaps using the
-`generate_keymaps.py` script.
+The keyboard layout is specified in [`keymap.txt`](keymap.txt), and converted into ZMK and QMK
+keymaps using the `generate_keymap.py` script.
 
-## Default Layer
+## Keymap
 
-The default layer is Colemak. With special characters remapped to prioritize commonly used
-characters in day-to-day writing.
+Each layer is a grid of the 36 keys, laid out the way they sit on the keyboard: three rows of ten
+keys, then the six thumb keys. Every whitespace separated cell is one key:
 
-|     |     |     |     |     |     |     |     |      |     |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | ---- | --- | --- |
-| Q   | W   | F   | P   | G   |     | J   | L   | U    | Y   | \*  |
-| A   | R   | S   | T   | D   |     | H   | N   | E    | I   | O   |
-| Z   | X   | C   | V   | B   |     | K   | M   | ,    | .   | '   |
-|     |     | ESC | ☐   | TAB |     | RET | SPC | BKSP |     |     |
+```
+layer default: homerow
+  Q      W     F     P     G           J     L     U     Y     *
+  A      R     S     T     D           H     N     E     I     O
+  Z/adj  X     C     V     B           K     M     ,     .     '/adj
+                ESC/mou  _/shft  TAB/lwr   RET  SPC/rse  BKSP/hyp
+```
 
-### Default Layer Hold
+A cell is either a label, or a `TAP/HOLD` pair for keys that do something else when held, such as
+`Z/adj` which types a `Z` when tapped and shifts to the adjust layer while held. `_` marks a key
+that does nothing, and a `:FLAVOR` suffix picks the hold-tap flavor to use for that key:
 
-Modifiers used primarily in shortcuts have been mapped to the home-row. The modifiers and layer
-shifts used primarily in fluent writing remain on thumb keys to reduce issues hold-tap timing.
+```
+  T/cmd:hp     hold-preferred instead of the default tap-preferred
+  shft/shft    a sticky shift when tapped, a plain shift when held
+```
 
-|     |      |     |      |      |     |      |     |     |      |     |
-| --- | ---- | --- | ---- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd  | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| adj | ☐    | ☐   | ☐    | ☐    |     | ☐    | ☐   | ☐   | ☐    | adj |
-|     |      | mou | shft | lwr  |     | ☐    | rse | hyp |      |     |
+Holds shared by several layers are written once as an `overlay`, which a layer picks up by listing
+it after its name, as `homerow` is listed above. This is how the home-row modifiers are shared
+between layers without repeating them; a cell can still define its own hold to override the
+inherited one, or use `/_` to drop it.
 
-### Default Layer (Combos)
-
-|     |     |     |     |
-| --- | --- | --- | --- |
-
-## Raise Layer (Navigation + Numbers)
-
-|     |     |     |     |     |     |       |        |        |        |       |
-| --- | --- | --- | --- | --- | --- | ----- | ------ | ------ | ------ | ----- |
-| ☐   | 7   | 8   | 9   | ☐   |     | HOME  | WORD_L | UP     | WORD_R | END   |
-| ☐   | 4   | 5   | 6   | ☐   |     | FWD   | LEFT   | DOWN   | RIGHT  | BCK   |
-| 0   | 1   | 2   | 3   | ☐   |     | TAB_L | HYP\_[ | HYP\_\ | HYP\_] | TAB_R |
-|     |     | ☐   | ☐   | ☐   |     | ☐     | ☐      | ☐      |        |       |
-
-## Raise Layer Hold
-
-|     |      |     |     |      |     |      |     |     |      |     |
-| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
-
-## Lower Layer (Symbols)
-
-|     |     |     |     |     |     |     |     |          |      |     |
-| --- | --- | --- | --- | --- | --- | --- | --- | -------- | ---- | --- |
-| ~   | ^   | @   | $   | %   |     | &   | /   | \        | PIPE | `   |
-| UML | <   | [   | (   | {   |     | -   | \_  | :        | ;    | #   |
-| ☐   | >   | ]   | )   | }   |     | +   | =   | ?        | !    | "   |
-|     |     | ☐   | ☐   | ☐   |     | ☐   | ☐   | ALT_BKSP |      |     |
-
-## Lower Layer Hold
-
-|     |      |     |     |      |     |      |     |     |      |     |
-| --- | ---- | --- | --- | ---- | --- | ---- | --- | --- | ---- | --- |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-| hyp | shft | alt | cmd | ctrl |     | ctrl | cmd | alt | shft | hyp |
-| ☐   | ☐    | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   | ☐    | ☐   |
-|     |      | ☐   | ☐   | ☐    |     | ☐    | ☐   | ☐   |      |     |
-
-## Hyper Layer
-
-|       |       |         |       |         |     |         |          |          |           |       |
-| ----- | ----- | ------- | ----- | ------- | --- | ------- | -------- | -------- | --------- | ----- |
-| HYP_Q | HYP_W | HYP_F   | HYP_P | HYP_G   |     | HYP_1   | HYP_2    | HYP_3    | HYP_4     | HYP_5 |
-| HYP_A | HYP_R | HYP_S   | HYP_T | HYP_D   |     | ☐       | HYP_LEFT | HYP_UP   | HYP_RIGHT | ☐     |
-| HYP_Z | HYP_X | HYP_C   | HYP_V | HYP_B   |     | ☐       | HYP\_;   | HYP_DOWN | HYP\_'    | ☐     |
-|       |       | HYP_ESC | ☐     | HYP_TAB |     | HYP_RET | HYP_SPC  | HYP_BKSP |           |       |
-
-## Adjust Layer (Bluetooth)
-
-|        |      |      |     |     |     |     |     |     |     |     |
-| ------ | ---- | ---- | --- | --- | --- | --- | --- | --- | --- | --- |
-| BT_0   | BT_1 | BT_2 | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| BT_CLR | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| ☐      | ☐    | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-|        |      | ☐    | ☐   | ☐   |     | ☐   | ☐   | ☐   |     |     |
-
-## Mouse Layer (Left hand only keyboard shortcuts)
-
-|       |       |       |       |     |     |     |     |     |     |     |
-| ----- | ----- | ----- | ----- | --- | --- | --- | --- | --- | --- | --- |
-| CMD_Q | CMD_W | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| ☐     | ☐     | CMD_S | CMD_T | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-| CMD_Z | CMD_X | CMD_C | CMD_V | ☐   |     | ☐   | ☐   | ☐   | ☐   | ☐   |
-|       |       | ☐     | ☐     | ☐   |     | ☐   | ☐   | ☐   |     |     |
+The default layer is Colemak, with special characters remapped to prioritize commonly used
+characters in day-to-day writing. Holding a key on the home-row gives the modifiers used in
+shortcuts; the modifiers and layer shifts used in fluent writing sit on the thumbs instead, to
+reduce issues with hold-tap timing. The remaining layers cover navigation and numbers, symbols,
+window management, bluetooth, and left hand only shortcuts for when the right hand is on the mouse.
 
 ## Keyboards
 
