@@ -3,25 +3,65 @@
 #include <dt-bindings/zmk/bt.h>
 
 / {
+    // The hold-tap behaviors the keymap may use:
+    // - mt_  holds a modifier, taps a key
+    // - lt_  holds a layer, taps a key
+    // - smt_ holds a modifier, sticks it on tap
+    // - slt_ holds a layer, sticks it on tap
+    // mt_ and lt_ come in the flavors the keymap can pick between: tp
+    // (tap-preferred, the default, used on the home-row) and hp
+    // (hold-preferred, used on the thumb keys). Sticky keys are always
+    // tap-preferred, so that a quick tap always sticks.
     behaviors {
-        // Customized mod_tap and layer_tap:
-        // - mod_tap is 'tap preferred' as it's used on home-row
-        // - layer_tap uses balanced flavor
-        mt_: custom_mod_tap {
+        mt_tp: mod_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP";
+            label = "MOD_TAP_TP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             bindings = <&kp>, <&kp>;
         };
-        lt_: custom_layer_tap {
+        mt_hp: mod_tap_hold_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP";
+            label = "MOD_TAP_HP";
             #binding-cells = <2>;
-            flavor = "balanced";
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
+
+        lt_tp: layer_tap_tap_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_TP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
             tapping-term-ms = <200>;
             bindings = <&mo>, <&kp>;
+        };
+        lt_hp: layer_tap_hold_preferred {
+            compatible = "zmk,behavior-hold-tap";
+            label = "LAYER_TAP_HP";
+            #binding-cells = <2>;
+            flavor = "hold-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&kp>;
+        };
+
+        smt_: sticky_mod_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "STICKY_MOD_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&sk>;
+        };
+        slt_: sticky_layer_tap {
+            compatible = "zmk,behavior-hold-tap";
+            label = "STICKY_LAYER_TAP";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&mo>, <&sl>;
         };
     };
 
@@ -34,13 +74,13 @@
                     >;
             };
 
-            lower_layer {
+            raise_layer {
                     bindings = <
 #LAYER_1#
                     >;
             };
 
-            raise_layer {
+            lower_layer {
                     bindings = <
 #LAYER_2#
                     >;

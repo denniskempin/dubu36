@@ -12,10 +12,10 @@ setup:
 clean:
 	rm -rf build
 
-config/corne.keymap: generate_keymap.py README.md
+config/corne.keymap: generate_keymap.py keymap.txt zmk_template.dtsi
 	python3 generate_keymap.py zmk > $@
 
-config/boards/shields/dubu36e/dubu36e.keymap: generate_keymap.py README.md
+config/boards/shields/dubu36e/dubu36e.keymap: generate_keymap.py keymap.txt zmk_template.dtsi
 	python3 generate_keymap.py zmk > $@
 
 build/dubu36t_left.uf2: config/* config/corne.keymap
