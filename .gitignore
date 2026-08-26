@@ -6,10 +6,12 @@
 **/zmk-config/zephyr
 **/zmk-config/zmk
 .west
+.zmk-workspace
 build
 modules
 tools
-zephyr
+zephyr/*
+!zephyr/module.yml
 zmk
 artifacts
 

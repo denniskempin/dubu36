@@ -28,13 +28,6 @@ def _generated_zmk() -> str:
     )
 
 
-def test_zmk_output_matches_committed_corne_keymap() -> None:
-    expected = (REPO_ROOT / "config" / "corne.keymap").read_text(encoding="utf-8")
-    assert _generated_zmk() == expected
-
-
-def test_zmk_output_matches_committed_dubu36e_keymap() -> None:
-    expected = (
-        REPO_ROOT / "config" / "boards" / "shields" / "dubu36e" / "dubu36e.keymap"
-    ).read_text(encoding="utf-8")
+def test_zmk_output_matches_committed_shared_keymap() -> None:
+    expected = (REPO_ROOT / "config" / "shared_keymap.dtsi").read_text(encoding="utf-8")
     assert _generated_zmk() == expected

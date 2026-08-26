@@ -1,37 +1,56 @@
 BOARD=nice_nano
+# Isolated west workspace so the cloned Zephyr tree does not collide with
+# zephyr/module.yml at the repo root (same approach as ZMK's CI workflow).
+ZMK_WS ?= $(abspath .zmk-workspace)
+REPO_ROOT := $(abspath .)
+ZMK_CMAKE=-DZMK_CONFIG="$(ZMK_WS)/config" -DZMK_EXTRA_MODULES="$(REPO_ROOT)"
 
 all: keymaps build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
-keymaps: config/corne.keymap config/boards/shields/dubu36e/dubu36e.keymap
+keymaps: config/shared_keymap.dtsi
 
 setup:
-	west init -l config || exit
-	west update || exit
-	west zephyr-export || exit
+	mkdir -p "$(ZMK_WS)/config"
+	cp -a config/. "$(ZMK_WS)/config/"
+	cd "$(ZMK_WS)" && west init -l config || true
+	cd "$(ZMK_WS)" && west update || exit
+	cd "$(ZMK_WS)" && west zephyr-export || exit
 
 clean:
 	rm -rf build
 
-config/corne.keymap: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/zmk_template.dtsi
-	uv run --directory keymap_generator generate-keymap zmk > $@
+config/shared_keymap.dtsi: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/zmk_template.dtsi
+	uv run --directory keymap_generator generate-keymap zmk > $@.tmp
+	mv $@.tmp $@
 
-config/boards/shields/dubu36e/dubu36e.keymap: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/zmk_template.dtsi
-	uv run --directory keymap_generator generate-keymap zmk > $@
+# Sync user config into the west workspace before each build.
+define sync-config
+	mkdir -p "$(ZMK_WS)/config"
+	cp -a config/. "$(ZMK_WS)/config/"
+endef
 
-build/dubu36t_left.uf2: config/* config/corne.keymap
-	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DZMK_CONFIG="`pwd`/config" || exit
+build/dubu36t_left.uf2: config/* config/shared_keymap.dtsi
+	$(sync-config)
+	cd "$(ZMK_WS)" && west build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=corne_left $(ZMK_CMAKE) || exit
+	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-build/dubu36t_right.uf2: config/* config/corne.keymap
-	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=corne_right -DZMK_CONFIG="`pwd`/config" || exit
+build/dubu36t_right.uf2: config/* config/shared_keymap.dtsi
+	$(sync-config)
+	cd "$(ZMK_WS)" && west build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=corne_right $(ZMK_CMAKE) || exit
+	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-build/dubu36e_left.uf2: config/boards/shields/dubu36e/*
-	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=dubu36e_left -DZMK_CONFIG="`pwd`/config" || exit
+build/dubu36e_left.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi config/dubu36e.keymap config/dubu36e.conf
+	$(sync-config)
+	cd "$(ZMK_WS)" && west build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=dubu36e_left $(ZMK_CMAKE) || exit
+	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-build/dubu36e_right.uf2: config/boards/shields/dubu36e/*
-	west build -d $(basename $@) -s zmk/app -b nice_nano -- -DSHIELD=dubu36e_right -DZMK_CONFIG="`pwd`/config" || exit
+build/dubu36e_right.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi config/dubu36e.keymap config/dubu36e.conf
+	$(sync-config)
+	cd "$(ZMK_WS)" && west build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=dubu36e_right $(ZMK_CMAKE) || exit
+	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
 .PHONY: all keymaps setup clean
