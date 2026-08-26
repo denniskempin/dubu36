@@ -1,0 +1,14 @@
+{
+  "name": "ZMK Development",
+  "build": {
+    "dockerfile": "../.devcontainer/Dockerfile",
+    "context": "../.devcontainer"
+  },
+  "install": "./.cursor/install.sh",
+  "ports": [
+    {
+      "name": "docs",
+      "port": 3000
+    }
+  ]
+}
