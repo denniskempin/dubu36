@@ -15,7 +15,6 @@
     behaviors {
         mt_tp: mod_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP_TP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
@@ -23,7 +22,6 @@
         };
         mt_hp: mod_tap_hold_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "MOD_TAP_HP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
@@ -32,7 +30,6 @@
 
         lt_tp: layer_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_TP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
@@ -40,7 +37,6 @@
         };
         lt_hp: layer_tap_hold_preferred {
             compatible = "zmk,behavior-hold-tap";
-            label = "LAYER_TAP_HP";
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
@@ -49,7 +45,6 @@
 
         smt_: sticky_mod_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "STICKY_MOD_TAP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
@@ -57,7 +52,6 @@
         };
         slt_: sticky_layer_tap {
             compatible = "zmk,behavior-hold-tap";
-            label = "STICKY_LAYER_TAP";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
