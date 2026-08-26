@@ -55,25 +55,18 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     layers, combos = parse_keymap(args.keymap)
     if args.firmware == "zmk":
-        print(
-            generate_keymap(
-                layers,
-                combos,
-                args.zmk_template,
-                generate_zmk_layer,
-                generate_zmk_combo,
-            )
+        template, layer_fn, combo_fn = (
+            args.zmk_template,
+            generate_zmk_layer,
+            generate_zmk_combo,
         )
     else:
-        print(
-            generate_keymap(
-                layers,
-                combos,
-                args.qmk_template,
-                generate_qmk_layer,
-                generate_qmk_combo,
-            )
+        template, layer_fn, combo_fn = (
+            args.qmk_template,
+            generate_qmk_layer,
+            generate_qmk_combo,
         )
+    print(generate_keymap(layers, combos, template, layer_fn, combo_fn))
     return 0
 
 

@@ -50,6 +50,18 @@ class Layer(NamedTuple):
     rows: list[list[Key]]
 
 
+class Block(NamedTuple):
+    """The header of the block currently being parsed.
+
+    `keyword` is one of `overlay`, `layer` or `combos`; `name` is empty for a
+    `combos` block; `overlays` lists the overlays a `layer` inherits holds from.
+    """
+
+    keyword: str
+    name: str
+    overlays: list[str]
+
+
 class ParseError(Exception):
     """A parse failure with a path and line number."""
 
@@ -118,7 +130,7 @@ class KeymapParser:
         self.overlays: dict[str, list[list[Key]]] = {}
         self.layers: list[Layer] = []
         self.combos: list[Combo] = []
-        self.block: tuple[str, str, list[str]] | None = None
+        self.block: Block | None = None
         self.rows: list[list[Key]] = []
 
     def error(self, message: str) -> ParseError:
@@ -129,15 +141,17 @@ class KeymapParser:
             line = strip_comment(line).strip()
             if not line:
                 continue
-            keyword, rest = (line.split(None, 1) + [""])[:2]
+            parts = line.split(None, 1)
+            keyword = parts[0]
+            rest = parts[1].strip() if len(parts) > 1 else ""
             if keyword in ("overlay", "layer", "combos"):
                 self.end_block()
-                self.start_block(keyword, rest.strip())
+                self.start_block(keyword, rest)
             elif self.block is None:
                 raise self.error(
                     f"expected an overlay, layer or combos block, got {line!r}"
                 )
-            elif self.block[0] == "combos":
+            elif self.block.keyword == "combos":
                 self.combos.append(self.parse_combo(line.split()))
             else:
                 self.rows.append(self.parse_row(line.split()))
@@ -155,13 +169,12 @@ class KeymapParser:
                 raise self.error(f"unknown overlay {overlay!r}")
         if overlays_list and keyword != "layer":
             raise self.error(f"{keyword} blocks cannot use overlays")
-        if bool(name) == (keyword == "combos"):
-            raise self.error(
-                f"{keyword} blocks take no name"
-                if name
-                else f"{keyword} blocks need a name"
-            )
-        self.block = (keyword, name.strip(), overlays_list)
+        name = name.strip()
+        if keyword == "combos" and name:
+            raise self.error(f"{keyword} blocks take no name")
+        if keyword != "combos" and not name:
+            raise self.error(f"{keyword} blocks need a name")
+        self.block = Block(keyword, name, overlays_list)
         self.rows = []
 
     def end_block(self) -> None:

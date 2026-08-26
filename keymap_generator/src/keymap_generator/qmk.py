@@ -14,7 +14,7 @@ def get_qmk_key_press_code(label: str) -> str | None:
     if len(label) == 1 and (label.isalpha() or label.isdigit()):
         return f"KC_{label}"
     if label in KEY_PRESS_CODES:
-        return KEY_PRESS_CODES[label][1]
+        return KEY_PRESS_CODES[label].qmk
     return None
 
 
@@ -25,7 +25,7 @@ def map_key_label_to_qmk(label: str) -> str:
     if label in LAYER_LABELS:
         return f"MO({LAYER_LABELS[label]})"
     if label in SPECIAL_LABELS:
-        return SPECIAL_LABELS[label][1]
+        return SPECIAL_LABELS[label].qmk
     if not label:
         return "KC_NO"
     raise KeyError(f"Cannot map label {label} to qmk.")
