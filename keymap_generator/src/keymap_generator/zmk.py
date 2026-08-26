@@ -21,7 +21,7 @@ def get_zmk_key_press_code(label: str) -> str | None:
     if label.isdigit() and len(label) == 1:
         return f"N{label}"
     if label in KEY_PRESS_CODES:
-        return KEY_PRESS_CODES[label][0]
+        return KEY_PRESS_CODES[label].zmk
     return None
 
 
@@ -32,7 +32,7 @@ def map_key_label_to_zmk(label: str) -> str:
     if label in LAYER_LABELS:
         return f"&mo {LAYER_LABELS[label]}"
     if label in SPECIAL_LABELS:
-        return SPECIAL_LABELS[label][0]
+        return SPECIAL_LABELS[label].zmk
     if not label:
         return "&trans"
     raise KeyError(f"Cannot map label {label} to zmk.")

@@ -2,87 +2,96 @@
 
 from __future__ import annotations
 
-# Maps labels from the keymap grid to key press codes in ZMK and QMK.
-# "LABEL": ("ZMK CODE", "QMK CODE")
-KEY_PRESS_CODES: dict[str, tuple[str, str]] = {
+from typing import NamedTuple
+
+
+class FirmwareCodes(NamedTuple):
+    """The same key expressed in each firmware's binding syntax."""
+
+    zmk: str
+    qmk: str
+
+
+# Maps labels from the keymap grid to the key press code in each firmware.
+KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     # Special Keys
-    "ESC": ("ESC", "KC_ESC"),
-    "RET": ("RET", "KC_ENT"),
-    "TAB": ("TAB", "KC_TAB"),
-    "SPC": ("SPC", "KC_SPC"),
-    "BKSP": ("BKSP", "KC_BSPC"),
-    "CMD_RET": ("LG(RET)", "S(KC_ENT)"),
-    "ALT_BKSP": ("LA(BKSP)", "A(KC_BSPC)"),
-    # Text Navigatioh Keys
-    "LEFT": ("LEFT", "KC_LEFT"),
-    "RIGHT": ("RIGHT", "KC_RIGHT"),
-    "UP": ("UP", "KC_UP"),
-    "DOWN": ("DOWN", "KC_DOWN"),
-    "WORD_L": ("LA(LEFT)", "A(KC_LEFT)"),
-    "WORD_R": ("LA(RIGHT)", "A(KC_RIGHT)"),
-    "HOME": ("HOME", "KC_HOME"),
-    "END": ("END", "KC_END"),
+    "ESC": FirmwareCodes("ESC", "KC_ESC"),
+    "RET": FirmwareCodes("RET", "KC_ENT"),
+    "TAB": FirmwareCodes("TAB", "KC_TAB"),
+    "SPC": FirmwareCodes("SPC", "KC_SPC"),
+    "BKSP": FirmwareCodes("BKSP", "KC_BSPC"),
+    "CMD_RET": FirmwareCodes("LG(RET)", "S(KC_ENT)"),
+    "ALT_BKSP": FirmwareCodes("LA(BKSP)", "A(KC_BSPC)"),
+    # Text Navigation Keys
+    "LEFT": FirmwareCodes("LEFT", "KC_LEFT"),
+    "RIGHT": FirmwareCodes("RIGHT", "KC_RIGHT"),
+    "UP": FirmwareCodes("UP", "KC_UP"),
+    "DOWN": FirmwareCodes("DOWN", "KC_DOWN"),
+    "WORD_L": FirmwareCodes("LA(LEFT)", "A(KC_LEFT)"),
+    "WORD_R": FirmwareCodes("LA(RIGHT)", "A(KC_RIGHT)"),
+    "HOME": FirmwareCodes("HOME", "KC_HOME"),
+    "END": FirmwareCodes("END", "KC_END"),
     # UI Navigation Keys
-    "SPC_L": ("LC(LEFT)", "C(KC_LEFT)"),
-    "SPC_R": ("LC(RIGHT)", "C(KC_RIGHT)"),
-    "NXT_WIN": ("LC(F4)", "C(KC_F4)"),
+    "SPC_L": FirmwareCodes("LC(LEFT)", "C(KC_LEFT)"),
+    "SPC_R": FirmwareCodes("LC(RIGHT)", "C(KC_RIGHT)"),
+    "NXT_WIN": FirmwareCodes("LC(F4)", "C(KC_F4)"),
     # Forward / Backwards (GUI + Bracket)
-    "FWD": ("LG(LBKT)", "G(KC_LBRC)"),
-    "BCK": ("LG(RBKT)", "G(KC_RBRC)"),
+    "FWD": FirmwareCodes("LG(LBKT)", "G(KC_LBRC)"),
+    "BCK": FirmwareCodes("LG(RBKT)", "G(KC_RBRC)"),
     # Prev / Next Tab (GUI + Shift Bracket)
-    "TAB_L": ("LG(LS(LBKT))", "G(S(KC_LBRC))"),
-    "TAB_R": ("LG(LS(RBKT))", "G(S(KC_RBRC))"),
+    "TAB_L": FirmwareCodes("LG(LS(LBKT))", "G(S(KC_LBRC))"),
+    "TAB_R": FirmwareCodes("LG(LS(RBKT))", "G(S(KC_RBRC))"),
     # Umlaut key
-    "UML": ("LA(U)", "A(KC_U)"),
+    "UML": FirmwareCodes("LA(U)", "A(KC_U)"),
     # Symbols
-    "`": ("GRAVE", "KC_GRAVE"),
-    "~": ("LS(GRAVE)", "KC_TILDE"),
-    "!": ("LS(N1)", "KC_EXCLAIM"),
-    "@": ("LS(N2)", "KC_AT"),
-    "#": ("LS(N3)", "KC_HASH"),
-    "$": ("LS(N4)", "KC_DOLLAR"),
-    "%": ("LS(N5)", "KC_PERCENT"),
-    "^": ("LS(N6)", "KC_CIRCUMFLEX"),
-    "&": ("LS(N7)", "KC_AMPERSAND"),
-    "*": ("LS(N8)", "KC_ASTERISK"),
-    "(": ("LS(N9)", "KC_LEFT_PAREN"),
-    ")": ("LS(N0)", "KC_RIGHT_PAREN"),
-    "-": ("KP_MINUS", "KC_MINUS"),
-    "_": ("LS(MINUS)", "KC_UNDERSCORE"),
-    "=": ("EQUAL", "KC_EQUAL"),
-    "+": ("LS(EQUAL)", "KC_PLUS"),
-    "[": ("LBKT", "KC_LBRC"),
-    "{": ("LS(LBKT)", "KC_LCBR"),
-    "]": ("RBKT", "KC_RBRC"),
-    "}": ("LS(RBKT)", "KC_RCBR"),
-    "\\": ("BSLH", "KC_BSLASH"),
-    "PIPE": ("LS(BSLH)", "KC_PIPE"),
-    ";": ("SEMI", "KC_SCOLON"),
-    ":": ("LS(SEMI)", "KC_COLON"),
-    "'": ("SQT", "KC_QUOTE"),
-    '"': ("LS(SQT)", "KC_DOUBLE_QUOTE"),
-    ",": ("COMMA", "KC_COMMA"),
-    "<": ("LS(COMMA)", "KC_LEFT_ANGLE_BRACKET"),
-    ".": ("DOT", "KC_DOT"),
-    ">": ("LS(DOT)", "KC_RIGHT_ANGLE_BRACKET"),
-    "/": ("FSLH", "KC_SLASH"),
-    "?": ("LS(FSLH)", "KC_QUESTION"),
+    "`": FirmwareCodes("GRAVE", "KC_GRAVE"),
+    "~": FirmwareCodes("LS(GRAVE)", "KC_TILDE"),
+    "!": FirmwareCodes("LS(N1)", "KC_EXCLAIM"),
+    "@": FirmwareCodes("LS(N2)", "KC_AT"),
+    "#": FirmwareCodes("LS(N3)", "KC_HASH"),
+    "$": FirmwareCodes("LS(N4)", "KC_DOLLAR"),
+    "%": FirmwareCodes("LS(N5)", "KC_PERCENT"),
+    "^": FirmwareCodes("LS(N6)", "KC_CIRCUMFLEX"),
+    "&": FirmwareCodes("LS(N7)", "KC_AMPERSAND"),
+    "*": FirmwareCodes("LS(N8)", "KC_ASTERISK"),
+    "(": FirmwareCodes("LS(N9)", "KC_LEFT_PAREN"),
+    ")": FirmwareCodes("LS(N0)", "KC_RIGHT_PAREN"),
+    "-": FirmwareCodes("KP_MINUS", "KC_MINUS"),
+    "_": FirmwareCodes("LS(MINUS)", "KC_UNDERSCORE"),
+    "=": FirmwareCodes("EQUAL", "KC_EQUAL"),
+    "+": FirmwareCodes("LS(EQUAL)", "KC_PLUS"),
+    "[": FirmwareCodes("LBKT", "KC_LBRC"),
+    "{": FirmwareCodes("LS(LBKT)", "KC_LCBR"),
+    "]": FirmwareCodes("RBKT", "KC_RBRC"),
+    "}": FirmwareCodes("LS(RBKT)", "KC_RCBR"),
+    "\\": FirmwareCodes("BSLH", "KC_BSLASH"),
+    "PIPE": FirmwareCodes("LS(BSLH)", "KC_PIPE"),
+    ";": FirmwareCodes("SEMI", "KC_SCOLON"),
+    ":": FirmwareCodes("LS(SEMI)", "KC_COLON"),
+    "'": FirmwareCodes("SQT", "KC_QUOTE"),
+    '"': FirmwareCodes("LS(SQT)", "KC_DOUBLE_QUOTE"),
+    ",": FirmwareCodes("COMMA", "KC_COMMA"),
+    "<": FirmwareCodes("LS(COMMA)", "KC_LEFT_ANGLE_BRACKET"),
+    ".": FirmwareCodes("DOT", "KC_DOT"),
+    ">": FirmwareCodes("LS(DOT)", "KC_RIGHT_ANGLE_BRACKET"),
+    "/": FirmwareCodes("FSLH", "KC_SLASH"),
+    "?": FirmwareCodes("LS(FSLH)", "KC_QUESTION"),
     # Modifiers
-    "CMD": ("LGUI", "KC_LGUI"),
-    "SHFT": ("LSHFT", "KC_LSFT"),
-    "CTRL": ("LCTRL", "KC_LCTL"),
-    "ALT": ("LALT", "KC_LALT"),
+    "CMD": FirmwareCodes("LGUI", "KC_LGUI"),
+    "SHFT": FirmwareCodes("LSHFT", "KC_LSFT"),
+    "CTRL": FirmwareCodes("LCTRL", "KC_LCTL"),
+    "ALT": FirmwareCodes("LALT", "KC_LALT"),
 }
 
-# Maps labels from the keymap grid to special instructions for ZMK and QMK.
-# "LABEL": ("ZMK", "QMK")
-SPECIAL_LABELS: dict[str, tuple[str, str]] = {
+# Maps labels from the keymap grid to a ready-made binding in each firmware,
+# used for keys that are not a simple key press (e.g. Bluetooth controls).
+SPECIAL_LABELS: dict[str, FirmwareCodes] = {
     # Bluetooth
-    "BT_CLR": ("&bt BT_CLR", "KC_NO"),
-    "BT_0": ("&bt BT_SEL 0", "KC_NO"),
-    "BT_1": ("&bt BT_SEL 1", "KC_NO"),
-    "BT_2": ("&bt BT_SEL 2", "KC_NO"),
-    "BT_3": ("&bt BT_SEL 3", "KC_NO"),
+    "BT_CLR": FirmwareCodes("&bt BT_CLR", "KC_NO"),
+    "BT_0": FirmwareCodes("&bt BT_SEL 0", "KC_NO"),
+    "BT_1": FirmwareCodes("&bt BT_SEL 1", "KC_NO"),
+    "BT_2": FirmwareCodes("&bt BT_SEL 2", "KC_NO"),
+    "BT_3": FirmwareCodes("&bt BT_SEL 3", "KC_NO"),
 }
 
 # Maps labels from the keymap grid to layer numbers.
