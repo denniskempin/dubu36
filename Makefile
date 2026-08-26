@@ -11,7 +11,7 @@ keymaps: config/shared_keymap.dtsi
 
 setup:
 	mkdir -p "$(ZMK_WS)/config"
-	rsync -a --delete config/ "$(ZMK_WS)/config/"
+	cp -a config/. "$(ZMK_WS)/config/"
 	cd "$(ZMK_WS)" && west init -l config || true
 	cd "$(ZMK_WS)" && west update || exit
 	cd "$(ZMK_WS)" && west zephyr-export || exit
@@ -20,12 +20,13 @@ clean:
 	rm -rf build
 
 config/shared_keymap.dtsi: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/zmk_template.dtsi
-	uv run --directory keymap_generator generate-keymap zmk > $@
+	uv run --directory keymap_generator generate-keymap zmk > $@.tmp
+	mv $@.tmp $@
 
 # Sync user config into the west workspace before each build.
 define sync-config
 	mkdir -p "$(ZMK_WS)/config"
-	rsync -a --delete config/ "$(ZMK_WS)/config/"
+	cp -a config/. "$(ZMK_WS)/config/"
 endef
 
 build/dubu36t_left.uf2: config/* config/shared_keymap.dtsi
