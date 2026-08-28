@@ -330,14 +330,19 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     y_top = KH * 0.32
     y_bot = KH * 0.80
 
-    base = spec.get("base") or ""
-    if base:
-        parts.append(f'<text class="base" x="{x_left}" y="{y_top}">{esc(base)}</text>')
-    elif spec.get("base_glyph"):
-        parts.append(
-            f'<use class="glyph base" href="#glyph_{spec["base_glyph"]}" '
-            f'x="{x_left}" y="{y_top}"/>'
-        )
+    # One-shot keys use the left-bar label alone: tap and hold are the same
+    # label, so drawing base as well would duplicate it.
+    if flavor != "oneshot":
+        base = spec.get("base") or ""
+        if base:
+            parts.append(
+                f'<text class="base" x="{x_left}" y="{y_top}">{esc(base)}</text>'
+            )
+        elif spec.get("base_glyph"):
+            parts.append(
+                f'<use class="glyph base" href="#glyph_{spec["base_glyph"]}" '
+                f'x="{x_left}" y="{y_top}"/>'
+            )
 
     if hold and flavor == "oneshot":
         parts.append(
