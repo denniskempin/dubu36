@@ -9,7 +9,7 @@ if [ -z "${WORKSPACE_DIR:-}" ]; then
     export WORKSPACE_DIR="$(pwd)"
   fi
 fi
-if [ -f "$WORKSPACE_DIR/zephyr/zephyr-env.sh" ]; then
-  source "$WORKSPACE_DIR/zephyr/zephyr-env.sh"
+if [ -f "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh" ]; then
+  source "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh"
 fi
 
