@@ -12,4 +12,8 @@ fi
 if [ -f "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh" ]; then
   source "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh"
 fi
+if [ -f "${HOME}/.local/bin/env" ]; then
+  # shellcheck disable=SC1091
+  . "${HOME}/.local/bin/env"
+fi
 

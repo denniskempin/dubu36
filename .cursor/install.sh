@@ -7,7 +7,10 @@ cd "$WORKSPACE_DIR"
 
 if ! command -v uv >/dev/null 2>&1; then
   curl -LsSf https://astral.sh/uv/install.sh | sh
-  export PATH="${HOME}/.local/bin:${PATH}"
+fi
+if [ -f "${HOME}/.local/bin/env" ]; then
+  # shellcheck disable=SC1091
+  . "${HOME}/.local/bin/env"
 fi
 
 # Earlier revisions of this script ran `west init -l config` here at the repo
@@ -27,3 +30,10 @@ make setup
 # The diagrams group is needed by `make diagrams`, which `make all` depends on,
 # and by `ty` to resolve the cairosvg import in render.py.
 uv sync --directory keymap_generator --locked --group diagrams
+
+# The dev container keeps /root on a persistent volume, which hides the image
+# copy of .devcontainer/.bashrc. Sync the repo version so Zephyr env and uv
+# stay on PATH across rebuilds.
+if [ -f .devcontainer/.bashrc ]; then
+  install -m 644 .devcontainer/.bashrc "${HOME}/.bashrc"
+fi
