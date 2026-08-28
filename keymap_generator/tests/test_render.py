@@ -60,13 +60,13 @@ class TestSpecsFromKeymap:
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Left thumbs: dedicated sticky rse, shft, and lwr layer keys.
+        # Left thumbs: dedicated oneshot rse, shft, and lwr layer keys.
         assert specs[30]["hold"] == "RSE"
         assert specs[30]["accent"] == "nav"
-        assert specs[30]["flavor"] == "sticky"
+        assert specs[30]["flavor"] == "oneshot"
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
-        assert specs[32]["flavor"] == "sticky"
+        assert specs[32]["flavor"] == "oneshot"
         assert specs[33]["base_glyph"] == "return"
         assert specs[34]["base_glyph"] == "space"
         assert specs[35]["hold"] == ""

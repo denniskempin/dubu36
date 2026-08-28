@@ -68,7 +68,7 @@
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
 &trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
-&slt_ 1 1 &smt_ LSHFT LSHFT &slt_ 2 2 &kp RET &kp SPC &trans
+&olt_ 1 1 &omt_ LSHFT LSHFT &olt_ 2 2 &kp RET &kp SPC &trans
                     >;
             };
 
