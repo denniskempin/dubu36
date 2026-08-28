@@ -125,7 +125,9 @@ Known gaps, deliberate:
 
 - `generate_zmk_combo` is a stub; combos only reach QMK.
 - `qmk_template.c` only has `#LAYER_0#`..`#LAYER_2#`, so QMK gets the first three layers.
-- `COMBO_SLOTS` in `generate.py` must equal `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`.
+- Combo count is hard-coded in three places that must agree: `COMBO_SLOTS` in `generate.py`, the
+  `#COMBO_*_N#` slots in `qmk_template.c`, and `COMBO_COUNT` in
+  `dubu36-ergo/qmk/dubu36ergo/config.h`.
 - `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
   36-key grid onto the corne's 42-key matrix.
 
