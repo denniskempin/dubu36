@@ -5,14 +5,6 @@ set -euo pipefail
 export WORKSPACE_DIR="${WORKSPACE_DIR:-/workspace}"
 cd "$WORKSPACE_DIR"
 
-if ! command -v uv >/dev/null 2>&1; then
-  curl -LsSf https://astral.sh/uv/install.sh | sh
-fi
-if [ -f "${HOME}/.local/bin/env" ]; then
-  # shellcheck disable=SC1091
-  . "${HOME}/.local/bin/env"
-fi
-
 # Earlier revisions of this script ran `west init -l config` here at the repo
 # root. That layout cannot build the firmware: the repo root is passed to ZMK as
 # an extra Zephyr module, so Zephyr resolves its Kconfig to the checked-out
