@@ -19,5 +19,5 @@
 	"forwardPorts": [
 		3000
 	],
-	"postStartCommand": "install -m 644 .devcontainer/.bashrc \"$HOME/.bashrc\""
+	"postStartCommand": "rm -f \"$HOME/.bashrc\""
 }

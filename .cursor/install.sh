@@ -30,10 +30,3 @@ make setup
 # The diagrams group is needed by `make diagrams`, which `make all` depends on,
 # and by `ty` to resolve the cairosvg import in render.py.
 uv sync --directory keymap_generator --locked --group diagrams
-
-# The dev container keeps /root on a persistent volume, which hides the image
-# copy of .devcontainer/.bashrc. Sync the repo version so Zephyr env and uv
-# stay on PATH across rebuilds.
-if [ -f .devcontainer/.bashrc ]; then
-  install -m 644 .devcontainer/.bashrc "${HOME}/.bashrc"
-fi
