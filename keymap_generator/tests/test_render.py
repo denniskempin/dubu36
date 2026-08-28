@@ -116,6 +116,10 @@ class TestRenderOutput:
         assert 'class="hold-box tap-preferred mod"' in svg
         assert 'class="hold-box hold-preferred mod"' in svg
         assert 'class="hold-box oneshot nav"' in svg
+        # One-shot keys draw only the left-bar label, not a duplicate base.
+        assert svg.count(">RSE<") == 0
+        assert 'class="oneshot nav"' in svg
+        assert ">rse</text>" in svg
 
     def test_render_diagrams_writes_expected_files(self, tmp_path: Path) -> None:
         written = render_diagrams(KEYMAP, tmp_path, no_png=True)
