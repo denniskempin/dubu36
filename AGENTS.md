@@ -60,19 +60,31 @@ under a minute for all four).
 
 The build needs an **isolated** west workspace, which is why `make setup` creates
 `.zmk-workspace/` instead of initializing west at the repo root. The repo root is passed as
-`ZMK_EXTRA_MODULES` so ZMK picks up `boards/shields/dubu36e/`, and `zephyr/module.yml` sets
-`board_root: .`. If a Zephyr tree is also checked out at `zephyr/`, Zephyr's module Kconfig
-generation resolves the repo-root module's Kconfig to that tree's own `Kconfig` and the build
-dies with `recursive 'source' of 'Kconfig.zephyr' detected`.
+`ZMK_EXTRA_MODULES` so ZMK picks up `boards/shields/dubu36e/`, while `zephyr/module.yml` makes
+it a Zephyr module with `board_root: .`.
 
-`.cursor/install.sh` does exactly that: it runs `west init -l config` at the repo root, so on a
-fresh Cloud Agent VM the root west workspace exists and `make setup`/`make all` cannot work.
-Clear it before building firmware:
+### Gotcha: `.cursor/install.sh` breaks `make`
+
+The Cloud Agent bootstrap runs `west init -l config` at the repo root, so on a fresh VM there is
+a west workspace at `/workspace` with Zephyr, ZMK and the modules checked out in place. Two
+things then go wrong, and neither is obvious from the output:
+
+- `make setup` fails silently. `west init` inside `.zmk-workspace/` finds the root `.west/`
+  above it and aborts with `FATAL ERROR: already initialized in /workspace`, which the Makefile
+  swallows with `|| true`. The following `west update` then updates the *root* workspace, so
+  `make setup` exits 0 having created nothing, and `make all` fails with
+  `ERROR: source directory zmk/app does not exist`.
+- Building in the root workspace instead is not a workaround. With the repo root as an extra
+  module and a real Zephyr tree at `zephyr/`, Zephyr resolves the repo-root module's Kconfig to
+  that tree's own `Kconfig`, and the build dies with
+  `recursive 'source' of 'Kconfig.zephyr' detected`.
+
+Clear the root workspace before building firmware:
 
 ```sh
 cd /workspace
 rm -rf .west zmk modules tools
-find zephyr -mindepth 1 -not -name module.yml -delete
+find zephyr -mindepth 1 -maxdepth 1 -not -name module.yml -exec rm -rf {} +
 unset ZEPHYR_BASE          # .devcontainer/.bashrc exports it from the root tree
 make setup && make all
 ```
