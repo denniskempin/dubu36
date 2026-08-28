@@ -55,7 +55,7 @@ class TestSpecsFromKeymap:
     def test_stacked_specs_cover_all_keys(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        assert len(specs) == 36
+        assert len(specs) == 35
 
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -79,9 +79,10 @@ class TestSpecsFromKeymap:
     def test_symbol_overlay_includes_delete_word_glyph(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Rightmost thumb: BKSP with ALT_BKSP on lwr.
-        assert specs[35]["base_glyph"] == "backspace"
-        assert specs[35]["sym_glyph"] == "delete-word"
+        # Return thumb: RET/BKSP with ALT_BKSP on lwr.
+        assert specs[33]["base_glyph"] == "return"
+        assert specs[33]["hold"] == "BKSP"
+        assert specs[33]["sym_glyph"] == "delete-word"
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -107,7 +108,8 @@ class TestRenderOutput:
                 [Key("Q", "", None)] * 10,
                 [Key("A", "SHFT", "tp")] * 10,
                 [Key("Z", "", None)] * 10,
-                [Key("ESC", "MOU", "hp")] * 6,
+                [Key("ESC", "MOU", "hp"), Key("", "SHFT", None), Key("TAB", "LWR", "hp"),
+                 Key("RET", "BKSP", "hp"), Key("SPC", "RSE", "hp")],
             ],
         )
         svg = render_board(layer_specs(layer), "demo")

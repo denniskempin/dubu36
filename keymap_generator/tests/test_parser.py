@@ -30,7 +30,7 @@ def blank_layer(name: str, overlays: str = "") -> str:
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
-              _ _ _   _ _ _
+              _ _ _   _ _
         """
     )
 
@@ -70,43 +70,43 @@ class TestParseKeymapHappyPath:
               _ _ _ _ _   _ _ _ _ _
               hyp shft alt cmd ctrl   ctrl cmd alt shft hyp
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             layer default: homerow
               Q W F P G   J L U Y *
               A R S T D   H N E I O
               Z/adj X C V B   K M , . '/adj
-                  ESC/mou:hp _/shft TAB/lwr:hp   RET SPC/rse:hp BKSP/hyp:hp
+                  ESC/mou:hp _/shft TAB/lwr:hp   RET/BKSP:hp SPC/rse:hp
 
             layer rse: homerow
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             layer lwr: homerow
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             layer hyp
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             layer adj
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             layer mou
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             combos
               Q W -> ESC
@@ -140,7 +140,7 @@ class TestParseKeymapHappyPath:
               Q W F P G   J L U Y *
               A R S T D   H N E I O
               Z X C V B   K M , . '
-                  ESC shft/shft TAB   RET SPC BKSP
+                  ESC shft/shft TAB   RET/BKSP SPC
 
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
@@ -156,7 +156,7 @@ class TestParseKeymapHappyPath:
               ~ ^ @ $ %   & \\/ \\\\ PIPE `
               UML < [ ( {   - \\_ \\: ; #
               _ > ] ) }   + = ? ! "
-                  _ _ _   _ _ _
+                  _ _ _   _ _
 
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
@@ -203,7 +203,7 @@ class TestParseErrors:
               _ _ _ _ _   _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
+                  _ _ _   _ _
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
         with pytest.raises(ParseError, match="has 9 keys"):
@@ -216,7 +216,7 @@ class TestParseErrors:
               Q W F P G   J L U Y *
               A R S T D   H N E I O
               Z X C V B   K M , . '
-                  ESC/mou:xx _ _   _ _ _
+                  ESC/mou:xx _ _   _ _
 
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
@@ -230,7 +230,7 @@ class TestParseErrors:
               Q W F P G   J L U Y *
               A R S T D   H N E I O
               Z X C V B   K M , . '
-                  ESC shft/shft:hp _   _ _ _
+                  ESC shft/shft:hp _   _ _
 
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])

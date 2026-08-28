@@ -76,5 +76,10 @@ def generate_zmk_layer(layer: Layer) -> str:
         rows.append(
             "&trans " + " ".join(map_key_to_zmk(key) for key in row) + " &trans"
         )
-    rows.append(" ".join(map_key_to_zmk(key) for key in layer.rows[3]))
+    thumb_bindings = [map_key_to_zmk(key) for key in layer.rows[3]]
+    # Corne's combined matrix still has six thumb positions; pad the dropped
+    # outer-right slot with &none when the grid only defines five thumbs.
+    if len(thumb_bindings) == 5:
+        thumb_bindings.append("&none")
+    rows.append(" ".join(thumb_bindings))
     return "\n".join(rows)

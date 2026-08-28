@@ -155,8 +155,12 @@ def hold_flavor(key: Key) -> str | None:
     return "tap-preferred"
 
 
+LEFT_THUMBS = 3
+RIGHT_THUMBS = 2
+
+
 def flatten_layer(layer: Layer) -> list[Key]:
-    """Flatten a layer's rows into the 36-key ortho index order."""
+    """Flatten a layer's rows into ortho index order."""
     return [key for row in layer.rows for key in row]
 
 
@@ -164,8 +168,12 @@ def layers_by_name(layers: list[Layer]) -> dict[str, Layer]:
     return {layer.name: layer for layer in layers}
 
 
-def ortho_positions(columns: int = 5, thumbs: int = 3) -> list[tuple[float, float]]:
-    """Return (x, y) for each of the 36 key indices (left then right per row)."""
+def ortho_positions(
+    columns: int = 5,
+    left_thumbs: int = LEFT_THUMBS,
+    right_thumbs: int = RIGHT_THUMBS,
+) -> list[tuple[float, float]]:
+    """Return (x, y) for each key index (left then right per row)."""
     positions: list[tuple[float, float]] = []
     for row in range(3):
         y = row * KH
@@ -174,14 +182,20 @@ def ortho_positions(columns: int = 5, thumbs: int = 3) -> list[tuple[float, floa
         for col in range(columns):
             positions.append((columns * KW + SPLIT_GAP + col * KW, y))
     thumb_y = 3 * KH + 8
-    left_thumb_xs = [(columns - thumbs + i) * KW for i in range(thumbs)]
-    right_thumb_xs = [columns * KW + SPLIT_GAP + i * KW for i in range(thumbs)]
+    left_thumb_xs = [(columns - left_thumbs + i) * KW for i in range(left_thumbs)]
+    right_thumb_xs = [
+        columns * KW + SPLIT_GAP + i * KW for i in range(right_thumbs)
+    ]
     for x in left_thumb_xs + right_thumb_xs:
         positions.append((x, thumb_y))
     return positions
 
 
-def board_size(columns: int = 5, thumbs: int = 3) -> tuple[float, float]:
+def board_size(
+    columns: int = 5,
+    left_thumbs: int = LEFT_THUMBS,
+    right_thumbs: int = RIGHT_THUMBS,
+) -> tuple[float, float]:
     width = columns * 2 * KW + SPLIT_GAP + 20
     height = 3 * KH + KH + 40
     return width, height
@@ -376,12 +390,16 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
 
 def render_board(
-    specs: list[dict], title: str, columns: int = 5, thumbs: int = 3
+    specs: list[dict],
+    title: str,
+    columns: int = 5,
+    left_thumbs: int = LEFT_THUMBS,
+    right_thumbs: int = RIGHT_THUMBS,
 ) -> str:
-    positions = ortho_positions(columns, thumbs)
+    positions = ortho_positions(columns, left_thumbs, right_thumbs)
     if len(specs) != len(positions):
         raise ValueError(f"Expected {len(positions)} keys, got {len(specs)}")
-    width, height = board_size(columns, thumbs)
+    width, height = board_size(columns, left_thumbs, right_thumbs)
     body = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '

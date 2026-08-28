@@ -68,7 +68,7 @@
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
 &trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
-&lt_hp 5 ESC &kp LSHFT &lt_hp 2 TAB &kp RET &lt_hp 1 SPC &lt_hp 3 BKSP
+&lt_hp 5 ESC &kp LSHFT &lt_hp 2 TAB &mt_hp BKSP RET &lt_hp 1 SPC &none
                     >;
             };
 
@@ -77,7 +77,7 @@
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
 &trans &mo 3 &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &lt_tp 3 LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
-&trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &none
                     >;
             };
 
@@ -86,7 +86,7 @@
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
 &trans &lt_tp 3 LA(U) &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &lt_tp 3 LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
-&trans &trans &trans &trans &trans &kp LA(BKSP)
+&trans &trans &trans &kp LA(BKSP) &trans &none
                     >;
             };
 
@@ -95,7 +95,7 @@
 &trans &kp LA(LS(LC(LG(Q)))) &kp LA(LS(LC(LG(W)))) &kp LA(LS(LC(LG(F)))) &kp LA(LS(LC(LG(P)))) &kp LA(LS(LC(LG(G)))) &kp LA(LS(LC(LG(N1)))) &kp LA(LS(LC(LG(N2)))) &kp LA(LS(LC(LG(N3)))) &kp LA(LS(LC(LG(N4)))) &kp LA(LS(LC(LG(N5)))) &trans
 &trans &kp LA(LS(LC(LG(A)))) &kp LA(LS(LC(LG(R)))) &kp LA(LS(LC(LG(S)))) &kp LA(LS(LC(LG(T)))) &kp LA(LS(LC(LG(D)))) &trans &kp LA(LS(LC(LG(LEFT)))) &kp LA(LS(LC(LG(UP)))) &kp LA(LS(LC(LG(RIGHT)))) &trans &trans
 &trans &kp LA(LS(LC(LG(Z)))) &kp LA(LS(LC(LG(X)))) &kp LA(LS(LC(LG(C)))) &kp LA(LS(LC(LG(V)))) &kp LA(LS(LC(LG(B)))) &trans &kp LA(LS(LC(LG(SEMI)))) &kp LA(LS(LC(LG(DOWN)))) &kp LA(LS(LC(LG(SQT)))) &trans &trans
-&kp LA(LS(LC(LG(ESC)))) &trans &kp LA(LS(LC(LG(TAB)))) &kp LA(LS(LC(LG(RET)))) &kp LA(LS(LC(LG(SPC)))) &kp LA(LS(LC(LG(BKSP))))
+&kp LA(LS(LC(LG(ESC)))) &trans &kp LA(LS(LC(LG(TAB)))) &kp LA(LS(LC(LG(RET)))) &kp LA(LS(LC(LG(SPC)))) &none
                     >;
             };
 
@@ -104,7 +104,7 @@
 &trans &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &trans &trans &trans &trans &trans &trans &trans &trans
 &trans &bt BT_CLR &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
 &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &none
                     >;
             };
 
@@ -113,7 +113,7 @@
 &trans &kp LG(Q) &kp LG(W) &trans &trans &trans &trans &trans &trans &trans &trans &trans
 &trans &trans &trans &kp LG(S) &kp LG(T) &trans &trans &trans &trans &trans &trans &trans
 &trans &kp LG(Z) &kp LG(X) &kp LG(C) &kp LG(V) &trans &trans &trans &trans &trans &trans &trans
-&trans &trans &trans &trans &trans &trans
+&trans &trans &trans &trans &trans &none
                     >;
             };
         };

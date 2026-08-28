@@ -8,8 +8,9 @@ from typing import NamedTuple
 
 from keymap_generator.codes import FLAVORS, LAYER_LABELS
 
-# Number of keys in each row of the grid: three rows of ten, then the thumbs.
-ROW_SIZES: tuple[int, ...] = (10, 10, 10, 6)
+# Number of keys in each row of the grid: three rows of ten, then the thumbs
+# (three on the left, two on the right).
+ROW_SIZES: tuple[int, ...] = (10, 10, 10, 5)
 
 # Cell that holds no key, and no hold when used on the hold side of a cell.
 BLANK = "_"
