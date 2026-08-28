@@ -5,9 +5,11 @@ ZMK_WS ?= $(abspath .zmk-workspace)
 REPO_ROOT := $(abspath .)
 ZMK_CMAKE=-DZMK_CONFIG="$(ZMK_WS)/config" -DZMK_EXTRA_MODULES="$(REPO_ROOT)"
 
-all: keymaps build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
+all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
 keymaps: config/shared_keymap.dtsi
+
+diagrams: diagrams/reference.svg
 
 setup:
 	mkdir -p "$(ZMK_WS)/config"
@@ -28,6 +30,9 @@ define sync-config
 	mkdir -p "$(ZMK_WS)/config"
 	cp -a config/. "$(ZMK_WS)/config/"
 endef
+
+diagrams/reference.svg: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/uv.lock
+	uv run --directory keymap_generator --group diagrams generate-keymap diagrams --out-dir ../diagrams
 
 build/dubu36t_left.uf2: config/* config/shared_keymap.dtsi
 	$(sync-config)
@@ -53,4 +58,4 @@ build/dubu36e_right.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi conf
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-.PHONY: all keymaps setup clean
+.PHONY: all keymaps diagrams setup clean
