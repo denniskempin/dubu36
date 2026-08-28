@@ -68,7 +68,7 @@
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
 &trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
-&kp ESC &kp LSHFT &lt_hp 2 TAB &kp RET &lt_hp 1 SPC &kp BKSP
+&kp BKSP &smt_ LSHFT LSHFT &slt_ 2 2 &kp RET &kp SPC &slt_ 1 1
                     >;
             };
 
@@ -77,7 +77,7 @@
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
 &trans &mo 3 &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &lt_tp 3 LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
-&trans &trans &trans &trans &trans &trans
+&kp TAB &smt_ LSHFT LSHFT &trans &kp RET &kp SPC &slt_ 1 1
                     >;
             };
 
@@ -86,7 +86,7 @@
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
 &trans &lt_tp 3 LA(U) &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &lt_tp 3 LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
-&trans &trans &trans &trans &trans &kp LA(BKSP)
+&kp BKSP &smt_ LSHFT LSHFT &slt_ 2 2 &trans &kp LA(BKSP) &kp ESC
                     >;
             };
 

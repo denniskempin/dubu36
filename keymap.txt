@@ -35,21 +35,21 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-              ESC       _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP
+              BKSP  shft/shft  lwr/lwr    RET  SPC  rse/rse
 
 // Navigation and numbers.
 layer rse: homerow
   _      7      8      9      _          HOME   WORD_L  UP        WORD_R  END
   _      4      5      6      _          FWD    LEFT    DOWN      RIGHT   BCK
   0      1      2      3      _          TAB_L  HYP_[   HYP_\\    HYP_]   TAB_R
-                _      _      _          _      _       _
+                TAB  shft/shft  _          RET  SPC  rse/rse
 
 // Symbols.
 layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   UML    <      [      (      {          -      \_     \:     ;      #
   _      >      ]      )      }          +      =      ?      !      "
-                _      _      _          _      _      ALT_BKSP
+                BKSP  shft/shft  lwr/lwr    _  ALT_BKSP  ESC
 
 // Window management and other Hyper key shortcuts.
 layer hyp
