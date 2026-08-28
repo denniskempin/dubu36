@@ -269,20 +269,18 @@
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
+<use class="glyph sym" href="#glyph_escape" x="45.0" y="18.1344"/>
 <use class="glyph num" href="#glyph_return" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(390.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_space" x="15.0" y="18.1344"/>
+<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
 <use class="glyph sym" href="#glyph_delete-word" x="45.0" y="18.1344"/>
 <use class="glyph num" href="#glyph_space" x="45.0" y="45.336000000000006"/>
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box sticky nav" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">RSE</text>
-<text class="sticky nav" transform="translate(15.5,28.335) rotate(-90)">rse</text>
-<use class="glyph sym" href="#glyph_escape" x="45.0" y="18.1344"/>
-<text class="num" x="45.0" y="45.336000000000006">RSE</text>
 </g>
 </svg>
