@@ -12,20 +12,26 @@ The keymap generator is a small Python package managed with
 
 ```sh
 cd keymap_generator
-uv sync
+uv sync --group diagrams
 uv run generate-keymap zmk        # print the ZMK keymap
 uv run generate-keymap qmk        # print the QMK keymap
-uv run --group diagrams generate-keymap diagrams --out-dir ../diagrams
+uv run generate-keymap diagrams --out-dir ../diagrams
 uv run pytest                     # run the test suite
 uv run ruff check                 # lint
 uv run ruff format                # format
 uv run ty check                   # type check
 ```
 
-Regenerating the committed keymaps via `make keymaps` (repo root) or
-`make keymap` (under `dubu36-ergo/qmk/`) also requires `uv` on `PATH`.
-`make diagrams` additionally needs the `diagrams` dependency group (for PNG
-export via cairosvg).
+The `diagrams` group provides cairosvg, which the renderer needs for PNG export
+and `ty` needs to resolve the import.
+
+The committed keymaps and diagrams are checked against `keymap.txt` by the test
+suite, so regenerate all of them together after editing the layout. From the
+repo root, with `uv` on `PATH`:
+
+```sh
+make generated
+```
 
 ## Layout diagrams
 
