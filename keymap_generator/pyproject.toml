@@ -20,6 +20,9 @@ dev = [
     "ruff>=0.9",
     "ty>=0.0.74",
 ]
+diagrams = [
+    "cairosvg>=2.9.0",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/keymap_generator"]

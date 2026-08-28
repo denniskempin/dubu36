@@ -5,6 +5,72 @@ This repository contains my work-in-progress keyboard layout for 36 key keyboard
 The keyboard layout is specified in [`keymap.txt`](keymap.txt), and converted into ZMK and QMK
 keymaps using the [`keymap_generator`](keymap_generator/) tool.
 
+## Development
+
+The keymap generator is a small Python package managed with
+[uv](https://docs.astral.sh/uv/). Install uv, then from the repo root:
+
+```sh
+cd keymap_generator
+uv sync
+uv run generate-keymap zmk        # print the ZMK keymap
+uv run generate-keymap qmk        # print the QMK keymap
+uv run --group diagrams generate-keymap diagrams --out-dir ../diagrams
+uv run pytest                     # run the test suite
+uv run ruff check                 # lint
+uv run ruff format                # format
+uv run ty check                   # type check
+```
+
+Regenerating the committed keymaps via `make keymaps` (repo root) or
+`make keymap` (under `dubu36-ergo/qmk/`) also requires `uv` on `PATH`.
+`make diagrams` additionally needs the `diagrams` dependency group (for PNG
+export via cairosvg).
+
+## Layout diagrams
+
+`generate-keymap diagrams` writes a stacked reference card plus one board per
+layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Each key uses fixed
+legend positions:
+
+| Position | Content | Color |
+| -------- | ------- | ----- |
+| Top-left | Base (`default`) tap | Grey |
+| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to `lwr`/`rse` |
+| Top-right | Symbols (`lwr`) | Purple |
+| Bottom-right | Numbers / nav (`rse`) | Orange |
+
+Hold box styling follows the keymap's hold-tap flavor:
+
+| Flavor | Style |
+| ------ | ----- |
+| `tp` (tap-preferred, the default) | Outline box in the bottom-left quadrant |
+| `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
+| sticky (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left) |
+
+Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
+render as icons instead of text. Pass `--no-png` to skip PNG export.
+
+### Reference
+
+![Dubu36 reference keymap](diagrams/reference.png)
+
+### default
+
+![default layer](diagrams/layer-default.png)
+
+### rse (nav + numbers)
+
+![rse layer](diagrams/layer-rse.png)
+
+### lwr (symbols)
+
+![lwr layer](diagrams/layer-lwr.png)
+
+### mou (left-hand shortcuts)
+
+![mou layer](diagrams/layer-mou.png)
+
 ## Keymap
 
 Each layer is a grid of the 36 keys, laid out the way they sit on the keyboard: three rows of ten
