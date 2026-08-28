@@ -124,16 +124,16 @@ class TestParseKeymapHappyPath:
         # Explicit hold-tap with hold-preferred flavor.
         assert default.rows[3][0] == Key("ESC", "MOU", "hp")
 
-        # Hold-only sticky shift on the thumb.
+        # Hold-only shift on the thumb (`_/shft`).
         assert default.rows[3][1] == Key("", "SHFT", None)
 
-        # Sticky modifier (same label on both sides) from overlay-inherited hold
-        # is not sticky here; Z/adj is an explicit layer hold-tap.
+        # Overlay-inherited hold is not one-shot; Z/adj is an explicit layer
+        # hold-tap with a different tap label.
         assert default.rows[2][0] == Key("Z", "ADJ", None)
 
         assert combos == [Combo("Q", "W", "ESC")]
 
-    def test_sticky_key_and_escape(self) -> None:
+    def test_oneshot_key_and_escape(self) -> None:
         source = textwrap.dedent(
             """\
             layer default
@@ -145,9 +145,9 @@ class TestParseKeymapHappyPath:
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
         layers, _ = parse_source(source)
-        sticky = layers[0].rows[3][1]
-        assert sticky == Key("SHFT", "SHFT", None)
-        assert sticky.is_sticky
+        oneshot = layers[0].rows[3][1]
+        assert oneshot == Key("SHFT", "SHFT", None)
+        assert oneshot.is_oneshot
 
     def test_escaped_symbols(self) -> None:
         source = textwrap.dedent(
@@ -223,7 +223,7 @@ class TestParseErrors:
         with pytest.raises(ParseError, match="unknown flavor"):
             parse_source(source)
 
-    def test_flavor_on_sticky_key(self) -> None:
+    def test_flavor_on_oneshot_key(self) -> None:
         source = textwrap.dedent(
             """\
             layer default

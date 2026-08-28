@@ -38,8 +38,12 @@ class Key(NamedTuple):
     flavor: str | None
 
     @property
-    def is_sticky(self) -> bool:
-        """Sticky keys repeat their label, e.g. `shft/shft`."""
+    def is_oneshot(self) -> bool:
+        """One-shot keys repeat their label, e.g. `shft/shft` or `rse/rse`.
+
+        A tap applies the modifier or layer to the next keypress; a hold is a
+        regular (momentary) modifier or layer shift.
+        """
         return bool(self.tap) and self.tap == self.hold
 
 
@@ -240,9 +244,9 @@ class KeymapParser:
             return Key(parse_label(tap), None, None)
         hold = parts[1]
         key = Key(parse_label(tap), *self.parse_hold(hold))
-        if key.flavor and (key.is_sticky or not key.tap):
-            # Only a key that has both a tap and a hold to choose between uses
-            # a flavor, so asking for one anywhere else is a mistake.
+        if key.flavor and (key.is_oneshot or not key.tap):
+            # One-shot keys always use the same tap-preferred hold-tap, and a
+            # hold-only key has no tap to distinguish, so a flavor is a mistake.
             raise self.error(f"{cell!r} is not a hold-tap, so it takes no flavor")
         return key
 

@@ -6,13 +6,13 @@
 //   LABEL             tap only
 //   TAP/HOLD          taps TAP, holds HOLD (a modifier or a layer)
 //   TAP/HOLD:FLAVOR   ... using an explicit hold-tap flavor
-//   LABEL/LABEL       taps the modifier/layer as sticky, holds it as momentary
+//   LABEL/LABEL       one-shot modifier/layer on tap, momentary on hold
 //   _                 nothing: a blank key, or "no hold" when used as the hold
 //
 // FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
 // (tap-preferred), which is the default and suits the home-row, or hp
-// (hold-preferred), which the thumb keys use. Sticky keys take no flavor. The
-// behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
+// (hold-preferred), which the thumb keys use. One-shot keys take no flavor.
+// The behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
 // cell defines its own hold. Use `LABEL/_` to drop an inherited hold.

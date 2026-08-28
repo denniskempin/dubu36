@@ -86,7 +86,7 @@ Two guards exist because of this, and both are deliberate:
 The header comment in `keymap.txt` is the reference; the short version:
 
 - Four rows per block: 10, 10, 10, 6 (thumbs). Whitespace-separated cells, `_` for nothing.
-- A cell is `TAP`, `TAP/HOLD`, or `TAP/HOLD:FLAVOR`. `LABEL/LABEL` is sticky-on-tap.
+- A cell is `TAP`, `TAP/HOLD`, or `TAP/HOLD:FLAVOR`. `LABEL/LABEL` is one-shot on tap and momentary on hold.
 - `FLAVOR` is `tp` (tap-preferred, default, home-row) or `hp` (hold-preferred, thumbs).
 - `overlay` blocks supply holds; a `layer` lists the overlays it inherits after a `:`.
 - Escape `/`, `:`, `_`, `\` in labels with a backslash.

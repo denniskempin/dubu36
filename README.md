@@ -52,7 +52,7 @@ Hold box styling follows the keymap's hold-tap flavor:
 | ------ | ----- |
 | `tp` (tap-preferred, the default) | Outline box in the bottom-left quadrant |
 | `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
-| sticky (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left) |
+| one-shot (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left): one-shot on tap, momentary on hold |
 
 Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
 render as icons instead of text. Pass `--no-png` to skip PNG export.
@@ -97,7 +97,8 @@ that does nothing, and a `:FLAVOR` suffix chooses how a key tells a tap from a h
 ```
   T/cmd        tap-preferred, the default, which suits the home-row
   TAB/lwr:hp   hold-preferred, which the thumb keys use
-  shft/shft    a sticky shift when tapped, a plain shift when held
+  shft/shft    one-shot shift when tapped, a plain shift when held
+  rse/rse      one-shot raise when tapped, a regular layer shift when held
 ```
 
 Holds shared by several layers are written once as an `overlay`, which a layer picks up by listing

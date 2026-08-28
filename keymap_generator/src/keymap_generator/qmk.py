@@ -37,11 +37,10 @@ def map_key_to_qmk(key: Key) -> str:
     if not key.tap:
         return map_key_label_to_qmk(key.hold)
 
-    # QMK has no per key hold-tap flavors, so they are ignored here. One shot
-    # keycodes are the closest match for sticky keys: they stick on tap and act
-    # as a plain modifier or layer shift when held.
+    # QMK has no per-key hold-tap flavors, so they are ignored here. OSM/OSL are
+    # one-shot on tap and a plain modifier or layer shift when held.
     if key.hold in LAYER_LABELS:
-        if key.is_sticky:
+        if key.is_oneshot:
             return f"OSL({LAYER_LABELS[key.hold]})"
         tap_code = get_qmk_key_press_code(key.tap)
         if tap_code:
@@ -50,7 +49,7 @@ def map_key_to_qmk(key: Key) -> str:
         hold_code = get_qmk_key_press_code(key.hold)
         if hold_code:
             hold_code = hold_code.replace("KC_", "MOD_")
-            if key.is_sticky:
+            if key.is_oneshot:
                 return f"OSM({hold_code})"
             tap_code = get_qmk_key_press_code(key.tap)
             if tap_code:

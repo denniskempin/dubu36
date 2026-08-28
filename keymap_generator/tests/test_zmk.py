@@ -46,11 +46,11 @@ class TestZmkKeys:
     def test_layer_tap_hold_preferred(self) -> None:
         assert map_key_to_zmk(Key("ESC", "MOU", "hp")) == "&lt_hp 5 ESC"
 
-    def test_sticky_mod(self) -> None:
-        assert map_key_to_zmk(Key("SHFT", "SHFT", None)) == "&smt_ LSHFT LSHFT"
+    def test_oneshot_mod(self) -> None:
+        assert map_key_to_zmk(Key("SHFT", "SHFT", None)) == "&omt_ LSHFT LSHFT"
 
-    def test_sticky_layer(self) -> None:
-        assert map_key_to_zmk(Key("RSE", "RSE", None)) == "&slt_ 1 1"
+    def test_oneshot_layer(self) -> None:
+        assert map_key_to_zmk(Key("RSE", "RSE", None)) == "&olt_ 1 1"
 
     def test_unmappable_hold_tap(self) -> None:
         with pytest.raises(KeyError, match="Cannot map hold-tap"):
