@@ -5,9 +5,16 @@ ZMK_WS ?= $(abspath .zmk-workspace)
 REPO_ROOT := $(abspath .)
 ZMK_CMAKE=-DZMK_CONFIG="$(ZMK_WS)/config" -DZMK_EXTRA_MODULES="$(REPO_ROOT)"
 
+QMK_KEYMAP := dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c
+GENERATOR := keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt
+
 all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
-keymaps: config/shared_keymap.dtsi
+# Everything the golden tests check against keymap.txt. Regenerate all of it
+# after editing keymap.txt, or the tests fail on whatever was left behind.
+generated: keymaps diagrams
+
+keymaps: config/shared_keymap.dtsi $(QMK_KEYMAP)
 
 diagrams: diagrams/reference.svg
 
@@ -21,8 +28,12 @@ setup:
 clean:
 	rm -rf build
 
-config/shared_keymap.dtsi: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/zmk_template.dtsi
+config/shared_keymap.dtsi: $(GENERATOR) keymap_generator/zmk_template.dtsi
 	uv run --directory keymap_generator generate-keymap zmk > $@.tmp
+	mv $@.tmp $@
+
+$(QMK_KEYMAP): $(GENERATOR) keymap_generator/qmk_template.c
+	uv run --directory keymap_generator generate-keymap qmk > $@.tmp
 	mv $@.tmp $@
 
 # Sync user config into the west workspace before each build.
@@ -31,7 +42,7 @@ define sync-config
 	cp -a config/. "$(ZMK_WS)/config/"
 endef
 
-diagrams/reference.svg: keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt keymap_generator/uv.lock
+diagrams/reference.svg: $(GENERATOR) keymap_generator/uv.lock
 	uv run --directory keymap_generator --group diagrams generate-keymap diagrams --out-dir ../diagrams
 
 build/dubu36t_left.uf2: config/* config/shared_keymap.dtsi
@@ -58,4 +69,4 @@ build/dubu36e_right.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi conf
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-.PHONY: all keymaps diagrams setup clean
+.PHONY: all generated keymaps diagrams setup clean
