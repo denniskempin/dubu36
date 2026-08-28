@@ -35,7 +35,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-              ESC/mou:hp  _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP/hyp:hp
+              ESC       _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP
 
 // Navigation and numbers.
 layer rse: homerow
