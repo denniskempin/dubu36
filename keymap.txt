@@ -42,14 +42,14 @@ layer rse: homerow
   _      7      8      9      _          HOME   WORD_L  UP        WORD_R  END
   _      4      5      6      _          FWD    LEFT    DOWN      RIGHT   BCK
   0      1      2      3      _          TAB_L  HYP_[   HYP_\\    HYP_]   TAB_R
-                rse/rse  shft/shft  lwr/lwr    TAB  BKSP  _
+                _      _      _          TAB  BKSP  _
 
 // Symbols.
 layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   UML    <      [      (      {          -      \_     \:     ;      #
   _      >      ]      )      }          +      =      ?      !      "
-                rse/rse  shft/shft  lwr/lwr    ESC  ALT_BKSP  _
+                _      _      _          ESC  ALT_BKSP  _
 
 // Window management and other Hyper key shortcuts.
 layer hyp
