@@ -18,6 +18,5 @@
 	],
 	"forwardPorts": [
 		3000
-	],
-	"postStartCommand": "rm -f \"$HOME/.bashrc\" \"$HOME/.profile\" && rm -rf \"$HOME/.local/bin\""
+	]
 }
