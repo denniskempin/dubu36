@@ -248,19 +248,16 @@
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box oneshot nav" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">RSE</text>
 <text class="oneshot nav" transform="translate(15.5,28.335) rotate(-90)">rse</text>
 </g>
 <g transform="translate(180.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box oneshot mod" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">SHFT</text>
 <text class="oneshot mod" transform="translate(15.5,28.335) rotate(-90)">shft</text>
 </g>
 <g transform="translate(240.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box oneshot sym" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="base" x="15.0" y="18.1344">LWR</text>
 <text class="oneshot sym" transform="translate(15.5,28.335) rotate(-90)">lwr</text>
 </g>
 <g transform="translate(330.00,178.01)">
