@@ -18,7 +18,9 @@ jobs:
 
       - name: Sync dependencies
         working-directory: keymap_generator
-        run: uv sync --locked
+        # The diagrams group is needed for `ty` to resolve the cairosvg import
+        # in render.py, not just for rendering PNGs.
+        run: uv sync --locked --group diagrams
 
       - name: Ruff check
         working-directory: keymap_generator
