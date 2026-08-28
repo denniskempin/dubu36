@@ -46,10 +46,10 @@ class TestQmkKeys:
     def test_layer_tap(self) -> None:
         assert map_key_to_qmk(Key("ESC", "MOU", "hp")) == "LT(5,KC_ESC)"
 
-    def test_sticky_mod(self) -> None:
+    def test_oneshot_mod(self) -> None:
         assert map_key_to_qmk(Key("SHFT", "SHFT", None)) == "OSM(MOD_LSFT)"
 
-    def test_sticky_layer(self) -> None:
+    def test_oneshot_layer(self) -> None:
         assert map_key_to_qmk(Key("RSE", "RSE", None)) == "OSL(1)"
 
     def test_unmappable_hold_tap(self) -> None:

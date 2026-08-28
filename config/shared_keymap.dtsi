@@ -7,12 +7,12 @@
     // The hold-tap behaviors the keymap may use:
     // - mt_  holds a modifier, taps a key
     // - lt_  holds a layer, taps a key
-    // - smt_ holds a modifier, sticks it on tap
-    // - slt_ holds a layer, sticks it on tap
+    // - omt_ holds a modifier, one-shots it on tap
+    // - olt_ holds a layer, one-shots it on tap
     // mt_ and lt_ come in the flavors the keymap can pick between: tp
     // (tap-preferred, the default, used on the home-row) and hp
-    // (hold-preferred, used on the thumb keys). Sticky keys are always
-    // tap-preferred, so that a quick tap always sticks.
+    // (hold-preferred, used on the thumb keys). One-shot keys are always
+    // tap-preferred, so that a quick tap always one-shots.
     behaviors {
         mt_tp: mod_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
@@ -44,14 +44,14 @@
             bindings = <&mo>, <&kp>;
         };
 
-        smt_: sticky_mod_tap {
+        omt_: oneshot_mod_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";
             tapping-term-ms = <200>;
             bindings = <&kp>, <&sk>;
         };
-        slt_: sticky_layer_tap {
+        olt_: oneshot_layer_tap {
             compatible = "zmk,behavior-hold-tap";
             #binding-cells = <2>;
             flavor = "tap-preferred";

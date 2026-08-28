@@ -36,8 +36,8 @@ class TestTapDisplay:
 
 
 class TestHoldFlavor:
-    def test_sticky(self) -> None:
-        assert hold_flavor(Key("SHFT", "SHFT", None)) == "sticky"
+    def test_oneshot(self) -> None:
+        assert hold_flavor(Key("SHFT", "SHFT", None)) == "oneshot"
 
     def test_hold_preferred(self) -> None:
         assert hold_flavor(Key("TAB", "LWR", "hp")) == "hold-preferred"
@@ -107,7 +107,7 @@ class TestRenderOutput:
                 [Key("Q", "", None)] * 10,
                 [Key("A", "SHFT", "tp")] * 10,
                 [Key("Z", "", None)] * 10,
-                [Key("ESC", "MOU", "hp")] * 6,
+                [Key("ESC", "MOU", "hp")] * 5 + [Key("RSE", "RSE", None)],
             ],
         )
         svg = render_board(layer_specs(layer), "demo")
@@ -115,6 +115,7 @@ class TestRenderOutput:
         assert "demo" in svg
         assert 'class="hold-box tap-preferred mod"' in svg
         assert 'class="hold-box hold-preferred mod"' in svg
+        assert 'class="hold-box oneshot nav"' in svg
 
     def test_render_diagrams_writes_expected_files(self, tmp_path: Path) -> None:
         written = render_diagrams(KEYMAP, tmp_path, no_png=True)

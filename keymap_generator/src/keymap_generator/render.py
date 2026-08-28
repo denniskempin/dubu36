@@ -6,10 +6,11 @@ Per-key legend layout (matches https://onedeadkey.github.io/selenium/):
   Top-right    symbol layer (lwr) — purple
   Bottom-right number/nav layer (rse) — orange
 
-Hold box flavors (from the keymap's hold-tap flavor / sticky form):
+Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
   tp (tap-preferred)  — outline box in the bottom-left quadrant
   hp (hold-preferred) — solid box in the bottom-left quadrant
-  sticky              — solid bar covering the full left half (TL+BL)
+  oneshot             — solid bar covering the full left half (TL+BL):
+                        one-shot modifier/layer on tap, momentary on hold
 
 Hold labels/boxes are grey by default. A hold binding that itself switches
 to the symbol (lwr) or number/nav (rse) layer is colored like that layer
@@ -148,8 +149,8 @@ def hold_flavor(key: Key) -> str | None:
     hold = key.hold or ""
     if not hold:
         return None
-    if key.is_sticky:
-        return "sticky"
+    if key.is_oneshot:
+        return "oneshot"
     if key.flavor == "hp":
         return "hold-preferred"
     # Explicit tp, or an inherited/default hold with no flavor → outline box.
@@ -256,7 +257,7 @@ def svg_style() -> str:
     text.hold { font-size: 11px; }
     text.sym { font-size: 13px; fill: #9999ff; }
     text.num { font-size: 13px; fill: #ee9944; }
-    text.sticky { font-size: 12px; font-weight: 600; }
+    text.oneshot { font-size: 12px; font-weight: 600; }
     use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
                 stroke-linecap: round; stroke-linejoin: round; }
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
@@ -269,12 +270,12 @@ def svg_style() -> str:
     rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.sticky.mod { fill: #666666; stroke: #666666; }
-    rect.hold-box.sticky.sym { fill: #6666bb; stroke: #6666bb; }
-    rect.hold-box.sticky.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.sticky.mod { fill: #eeeeee; font-weight: 700; }
-    text.hold.hold-preferred.sym, text.sticky.sym,
-    text.hold.hold-preferred.nav, text.sticky.nav { fill: #1a1a1a; font-weight: 700; }
+    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
+    rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.sym, text.oneshot.sym,
+    text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
@@ -295,7 +296,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     """Draw one key with fixed legend anchors on every key.
 
     Top-left      base
-    Bottom-left   hold (outline / solid / sticky left bar)
+    Bottom-left   hold (outline / solid / one-shot left bar)
     Top-right     symbol
     Bottom-right  number / nav
     """
@@ -312,9 +313,9 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     accent = spec.get("accent") or DEFAULT_HOLD_ACCENT
     hold_label = HOLD_DISPLAY.get(hold, hold.lower() if hold else "")
 
-    if hold and flavor == "sticky":
+    if hold and flavor == "oneshot":
         parts.append(
-            f'<rect class="hold-box sticky {accent}" x="{PAD}" y="{PAD}" '
+            f'<rect class="hold-box oneshot {accent}" x="{PAD}" y="{PAD}" '
             f'width="{ikw / 2}" height="{ikh}" rx="{RADIUS}" ry="{RADIUS}"/>'
         )
     elif hold and flavor in ("tap-preferred", "hold-preferred"):
@@ -338,9 +339,9 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             f'x="{x_left}" y="{y_top}"/>'
         )
 
-    if hold and flavor == "sticky":
+    if hold and flavor == "oneshot":
         parts.append(
-            f'<text class="sticky {accent}" '
+            f'<text class="oneshot {accent}" '
             f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
             f"{esc(hold_label)}</text>"
         )
