@@ -1,3 +1,5 @@
+# ZMK dev container shell setup. Installed to /etc/profile.d/ so it survives the
+# persistent /root volume mount (see devcontainer.json).
 export LS_OPTIONS='-F --color=auto'
 alias ls='ls $LS_OPTIONS'
 if [ -z "${WORKSPACE_DIR:-}" ]; then
@@ -10,6 +12,6 @@ if [ -z "${WORKSPACE_DIR:-}" ]; then
   fi
 fi
 if [ -f "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh" ]; then
+  # shellcheck disable=SC1091
   source "$WORKSPACE_DIR/.zmk-workspace/zephyr/zephyr-env.sh"
 fi
-
