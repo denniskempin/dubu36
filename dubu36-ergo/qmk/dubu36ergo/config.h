@@ -26,6 +26,9 @@
 
 #define COMBO_COUNT 5
 
+/* Matches the combo timeout ZMK is given, which is also QMK's own default. */
+#define COMBO_TERM 50
+
 /* 
  * Tap-Hold configuration
  * Strongly biased to prefer tap over hold to make home-row mods usable

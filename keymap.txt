@@ -35,7 +35,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-          RET shft/shft lwr/lwr          BKSP   SPC/rse:hp    _
+          BKSP shft/shft lwr/lwr         RET/rse:hp  SPC      _
 
 // Navigation and numbers.
 layer rse: homerow
@@ -49,7 +49,7 @@ layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   ESC    <      [      (      {          -      \_     \:     ;      #
   _      >      ]      )      }          +      =      ?      !      "
-                _      _      _          TAB    SHFT_TAB   _
+                _      _      _          SHFT_TAB  TAB     _
 
 // Window management and other Hyper key shortcuts.
 layer hyp
@@ -74,4 +74,10 @@ layer mou
 
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
 // the keys pressed together on the default layer.
+//
+// The pair has to be one that never gets typed back to back, or the chord
+// fires by accident mid-word: `cv` does not occur, where a home-row pair like
+// S+T would have caught every `st`. Esc stays on the lwr layer as well, as a
+// way to reach it that does not depend on two keys landing together.
 combos
+  C  V -> ESC

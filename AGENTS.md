@@ -104,7 +104,9 @@ Editing this file changes all three generated artifacts, so follow it with `make
 - `codes.py` — the label vocabulary: `KEY_PRESS_CODES` (a label's ZMK and QMK key code),
   `SPECIAL_LABELS` (non-keypress bindings such as Bluetooth), `LAYER_LABELS`, `FLAVORS`.
 - `zmk.py` / `qmk.py` — `Key` -> a binding string for one firmware.
-- `generate.py` — substitutes `#LAYER_N#` / `#COMBO_TRIGGER_N#` / `#COMBO_RESULT_N#` in a template.
+- `generate.py` — substitutes `#LAYER_N#` and the single `#COMBOS#` block in a template. The
+  combo generator is handed the default layer, since a combo names its trigger keys by the
+  label they tap there.
 - `render.py` — the SVG diagram renderer, plus `render_png` which lazily imports `cairosvg` from
   the `diagrams` group. Legend positions and glyphs are documented in the README.
 - `cli.py` — `generate-keymap {zmk,qmk,diagrams}`. The keymaps print to stdout; `diagrams` writes
@@ -115,13 +117,28 @@ Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
 `CMD_<anything mappable>` works without a table entry.
 
+Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
+`zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
+against the keycode the keymap holds, so a trigger on the home row has to be named by its whole
+`MT(...)` keycode rather than the plain key press it produces.
+
+What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
+pair the typist never rolls across cannot be triggered by accident. `C+V` was picked over the
+more comfortable home-row pairs for that reason, since Colemak puts its most frequent rolls
+there and `st` or `ne` would fire a combo constantly. `COMBO_PRIOR_IDLE_MS` in `zmk.py` is the
+fallback if a riskier pair is ever needed; it is 0 here, and left out of the generated keymap,
+because requiring idle time would stop Esc firing right after a burst of typing.
+
 Known gaps, deliberate:
 
-- `generate_zmk_combo` is a stub; combos only reach QMK.
 - `qmk_template.c` only has `#LAYER_0#`..`#LAYER_2#`, so QMK gets the first three layers.
-- Combo count is hard-coded in three places that must agree: `COMBO_SLOTS` in `generate.py`, the
-  `#COMBO_*_N#` slots in `qmk_template.c`, and `COMBO_COUNT` in
-  `dubu36-ergo/qmk/dubu36ergo/config.h`.
+- Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
+  `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
+  emits the combos that exist.
+- `render.py` drops combos, so `diagrams/` shows no sign of them.
+- The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
+  QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
+  so a thumb layer is easier to shift by accident there.
 - `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
   36-key grid onto the corne's 42-key matrix.
 - `render.py` skips the `hyp` and `adj` layers (`EXCLUDED_LAYERS`), so `diagrams/` has no board

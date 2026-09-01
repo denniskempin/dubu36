@@ -61,13 +61,15 @@ class TestSpecsFromKeymap:
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Left inner thumb lwr/lwr (one-shot) and right thumb SPC/rse:hp.
+        # Left inner thumb lwr/lwr (one-shot) and right inner thumb RET/rse:hp.
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
         assert specs[32]["flavor"] == "oneshot"
-        assert specs[34]["hold"] == "RSE"
-        assert specs[34]["accent"] == "nav"
-        assert specs[34]["flavor"] == "hold-preferred"
+        assert specs[33]["hold"] == "RSE"
+        assert specs[33]["accent"] == "nav"
+        assert specs[33]["flavor"] == "hold-preferred"
+        # Space carries no hold at all, so nothing can shift under it.
+        assert not specs[34]["hold"]
 
     def test_plain_modifier_hold_stays_grey(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -80,10 +82,12 @@ class TestSpecsFromKeymap:
     def test_symbol_overlay_includes_tab_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Right thumbs: BKSP with TAB on lwr, SPC with SHFT_TAB on lwr.
-        assert specs[33]["base_glyph"] == "backspace"
-        assert specs[33]["sym_glyph"] == "tab"
-        assert specs[34]["sym_glyph"] == "btab"
+        # Right thumbs: RET with SHFT_TAB on lwr, SPC with TAB on lwr.
+        assert specs[33]["base_glyph"] == "return"
+        assert specs[33]["sym_glyph"] == "btab"
+        assert specs[34]["sym_glyph"] == "tab"
+        # BKSP sits on the outer left thumb, opposite RET.
+        assert specs[30]["base_glyph"] == "backspace"
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)

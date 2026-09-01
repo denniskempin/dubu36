@@ -12,6 +12,13 @@
     // (tap-preferred, the default, used on the home-row) and hp
     // (hold-preferred, used on the thumb keys). One-shot keys are always
     // tap-preferred, so that a quick tap always one-shots.
+    //
+    // hold-preferred takes the hold as soon as any other key goes down, which
+    // is what makes a thumb layer engage without waiting, and also what made it
+    // engage mid-word on a thumb key pressed inside a burst of typing. The hp
+    // pair therefore refuses to hold at all within require-prior-idle-ms of the
+    // last key press, so a thumb key only shifts a layer once typing has
+    // actually paused, and quick-tap-ms keeps a repeated tap a tap.
     behaviors {
         mt_tp: mod_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
@@ -25,6 +32,8 @@
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <150>;
             bindings = <&kp>, <&kp>;
         };
 
@@ -40,6 +49,8 @@
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <150>;
             bindings = <&mo>, <&kp>;
         };
 
@@ -98,4 +109,5 @@
                     >;
             };
         };
+#COMBOS#
 };
