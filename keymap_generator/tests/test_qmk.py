@@ -6,7 +6,8 @@ import pytest
 
 from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
-    generate_qmk_combo,
+    COMBO_SLOTS,
+    generate_qmk_combos,
     generate_qmk_layer,
     get_qmk_key_press_code,
     map_key_label_to_qmk,
@@ -58,14 +59,46 @@ class TestQmkKeys:
             map_key_to_qmk(Key("A", "NOPE", None))
 
 
-class TestQmkGeneration:
-    def test_combo_and_empty(self) -> None:
-        assert generate_qmk_combo(None) == ("KC_NO", "KC_NO")
-        assert generate_qmk_combo(Combo("Q", "W", "ESC")) == (
-            "KC_Q, KC_W",
-            "KC_ESC",
+def combo_layer() -> Layer:
+    """A default layer with a plain key pair and a home-row mod-tap pair."""
+    return Layer(
+        "default",
+        [
+            [Key("Q", "", None), Key("W", "", None)],
+            [Key("S", "ALT", None), Key("T", "CMD", None)],
+        ],
+    )
+
+
+class TestQmkCombos:
+    def test_plain_keys(self) -> None:
+        rendered = generate_qmk_combos([Combo("Q", "W", "ESC")], combo_layer())
+        assert "combo0[] = {KC_Q, KC_W, COMBO_END};" in rendered
+        assert "COMBO(combo0, KC_ESC)" in rendered
+
+    def test_home_row_trigger_keeps_the_mod_tap(self) -> None:
+        # QMK matches the keycode the keymap holds, so a bare KC_S would never
+        # match the MT() the home row actually contains.
+        rendered = generate_qmk_combos([Combo("S", "T", "ESC")], combo_layer())
+        assert (
+            "combo0[] = {MT(MOD_LALT,KC_S), MT(MOD_LGUI,KC_T), COMBO_END};" in rendered
         )
 
+    def test_spare_slots_cannot_fire(self) -> None:
+        rendered = generate_qmk_combos([Combo("Q", "W", "ESC")], combo_layer())
+        assert rendered.count("KC_NO, COMBO_END") == COMBO_SLOTS - 1
+        assert rendered.count("COMBO(") == COMBO_SLOTS
+
+    def test_no_combos_still_fills_every_slot(self) -> None:
+        rendered = generate_qmk_combos([], combo_layer())
+        assert rendered.count("KC_NO, COMBO_END") == COMBO_SLOTS
+
+    def test_unknown_trigger_label(self) -> None:
+        with pytest.raises(KeyError, match="taps NOPE"):
+            generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
+
+
+class TestQmkGeneration:
     def test_layer(self) -> None:
         layer = Layer(
             "default",

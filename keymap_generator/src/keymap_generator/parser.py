@@ -276,6 +276,21 @@ class KeymapParser:
                 )
 
 
+def find_key_position(layer: Layer, label: str) -> tuple[int, int]:
+    """Return the (row, column) of the only key on `layer` that taps `label`."""
+    found = [
+        (y, x)
+        for y, row in enumerate(layer.rows)
+        for x, key in enumerate(row)
+        if key.tap == label
+    ]
+    if not found:
+        raise KeyError(f"No key on layer {layer.name} taps {label}.")
+    if len(found) > 1:
+        raise KeyError(f"Layer {layer.name} taps {label} in {len(found)} places.")
+    return found[0]
+
+
 def parse_keymap(path: str | Path) -> tuple[list[Layer], list[Combo]]:
     """Parse a keymap file into layers and combos."""
     with open(path, encoding="utf-8") as source:

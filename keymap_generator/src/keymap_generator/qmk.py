@@ -3,7 +3,12 @@
 from __future__ import annotations
 
 from keymap_generator.codes import KEY_PRESS_CODES, LAYER_LABELS, SPECIAL_LABELS
-from keymap_generator.parser import Combo, Key, Layer
+from keymap_generator.parser import Combo, Key, Layer, find_key_position
+
+# QMK sizes its combo table with the compile time COMBO_COUNT, so the generated
+# table always has this many entries and any spare slot is filled with a combo
+# that cannot fire. Must match COMBO_COUNT in dubu36-ergo/qmk/dubu36ergo/config.h.
+COMBO_SLOTS = 5
 
 
 def get_qmk_key_press_code(label: str) -> str | None:
@@ -59,13 +64,36 @@ def map_key_to_qmk(key: Key) -> str:
     raise KeyError(f"Cannot map hold-tap key ({key.tap}, {key.hold}) to qmk.")
 
 
-def generate_qmk_combo(combo: Combo | None) -> tuple[str, str]:
+def generate_qmk_combo_trigger(combo: Combo | None, default_layer: Layer) -> str:
+    """The keys a combo waits for, as QMK matches them.
+
+    QMK compares a combo against the keycode the keymap holds, not the key press
+    it eventually produces, so a home-row trigger has to be named by its whole
+    mod-tap keycode. Naming it `KC_S` would leave the combo unable to ever fire.
+    """
     if not combo:
-        return ("KC_NO", "KC_NO")
-    return (
-        ", ".join((map_key_label_to_qmk(combo.a), map_key_label_to_qmk(combo.b))),
-        map_key_label_to_qmk(combo.result),
+        return "KC_NO"
+    return ", ".join(
+        map_key_to_qmk(default_layer.rows[y][x])
+        for y, x in (
+            find_key_position(default_layer, label) for label in (combo.a, combo.b)
+        )
     )
+
+
+def generate_qmk_combos(combos: list[Combo], default_layer: Layer) -> str:
+    """Render the combo table, padded out to the slots COMBO_COUNT promises."""
+    slots = [combos[i] if i < len(combos) else None for i in range(COMBO_SLOTS)]
+    triggers = "\n".join(
+        f"const uint16_t PROGMEM combo{i}[] = "
+        f"{{{generate_qmk_combo_trigger(combo, default_layer)}, COMBO_END}};"
+        for i, combo in enumerate(slots)
+    )
+    entries = ",\n".join(
+        f"\tCOMBO(combo{i}, {map_key_label_to_qmk(combo.result) if combo else 'KC_NO'})"
+        for i, combo in enumerate(slots)
+    )
+    return f"{triggers}\n\ncombo_t key_combos[COMBO_COUNT] = {{\n{entries}\n}};"
 
 
 def generate_qmk_layer(layer: Layer) -> str:

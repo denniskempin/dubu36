@@ -11,7 +11,9 @@ from keymap_generator.parser import (
     Combo,
     Key,
     KeymapParser,
+    Layer,
     ParseError,
+    find_key_position,
     parse_keymap,
     split_unescaped,
     strip_comment,
@@ -268,3 +270,27 @@ class TestParseErrors:
     def test_content_before_block(self) -> None:
         with pytest.raises(ParseError, match="expected an overlay"):
             parse_source("Q W F\n")
+
+
+class TestFindKeyPosition:
+    layer = Layer(
+        "default",
+        [
+            [Key("Q", "", None), Key("W", "", None)],
+            [Key("S", "ALT", None), Key("", "SHFT", None)],
+        ],
+    )
+
+    def test_finds_a_tap_label(self) -> None:
+        assert find_key_position(self.layer, "Q") == (0, 0)
+        assert find_key_position(self.layer, "S") == (1, 0)
+
+    def test_missing_label(self) -> None:
+        with pytest.raises(KeyError, match="taps NOPE"):
+            find_key_position(self.layer, "NOPE")
+
+    def test_ambiguous_label(self) -> None:
+        # Blank cells share the empty tap label, so asking for one is a mistake.
+        duplicated = Layer("default", [[Key("Q", "", None), Key("Q", "", None)]])
+        with pytest.raises(KeyError, match="in 2 places"):
+            find_key_position(duplicated, "Q")
