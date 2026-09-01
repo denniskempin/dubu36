@@ -120,9 +120,8 @@
     combos {
         compatible = "zmk,combos";
         combo_0 {
-            timeout-ms = <40>;
-            require-prior-idle-ms = <150>;
-            key-positions = <15 16>;
+            timeout-ms = <50>;
+            key-positions = <27 28>;
             bindings = <&kp ESC>;
             layers = <0>;
         };

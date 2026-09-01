@@ -75,9 +75,9 @@ layer mou
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
 // the keys pressed together on the default layer.
 //
-// S and T are also where `st` falls, which is a common enough pair of letters
-// that the combo has to be deliberate to fire: see the timing in zmk.py and
-// COMBO_TERM in the QMK config. Esc stays on the lwr layer as well, so there is
-// always a way to reach it that no amount of fast typing can suppress.
+// The pair has to be one that never gets typed back to back, or the chord
+// fires by accident mid-word: `cv` does not occur, where a home-row pair like
+// S+T would have caught every `st`. Esc stays on the lwr layer as well, as a
+// way to reach it that does not depend on two keys landing together.
 combos
-  S T -> ESC
+  C  V -> ESC

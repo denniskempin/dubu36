@@ -120,9 +120,14 @@ Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
 against the keycode the keymap holds, so a trigger on the home row has to be named by its whole
-`MT(...)` keycode rather than the plain key press it produces. Both are guarded against firing
-during ordinary typing: ZMK by `timeout-ms` and `require-prior-idle-ms` in `zmk.py`, QMK by the
-tightened `COMBO_TERM` in its config, since it has no equivalent of the idle guard.
+`MT(...)` keycode rather than the plain key press it produces.
+
+What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
+pair the typist never rolls across cannot be triggered by accident. `C+V` was picked over the
+more comfortable home-row pairs for that reason, since Colemak puts its most frequent rolls
+there and `st` or `ne` would fire a combo constantly. `COMBO_PRIOR_IDLE_MS` in `zmk.py` is the
+fallback if a riskier pair is ever needed; it is 0 here, and left out of the generated keymap,
+because requiring idle time would stop Esc firing right after a burst of typing.
 
 Known gaps, deliberate:
 

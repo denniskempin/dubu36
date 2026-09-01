@@ -15,14 +15,18 @@ from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer, find_key_posit
 MAIN_ROW_SIZES = ROW_SIZES[:3]
 PADDED_ROW_WIDTH = MAIN_ROW_SIZES[0] + 2
 
-# Combos live on keys that ordinary typing rolls across, so they are made hard
-# to trigger by accident: both keys must go down within COMBO_TIMEOUT_MS of one
-# another, and only after the board has been idle for COMBO_PRIOR_IDLE_MS, which
-# rules out a roll in the middle of a word. COMBO_LAYER keeps them off every
-# layer but the base one.
-COMBO_TIMEOUT_MS = 40
-COMBO_PRIOR_IDLE_MS = 150
+# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other,
+# and COMBO_LAYER keeps combos off every layer but the base one.
+COMBO_TIMEOUT_MS = 50
 COMBO_LAYER = 0
+
+# How long the board must have been idle before a combo may fire at all. Zero
+# lets one fire mid-word, which is only safe while the combos here sit on key
+# pairs ordinary typing never rolls across. A combo on the home row would need
+# this raised to stop `st` or `ne` triggering it, and would then pay for it by
+# refusing to fire straight after a burst of typing -- which is exactly when
+# Esc gets pressed. Omitted from the output when zero, as that is ZMK's default.
+COMBO_PRIOR_IDLE_MS = 0
 
 
 def get_zmk_key_press_code(label: str) -> str | None:
@@ -98,14 +102,18 @@ def generate_zmk_combo(combo: Combo, default_layer: Layer, index: int) -> str:
         str(zmk_key_position(*find_key_position(default_layer, label)))
         for label in (combo.a, combo.b)
     )
+    properties = [f"timeout-ms = <{COMBO_TIMEOUT_MS}>;"]
+    if COMBO_PRIOR_IDLE_MS:
+        properties.append(f"require-prior-idle-ms = <{COMBO_PRIOR_IDLE_MS}>;")
+    properties += [
+        f"key-positions = <{positions}>;",
+        f"bindings = <{map_key_label_to_zmk(combo.result)}>;",
+        f"layers = <{COMBO_LAYER}>;",
+    ]
     return "\n".join(
         [
             f"        combo_{index} {{",
-            f"            timeout-ms = <{COMBO_TIMEOUT_MS}>;",
-            f"            require-prior-idle-ms = <{COMBO_PRIOR_IDLE_MS}>;",
-            f"            key-positions = <{positions}>;",
-            f"            bindings = <{map_key_label_to_zmk(combo.result)}>;",
-            f"            layers = <{COMBO_LAYER}>;",
+            *(f"            {property}" for property in properties),
             "        };",
         ]
     )

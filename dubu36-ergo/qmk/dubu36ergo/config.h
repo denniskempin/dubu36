@@ -26,13 +26,8 @@
 
 #define COMBO_COUNT 5
 
-/*
- * Combos sit on home-row keys that ordinary typing rolls across, so both keys
- * have to go down almost together for one to count. QMK has no equivalent of
- * ZMK's require-prior-idle-ms, so this is the only guard on this side and it is
- * tighter than the 50ms default.
- */
-#define COMBO_TERM 35
+/* Matches the combo timeout ZMK is given, which is also QMK's own default. */
+#define COMBO_TERM 50
 
 /* 
  * Tap-Hold configuration

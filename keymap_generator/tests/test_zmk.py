@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import pytest
+from _pytest.monkeypatch import MonkeyPatch
 
+from keymap_generator import zmk
 from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer
 from keymap_generator.zmk import (
     COMBO_PRIOR_IDLE_MS,
@@ -114,11 +116,20 @@ class TestZmkCombos:
         assert "key-positions = <15 16>;" in rendered
         assert "bindings = <&kp ESC>;" in rendered
 
-    def test_combo_is_guarded_and_base_layer_only(self) -> None:
+    def test_combo_is_timed_and_base_layer_only(self) -> None:
         rendered = generate_zmk_combos([self.esc_combo], grid_layer())
         assert f"timeout-ms = <{COMBO_TIMEOUT_MS}>;" in rendered
-        assert f"require-prior-idle-ms = <{COMBO_PRIOR_IDLE_MS}>;" in rendered
         assert "layers = <0>;" in rendered
+
+    def test_idle_guard_is_left_out_while_it_is_zero(self) -> None:
+        assert COMBO_PRIOR_IDLE_MS == 0, "the combos in keymap.txt do not need one"
+        rendered = generate_zmk_combos([self.esc_combo], grid_layer())
+        assert "require-prior-idle-ms" not in rendered
+
+    def test_idle_guard_is_emitted_once_set(self, monkeypatch: MonkeyPatch) -> None:
+        monkeypatch.setattr(zmk, "COMBO_PRIOR_IDLE_MS", 150)
+        rendered = generate_zmk_combos([self.esc_combo], grid_layer())
+        assert "require-prior-idle-ms = <150>;" in rendered
 
     def test_each_combo_gets_its_own_node(self) -> None:
         combos = [self.esc_combo, Combo("U", "V", "TAB")]

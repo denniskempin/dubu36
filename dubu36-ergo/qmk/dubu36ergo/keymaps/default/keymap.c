@@ -23,7 +23,7 @@ KC_NO, KC_NO, KC_NO, KC_TAB, S(KC_TAB), KC_NO
 };
 
 
-const uint16_t PROGMEM combo0[] = {MT(MOD_LALT,KC_S), MT(MOD_LGUI,KC_T), COMBO_END};
+const uint16_t PROGMEM combo0[] = {KC_C, KC_V, COMBO_END};
 const uint16_t PROGMEM combo1[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo2[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo3[] = {KC_NO, COMBO_END};
