@@ -136,6 +136,9 @@ Known gaps, deliberate:
   `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
   emits the combos that exist.
 - `render.py` drops combos, so `diagrams/` shows no sign of them.
+- The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
+  QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
+  so a thumb layer is easier to shift by accident there.
 - `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
   36-key grid onto the corne's 42-key matrix.
 - `render.py` skips the `hyp` and `adj` layers (`EXCLUDED_LAYERS`), so `diagrams/` has no board

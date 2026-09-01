@@ -13,6 +13,13 @@
     // (tap-preferred, the default, used on the home-row) and hp
     // (hold-preferred, used on the thumb keys). One-shot keys are always
     // tap-preferred, so that a quick tap always one-shots.
+    //
+    // hold-preferred takes the hold as soon as any other key goes down, which
+    // is what makes a thumb layer engage without waiting, and also what made it
+    // engage mid-word on a thumb key pressed inside a burst of typing. The hp
+    // pair therefore refuses to hold at all within require-prior-idle-ms of the
+    // last key press, so a thumb key only shifts a layer once typing has
+    // actually paused, and quick-tap-ms keeps a repeated tap a tap.
     behaviors {
         mt_tp: mod_tap_tap_preferred {
             compatible = "zmk,behavior-hold-tap";
@@ -26,6 +33,8 @@
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <150>;
             bindings = <&kp>, <&kp>;
         };
 
@@ -41,6 +50,8 @@
             #binding-cells = <2>;
             flavor = "hold-preferred";
             tapping-term-ms = <200>;
+            quick-tap-ms = <200>;
+            require-prior-idle-ms = <150>;
             bindings = <&mo>, <&kp>;
         };
 
@@ -68,7 +79,7 @@
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
 &trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
-&kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &kp RET &lt_hp 1 SPC &trans
+&kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &lt_hp 1 RET &kp SPC &trans
                     >;
             };
 

@@ -207,13 +207,13 @@
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
+<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
 </g>
 <g transform="translate(390.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_space" x="15.0" y="18.1344"/>
-<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
