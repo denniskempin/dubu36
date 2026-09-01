@@ -59,23 +59,23 @@ render as icons instead of text. Pass `--no-png` to skip PNG export.
 
 ### Reference
 
-![Dubu36 reference keymap](diagrams/reference.png)
+![Dubu36 reference keymap](diagrams/reference.svg)
 
 ### default
 
-![default layer](diagrams/layer-default.png)
+![default layer](diagrams/layer-default.svg)
 
 ### rse (nav + numbers)
 
-![rse layer](diagrams/layer-rse.png)
+![rse layer](diagrams/layer-rse.svg)
 
 ### lwr (symbols)
 
-![lwr layer](diagrams/layer-lwr.png)
+![lwr layer](diagrams/layer-lwr.svg)
 
 ### mou (left-hand shortcuts)
 
-![mou layer](diagrams/layer-mou.png)
+![mou layer](diagrams/layer-mou.svg)
 
 ## Keymap
 
