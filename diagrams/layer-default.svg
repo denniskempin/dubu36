@@ -193,7 +193,7 @@
 </g>
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_backspace" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(180.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -207,7 +207,7 @@
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_backspace" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(390.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>

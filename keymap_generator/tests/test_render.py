@@ -80,10 +80,12 @@ class TestSpecsFromKeymap:
     def test_symbol_overlay_includes_tab_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Right thumbs: BKSP with TAB on lwr, SPC with SHFT_TAB on lwr.
-        assert specs[33]["base_glyph"] == "backspace"
-        assert specs[33]["sym_glyph"] == "tab"
-        assert specs[34]["sym_glyph"] == "btab"
+        # Right thumbs: RET with SHFT_TAB on lwr, SPC with TAB on lwr.
+        assert specs[33]["base_glyph"] == "return"
+        assert specs[33]["sym_glyph"] == "btab"
+        assert specs[34]["sym_glyph"] == "tab"
+        # BKSP sits on the outer left thumb, opposite RET.
+        assert specs[30]["base_glyph"] == "backspace"
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)

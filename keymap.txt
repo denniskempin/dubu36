@@ -35,7 +35,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-          RET shft/shft lwr/lwr          BKSP   SPC/rse:hp    _
+          BKSP shft/shft lwr/lwr         RET    SPC/rse:hp    _
 
 // Navigation and numbers.
 layer rse: homerow
@@ -49,7 +49,7 @@ layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   ESC    <      [      (      {          -      \_     \:     ;      #
   _      >      ]      )      }          +      =      ?      !      "
-                _      _      _          TAB    SHFT_TAB   _
+                _      _      _          SHFT_TAB  TAB     _
 
 // Window management and other Hyper key shortcuts.
 layer hyp
