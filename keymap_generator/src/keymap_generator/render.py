@@ -80,6 +80,7 @@ DEFAULT_HOLD_ACCENT = "mod"
 # text, wherever they appear (base/sym/num quadrants, any layer board).
 TAP_GLYPHS = {
     "TAB": "tab",
+    "SHFT_TAB": "btab",
     "RET": "return",
     "BKSP": "backspace",
     "ALT_BKSP": "delete-word",

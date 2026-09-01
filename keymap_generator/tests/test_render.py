@@ -22,6 +22,7 @@ KEYMAP = REPO_ROOT / "keymap.txt"
 class TestTapDisplay:
     def test_glyph_for_known_tap(self) -> None:
         assert tap_display("TAB") == ("", "tab")
+        assert tap_display("SHFT_TAB") == ("", "btab")
         assert tap_display("ALT_BKSP") == ("", "delete-word")
         assert tap_display("WORD_L") == ("", "word-left")
         assert tap_display("FWD") == ("", "hist-fwd")
@@ -60,10 +61,10 @@ class TestSpecsFromKeymap:
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Left thumb TAB/lwr:hp and right thumb SPC/rse:hp.
+        # Left inner thumb lwr/lwr (one-shot) and right thumb SPC/rse:hp.
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
-        assert specs[32]["flavor"] == "hold-preferred"
+        assert specs[32]["flavor"] == "oneshot"
         assert specs[34]["hold"] == "RSE"
         assert specs[34]["accent"] == "nav"
         assert specs[34]["flavor"] == "hold-preferred"
@@ -76,12 +77,13 @@ class TestSpecsFromKeymap:
         assert specs[11]["accent"] == "mod"
         assert specs[11]["flavor"] == "tap-preferred"
 
-    def test_symbol_overlay_includes_delete_word_glyph(self) -> None:
+    def test_symbol_overlay_includes_tab_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Rightmost thumb: BKSP with ALT_BKSP on lwr.
-        assert specs[35]["base_glyph"] == "backspace"
-        assert specs[35]["sym_glyph"] == "delete-word"
+        # Right thumbs: BKSP with TAB on lwr, SPC with SHFT_TAB on lwr.
+        assert specs[33]["base_glyph"] == "backspace"
+        assert specs[33]["sym_glyph"] == "tab"
+        assert specs[34]["sym_glyph"] == "btab"
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)

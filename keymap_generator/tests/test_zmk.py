@@ -19,7 +19,8 @@ class TestZmkLabels:
         assert get_zmk_key_press_code("A") == "A"
         assert get_zmk_key_press_code("5") == "N5"
 
-    def test_cmd_and_hyp_prefixes(self) -> None:
+    def test_mod_prefixes(self) -> None:
+        assert get_zmk_key_press_code("SHFT_TAB") == "LS(TAB)"
         assert get_zmk_key_press_code("CMD_Q") == "LG(Q)"
         assert get_zmk_key_press_code("HYP_LEFT") == "LA(LS(LC(LG(LEFT))))"
 

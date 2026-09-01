@@ -7,6 +7,8 @@ from keymap_generator.parser import Combo, Key, Layer
 
 
 def get_qmk_key_press_code(label: str) -> str | None:
+    if label.startswith("SHFT_"):
+        return f"S({get_qmk_key_press_code(label.removeprefix('SHFT_'))})"
     if label.startswith("CMD_"):
         return f"G({get_qmk_key_press_code(label[4:])})"
     if label.startswith("HYP_"):

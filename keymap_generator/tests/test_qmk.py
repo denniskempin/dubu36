@@ -19,7 +19,8 @@ class TestQmkLabels:
         assert get_qmk_key_press_code("A") == "KC_A"
         assert get_qmk_key_press_code("5") == "KC_5"
 
-    def test_cmd_and_hyp_prefixes(self) -> None:
+    def test_mod_prefixes(self) -> None:
+        assert get_qmk_key_press_code("SHFT_TAB") == "S(KC_TAB)"
         assert get_qmk_key_press_code("CMD_Q") == "G(KC_Q)"
         assert get_qmk_key_press_code("HYP_LEFT") == "G(S(A(C(KC_LEFT))))"
 
