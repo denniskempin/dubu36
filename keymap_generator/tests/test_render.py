@@ -15,6 +15,7 @@ from keymap_generator.render import (
     EXCLUDED_LAYERS,
     KH,
     KW,
+    RADIUS,
     build_stacked_specs,
     combo_specs,
     grid_index,
@@ -173,7 +174,7 @@ class TestRenderOutput:
         assert svg.count(">RSE<") == 0
         assert 'class="oneshot nav"' in svg
         assert ">rse</text>" in svg
-        assert '<circle class="combo-badge"' not in svg
+        assert '<rect class="combo-badge"' not in svg
 
     def test_combo_mark_emits_badge_and_glyph(self) -> None:
         layer = Layer(
@@ -190,7 +191,10 @@ class TestRenderOutput:
             "demo",
             combos=[{"x": 180.0, "y": 141.67, "text": "", "glyph": "escape"}],
         )
-        assert 'class="combo-badge"' in svg
+        assert (
+            f'<rect class="combo-badge" x="-10.0" y="-9.5" '
+            f'width="20.0" height="19.0" rx="{RADIUS}" ry="{RADIUS}"/>'
+        ) in svg
         assert 'class="glyph combo"' in svg
         assert 'href="#glyph_escape"' in svg
         assert "translate(180.00,141.67)" in svg
@@ -210,7 +214,7 @@ class TestRenderOutput:
             "demo",
             combos=[{"x": 60.0, "y": 28.0, "text": "X", "glyph": None}],
         )
-        assert 'class="combo-badge"' in svg
+        assert '<rect class="combo-badge"' in svg
         assert ">X</text>" in svg
 
     def test_render_diagrams_writes_expected_files(self, tmp_path: Path) -> None:
@@ -231,7 +235,7 @@ class TestRenderOutput:
         assert "Dubu36 reference" in reference
         assert 'class="sym"' in reference
         assert 'class="num"' in reference
-        assert 'class="combo-badge"' in reference
+        assert '<rect class="combo-badge"' in reference
         assert 'class="glyph combo"' in reference
         default_layer = (tmp_path / "layer-default.svg").read_text(encoding="utf-8")
-        assert '<circle class="combo-badge"' not in default_layer
+        assert '<rect class="combo-badge"' not in default_layer

@@ -19,7 +19,7 @@ instead, so layer-change labels always read as purple/orange.
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
 
-Combos render on the stacked reference card only: a small circular badge
+Combos render on the stacked reference card only: a small rounded box
 sits on the seam between the two trigger keys and shows the result,
 using the same glyphs as taps. Per-layer boards omit them.
 
@@ -55,9 +55,10 @@ PAD = 1.0
 RADIUS = 4.0
 SPLIT_GAP = 30.0
 
-# Combo badges sit on the seam between the two trigger keys. Radius is
-# small enough to leave the surrounding quadrant labels readable.
-COMBO_R = 10.0
+# Combo marks sit on the seam between the two trigger keys. The box is
+# a compact keycap (same corner radius) so it reads as part of the board.
+COMBO_W = 20.0
+COMBO_H = 19.0
 COMBO_GLYPH_SCALE = 0.55
 
 STACK_BASE = "default"
@@ -331,7 +332,7 @@ def svg_style(*, combos: bool = False) -> str:
     """.strip()
     if combos:
         style += """
-    circle.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    rect.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
     use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
     text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }"""
     return style
@@ -439,12 +440,13 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
 
 def draw_combo_mark(mark: dict) -> str:
-    """Draw the combo result as a small badge at the seam of its trigger keys."""
+    """Draw the combo result as a small rounded box at the seam of its triggers."""
     text = mark.get("text") or ""
     glyph = mark.get("glyph")
     parts = [
         f'<g class="combo" transform="translate({mark["x"]:.2f},{mark["y"]:.2f})">',
-        f'<circle class="combo-badge" r="{COMBO_R}"/>',
+        f'<rect class="combo-badge" x="{-COMBO_W / 2}" y="{-COMBO_H / 2}" '
+        f'width="{COMBO_W}" height="{COMBO_H}" rx="{RADIUS}" ry="{RADIUS}"/>',
     ]
     if glyph:
         parts.append(
