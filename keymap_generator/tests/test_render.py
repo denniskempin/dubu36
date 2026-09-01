@@ -4,16 +4,30 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from keymap_generator.parser import Key, Layer, parse_keymap
+from keymap_generator.parser import (
+    Combo,
+    Key,
+    Layer,
+    find_key_position,
+    parse_keymap,
+)
 from keymap_generator.render import (
     EXCLUDED_LAYERS,
+    GLYPH_LEGEND,
     GLYPH_PATHS,
+    KH,
+    KW,
+    RADIUS,
     TAP_GLYPHS,
     build_stacked_specs,
+    combo_specs,
+    grid_index,
     hold_flavor,
     layer_specs,
+    ortho_positions,
     render_board,
     render_diagrams,
+    render_legend,
     tap_display,
 )
 
@@ -116,12 +130,40 @@ class TestSpecsFromKeymap:
         assert specs[29]["base_glyph"] == "app-tab-next"
 
 
-class TestGlyphVocabulary:
-    def test_every_tap_glyph_has_a_path(self) -> None:
-        assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
+class TestComboMarks:
+    def test_grid_index_matches_flatten_order(self) -> None:
+        assert grid_index(0, 0) == 0
+        assert grid_index(0, 9) == 9
+        assert grid_index(2, 2) == 22
+        assert grid_index(2, 3) == 23
+        assert grid_index(3, 0) == 30
+        assert grid_index(3, 5) == 35
 
-    def test_every_path_is_used(self) -> None:
-        assert set(GLYPH_PATHS) <= set(TAP_GLYPHS.values())
+    def test_esc_combo_sits_between_c_and_v(self) -> None:
+        layers, combos = parse_keymap(KEYMAP)
+        default = next(layer for layer in layers if layer.name == "default")
+        marks = combo_specs(combos, default)
+        assert len(marks) == 1
+        mark = marks[0]
+        assert mark["glyph"] == "escape"
+        assert mark["text"] == ""
+        positions = ortho_positions()
+        c = positions[grid_index(*find_key_position(default, "C"))]
+        v = positions[grid_index(*find_key_position(default, "V"))]
+        assert mark["x"] == (c[0] + v[0] + KW) / 2
+        assert mark["y"] == (c[1] + v[1] + KH) / 2
+
+    def test_plain_label_combo_uses_text(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        default = next(layer for layer in layers if layer.name == "default")
+        marks = combo_specs([Combo("Q", "W", "X")], default)
+        assert marks[0]["text"] == "X"
+        assert marks[0]["glyph"] is None
+
+    def test_no_combos_renders_nothing(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        default = next(layer for layer in layers if layer.name == "default")
+        assert combo_specs([], default) == []
 
 
 class TestRenderOutput:
@@ -145,6 +187,48 @@ class TestRenderOutput:
         assert svg.count(">RSE<") == 0
         assert 'class="oneshot nav"' in svg
         assert ">rse</text>" in svg
+        assert '<rect class="combo-badge"' not in svg
+
+    def test_combo_mark_emits_badge_and_glyph(self) -> None:
+        layer = Layer(
+            "demo",
+            [
+                [Key("Q", "", None)] * 10,
+                [Key("A", "SHFT", "tp")] * 10,
+                [Key("Z", "", None)] * 10,
+                [Key("ESC", "MOU", "hp")] * 5 + [Key("RSE", "RSE", None)],
+            ],
+        )
+        svg = render_board(
+            layer_specs(layer),
+            "demo",
+            combos=[{"x": 180.0, "y": 141.67, "text": "", "glyph": "escape"}],
+        )
+        assert (
+            f'<rect class="combo-badge" x="-10.0" y="-9.5" '
+            f'width="20.0" height="19.0" rx="{RADIUS}" ry="{RADIUS}"/>'
+        ) in svg
+        assert 'class="glyph combo"' in svg
+        assert 'href="#glyph_escape"' in svg
+        assert "translate(180.00,141.67)" in svg
+
+    def test_combo_mark_falls_back_to_text(self) -> None:
+        layer = Layer(
+            "demo",
+            [
+                [Key("Q", "", None)] * 10,
+                [Key("A", "", None)] * 10,
+                [Key("Z", "", None)] * 10,
+                [Key("SPC", "", None)] * 6,
+            ],
+        )
+        svg = render_board(
+            layer_specs(layer),
+            "demo",
+            combos=[{"x": 60.0, "y": 28.0, "text": "X", "glyph": None}],
+        )
+        assert '<rect class="combo-badge"' in svg
+        assert ">X</text>" in svg
 
     def test_render_diagrams_writes_expected_files(self, tmp_path: Path) -> None:
         written = render_diagrams(KEYMAP, tmp_path, no_png=True)
@@ -154,6 +238,7 @@ class TestRenderOutput:
             "layer-lwr.svg",
             "layer-mou.svg",
             "layer-rse.svg",
+            "legend.svg",
             "reference.svg",
         ]
         # Excluded layers must not appear as diagram files.
@@ -164,3 +249,52 @@ class TestRenderOutput:
         assert "Dubu36 reference" in reference
         assert 'class="sym"' in reference
         assert 'class="num"' in reference
+        assert '<rect class="combo-badge"' in reference
+        assert 'class="glyph combo"' in reference
+        default_layer = (tmp_path / "layer-default.svg").read_text(encoding="utf-8")
+        assert '<rect class="combo-badge"' not in default_layer
+        legend = (tmp_path / "legend.svg").read_text(encoding="utf-8")
+        assert legend == render_legend()
+
+
+class TestRenderLegend:
+    def test_glyph_legend_covers_every_icon(self) -> None:
+        names = {name for glyphs, _ in GLYPH_LEGEND for name in glyphs}
+        assert names == set(GLYPH_PATHS)
+        assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
+
+    def test_legend_svg_covers_corners_flavors_and_icons(self) -> None:
+        svg = render_legend()
+        assert svg.startswith("<svg")
+        assert ">Legend</text>" in svg
+        assert ">Corners</text>" in svg
+        assert ">base tap</text>" in svg
+        assert ">hold</text>" in svg
+        assert ">symbols (lwr)</text>" in svg
+        assert ">numbers / nav (rse)</text>" in svg
+        assert ">Hold flavors</text>" in svg
+        assert ">tap-preferred</text>" in svg
+        assert ">hold-preferred</text>" in svg
+        assert ">one-shot</text>" in svg
+        assert 'class="hold-box tap-preferred mod"' in svg
+        assert 'class="hold-box hold-preferred nav"' in svg
+        assert 'class="hold-box oneshot sym"' in svg
+        assert ">Icons</text>" in svg
+        for names, label in GLYPH_LEGEND:
+            for name in names:
+                assert f'href="#glyph_{name}"' in svg
+            assert f">{label}</text>" in svg
+        # Directional pairs share a label instead of listing each way.
+        assert ">arrows</text>" in svg
+        assert ">home / end</text>" in svg
+        assert ">word</text>" in svg
+        assert ">history</text>" in svg
+        assert ">app tab</text>" in svg
+        assert ">shift-tab</text>" not in svg
+        assert ">word left</text>" not in svg
+        assert ">history back</text>" not in svg
+        assert ">Combos</text>" in svg
+        assert ">combo</text>" in svg
+        assert ">two-key chord</text>" in svg
+        assert '<rect class="combo-badge"' in svg
+        assert 'class="glyph combo"' in svg

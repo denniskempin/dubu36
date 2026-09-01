@@ -19,7 +19,13 @@ instead, so layer-change labels always read as purple/orange.
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
 
-Well-known taps render as icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
+Combos render on the stacked reference card only: a small rounded box
+sits on the seam between the two trigger keys and shows the result,
+using the same glyphs as taps. Per-layer boards omit them.
+
+Well-known taps render as icons instead of text — see TAP_GLYPHS /
+GLYPH_PATHS. `render_legend` draws those icons, the corner and
+hold-flavor keycaps, and a combo badge into diagrams/legend.svg.
 
 Icon vocabulary (one motif per action, so arrows are not reused):
   Cursor LEFT/RIGHT/UP/DOWN  — single shafted arrow
@@ -36,7 +42,14 @@ from __future__ import annotations
 import html
 from pathlib import Path
 
-from keymap_generator.parser import Key, Layer, parse_keymap
+from keymap_generator.parser import (
+    ROW_SIZES,
+    Combo,
+    Key,
+    Layer,
+    find_key_position,
+    parse_keymap,
+)
 
 DEFAULT_KEYMAP = Path("keymap.txt")
 DEFAULT_OUT = Path("diagrams")
@@ -51,6 +64,12 @@ KH = 56.67
 PAD = 1.0
 RADIUS = 4.0
 SPLIT_GAP = 30.0
+
+# Combo marks sit on the seam between the two trigger keys. The box is
+# a compact keycap (same corner radius) so it reads as part of the board.
+COMBO_W = 20.0
+COMBO_H = 19.0
+COMBO_GLYPH_SCALE = 0.55
 
 STACK_BASE = "default"
 STACK_SYM = "lwr"
@@ -113,6 +132,24 @@ TAP_DISPLAY = {
     "PIPE": "|",
     "UML": "uml",
 }
+
+# Icon-legend entries: one or more glyphs sharing a label, in display
+# order. Directional pairs (and the four arrows) share a label. Every
+# GLYPH_PATHS key must appear here so a new icon cannot silently skip the
+# README legend.
+GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("escape",), "escape"),
+    (("tab", "btab"), "tab"),
+    (("return",), "return"),
+    (("backspace",), "backspace"),
+    (("delete-word",), "delete word"),
+    (("space",), "space"),
+    (("up", "down", "left", "right"), "arrows"),
+    (("home", "end"), "home / end"),
+    (("word-left", "word-right"), "word"),
+    (("hist-back", "hist-fwd"), "history"),
+    (("app-tab-prev", "app-tab-next"), "app tab"),
+)
 
 # Paths are drawn in a 48×48 box centred on (24, 24), then scaled down by
 # glyph_defs. Stroke-only: closed shapes read as outlines.
@@ -183,6 +220,11 @@ def flatten_layer(layer: Layer) -> list[Key]:
     return [key for row in layer.rows for key in row]
 
 
+def grid_index(row: int, column: int) -> int:
+    """Flatten a (row, column) cell into the 36-key ortho index."""
+    return sum(ROW_SIZES[:row]) + column
+
+
 def layers_by_name(layers: list[Layer]) -> dict[str, Layer]:
     return {layer.name: layer for layer in layers}
 
@@ -246,6 +288,34 @@ def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     return specs
 
 
+def combo_specs(
+    combos: list[Combo],
+    default_layer: Layer,
+    columns: int = 5,
+    thumbs: int = 3,
+) -> list[dict]:
+    """Place each combo at the midpoint of its two trigger keys.
+
+    Combos name those keys by the label they tap on the default layer, the
+    same way the firmware generators resolve them.
+    """
+    positions = ortho_positions(columns, thumbs)
+    marks: list[dict] = []
+    for combo in combos:
+        x1, y1 = positions[grid_index(*find_key_position(default_layer, combo.a))]
+        x2, y2 = positions[grid_index(*find_key_position(default_layer, combo.b))]
+        text, glyph = tap_display(combo.result)
+        marks.append(
+            {
+                "x": (x1 + x2 + KW) / 2,
+                "y": (y1 + y2 + KH) / 2,
+                "text": text,
+                "glyph": glyph,
+            }
+        )
+    return marks
+
+
 def layer_specs(layer: Layer) -> list[dict]:
     """Per-layer view: that layer's tap at TL, hold at BL (same anchors)."""
     specs: list[dict] = []
@@ -269,8 +339,8 @@ def layer_specs(layer: Layer) -> list[dict]:
     return specs
 
 
-def svg_style() -> str:
-    return """
+def svg_style(*, combos: bool = False) -> str:
+    style = """
     svg.keymap { background: #1e1e2e; font-family: sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
@@ -300,6 +370,55 @@ def svg_style() -> str:
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
+    if combos:
+        style += """
+    rect.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
+    text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }"""
+    return style
+
+
+def legend_style() -> str:
+    """Extra CSS for the standalone legend SVG (not inlined into the boards)."""
+    return """
+    text.section { font-size: 12px; fill: #888888; text-anchor: start;
+                   font-weight: 600; }
+    text.callout { font-size: 11px; fill: #c8c8c8; }
+    text.callout.end { text-anchor: end; }
+    text.callout.start { text-anchor: start; }
+    text.callout.sym { fill: #9999ff; }
+    text.callout.num { fill: #ee9944; }
+    text.caption { font-size: 11px; fill: #aaaaaa; text-anchor: middle; }
+    text.caption.sub { font-size: 10px; fill: #777777; }
+    text.caption.start { text-anchor: start; }
+    text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }
+    """.strip()
+
+
+def key_spec(
+    *,
+    base: str = "",
+    base_glyph: str | None = None,
+    hold: str = "",
+    flavor: str | None = None,
+    accent: str = DEFAULT_HOLD_ACCENT,
+    sym: str = "",
+    sym_glyph: str | None = None,
+    num: str = "",
+    num_glyph: str | None = None,
+) -> dict:
+    """Build a draw_key spec with every quadrant filled in or empty."""
+    return {
+        "base": base,
+        "base_glyph": base_glyph,
+        "hold": hold,
+        "flavor": flavor,
+        "accent": accent,
+        "sym": sym,
+        "sym_glyph": sym_glyph,
+        "num": num,
+        "num_glyph": num_glyph,
+    }
 
 
 def glyph_defs() -> str:
@@ -403,8 +522,33 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     return "\n".join(parts)
 
 
+def draw_combo_mark(mark: dict) -> str:
+    """Draw the combo result as a small rounded box at the seam of its triggers."""
+    text = mark.get("text") or ""
+    glyph = mark.get("glyph")
+    parts = [
+        f'<g class="combo" transform="translate({mark["x"]:.2f},{mark["y"]:.2f})">',
+        f'<rect class="combo-badge" x="{-COMBO_W / 2}" y="{-COMBO_H / 2}" '
+        f'width="{COMBO_W}" height="{COMBO_H}" rx="{RADIUS}" ry="{RADIUS}"/>',
+    ]
+    if glyph:
+        parts.append(
+            f'<g transform="scale({COMBO_GLYPH_SCALE})">'
+            f'<use class="glyph combo" href="#glyph_{glyph}"/>'
+            f"</g>"
+        )
+    elif text:
+        parts.append(f'<text class="combo">{esc(text)}</text>')
+    parts.append("</g>")
+    return "\n".join(parts)
+
+
 def render_board(
-    specs: list[dict], title: str, columns: int = 5, thumbs: int = 3
+    specs: list[dict],
+    title: str,
+    columns: int = 5,
+    thumbs: int = 3,
+    combos: list[dict] | None = None,
 ) -> str:
     positions = ortho_positions(columns, thumbs)
     if len(specs) != len(positions):
@@ -414,18 +558,166 @@ def render_board(
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '
         f'viewBox="-10 -24 {width} {height}">',
-        f"<style>{svg_style()}</style>",
+        f"<style>{svg_style(combos=bool(combos))}</style>",
         glyph_defs(),
         f'<text class="title" x="0" y="-8">{esc(title)}</text>',
     ]
     for spec, (x, y) in zip(specs, positions, strict=True):
         body.append(draw_key(x, y, spec))
+    for mark in combos or []:
+        body.append(draw_combo_mark(mark))
     body.append("</svg>")
     return "\n".join(body)
 
 
 def slug(name: str) -> str:
     return "".join(ch if ch.isalnum() else "-" for ch in name).strip("-").lower()
+
+
+def render_legend() -> str:
+    """SVG legend for the stacked reference: corners, flavors, combos, icons."""
+    # Match the reference board's width so the two images line up in the README.
+    width = 650.0
+    key_y = 28.0
+    corner_x = 100.0
+    flavor_x = 325.0
+    flavor_gap = 100.0
+    icon_row_h = 28.0
+
+    parts = [
+        draw_key(
+            corner_x,
+            key_y,
+            key_spec(
+                base="A",
+                hold="CMD",
+                flavor="tap-preferred",
+                sym="@",
+                num="8",
+            ),
+        )
+    ]
+    y_top = key_y + KH * 0.32
+    y_bot = key_y + KH * 0.80
+    parts.extend(
+        [
+            '<text class="section" x="0" y="10">Corners</text>',
+            f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_top:.1f}">'
+            "base tap</text>",
+            f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_bot:.1f}">'
+            "hold</text>",
+            f'<text class="callout start sym" x="{corner_x + KW + 8:.1f}" '
+            f'y="{y_top:.1f}">symbols (lwr)</text>',
+            f'<text class="callout start num" x="{corner_x + KW + 8:.1f}" '
+            f'y="{y_bot:.1f}">numbers / nav (rse)</text>',
+        ]
+    )
+
+    flavors: tuple[tuple[dict, str, str], ...] = (
+        (
+            key_spec(base="A", hold="CMD", flavor="tap-preferred"),
+            "tap-preferred",
+            "outline · home row",
+        ),
+        (
+            key_spec(
+                base_glyph="return",
+                hold="RSE",
+                flavor="hold-preferred",
+                accent="nav",
+            ),
+            "hold-preferred",
+            "solid · thumbs",
+        ),
+        (
+            key_spec(hold="LWR", flavor="oneshot", accent="sym"),
+            "one-shot",
+            "left bar · sticky tap",
+        ),
+    )
+    parts.append(f'<text class="section" x="{flavor_x:.1f}" y="10">Hold flavors</text>')
+    for i, (spec, title, subtitle) in enumerate(flavors):
+        x = flavor_x + i * flavor_gap
+        cx = x + KW / 2
+        parts.append(draw_key(x, key_y, spec))
+        parts.append(
+            f'<text class="caption" x="{cx:.1f}" y="{key_y + KH + 14:.1f}">'
+            f"{esc(title)}</text>"
+        )
+        parts.append(
+            f'<text class="caption sub" x="{cx:.1f}" y="{key_y + KH + 26:.1f}">'
+            f"{esc(subtitle)}</text>"
+        )
+
+    icon_title_y = key_y + KH + 48.0
+    icon_y = icon_title_y + 20.0
+    parts.append(f'<text class="section" x="0" y="{icon_title_y:.1f}">Icons</text>')
+    glyph_step = 22.0
+    # Pack groups left-to-right so a 4-arrow cluster can be wider than a
+    # single icon without forcing a rigid column grid.
+    x = 0.0
+    row = 0
+    n_icon_rows = 1
+    for names, label in GLYPH_LEGEND:
+        first_gx = 12.0
+        label_x = first_gx + (len(names) - 1) * glyph_step + 16.0
+        # 11px sans-serif is roughly 6.4px per character.
+        item_w = label_x + max(len(label) * 6.4, 24.0) + 16.0
+        if x > 0.0 and x + item_w > width:
+            x = 0.0
+            row += 1
+        n_icon_rows = row + 1
+        y = icon_y + row * icon_row_h
+        for j, name in enumerate(names):
+            gx = x + first_gx + j * glyph_step
+            parts.append(
+                f'<use class="glyph base" href="#glyph_{name}" '
+                f'x="{gx:.1f}" y="{y:.1f}"/>'
+            )
+        parts.append(
+            f'<text class="glyph-label" x="{x + label_x:.1f}" y="{y:.1f}">'
+            f"{esc(label)}</text>"
+        )
+        x += item_w
+
+    combo_title_y = icon_y + n_icon_rows * icon_row_h + 18.0
+    combo_key_y = combo_title_y + 18.0
+    combo_x = 0.0
+    # Same placement as combo_specs: badge sits on the seam of two adjacent keys.
+    parts.append(f'<text class="section" x="0" y="{combo_title_y:.1f}">Combos</text>')
+    parts.append(draw_key(combo_x, combo_key_y, key_spec(base="C")))
+    parts.append(draw_key(combo_x + KW, combo_key_y, key_spec(base="V")))
+    parts.append(
+        draw_combo_mark(
+            {
+                "x": combo_x + KW,
+                "y": combo_key_y + KH / 2,
+                "text": "",
+                "glyph": "escape",
+            }
+        )
+    )
+    caption_x = combo_x + 2 * KW + 16.0
+    parts.append(
+        f'<text class="caption start" x="{caption_x:.1f}" '
+        f'y="{combo_key_y + KH * 0.38:.1f}">combo</text>'
+    )
+    parts.append(
+        f'<text class="caption sub start" x="{caption_x:.1f}" '
+        f'y="{combo_key_y + KH * 0.62:.1f}">two-key chord</text>'
+    )
+
+    # viewBox origin is ( -10, -24 ); height includes that top inset.
+    height = round(combo_key_y + KH + 16.0 + 24.0, 2)
+    header = [
+        f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
+        f'width="{width:.0f}" height="{height:.0f}" '
+        f'viewBox="-10 -24 {width} {height}">',
+        f"<style>{svg_style(combos=True)}\n{legend_style()}</style>",
+        glyph_defs(),
+        '<text class="title" x="0" y="-8">Legend</text>',
+    ]
+    return "\n".join([*header, *parts, "</svg>"])
 
 
 def render_png(svg_path: Path) -> Path:
@@ -451,7 +743,7 @@ def render_diagrams(
     no_png: bool = False,
 ) -> list[Path]:
     """Render SVG (+ optional PNG) diagrams for `keymap_path` into `out_dir`."""
-    layers, _combos = parse_keymap(keymap_path)
+    layers, combos = parse_keymap(keymap_path)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     written: list[Path] = []
@@ -468,10 +760,18 @@ def render_diagrams(
 
     if not layers_only:
         path = out_dir / "reference.svg"
+        default = layers_by_name(layers)[STACK_BASE]
         path.write_text(
-            render_board(build_stacked_specs(layers), "Dubu36 reference"),
+            render_board(
+                build_stacked_specs(layers),
+                "Dubu36 reference",
+                combos=combo_specs(combos, default),
+            ),
             encoding="utf-8",
         )
+        written.append(path)
+        path = out_dir / "legend.svg"
+        path.write_text(render_legend(), encoding="utf-8")
         written.append(path)
 
     if not no_png:

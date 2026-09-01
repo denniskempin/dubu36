@@ -36,42 +36,18 @@ make generated
 ## Layout diagrams
 
 `generate-keymap diagrams` writes a stacked reference card plus one board per
-layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Each key uses fixed
-legend positions:
+layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Pass `--no-png` to
+skip PNG export.
 
-| Position | Content | Color |
-| -------- | ------- | ----- |
-| Top-left | Base (`default`) tap | Grey |
-| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to `lwr`/`rse` |
-| Top-right | Symbols (`lwr`) | Purple |
-| Bottom-right | Numbers / nav (`rse`) | Orange |
-
-Hold box styling follows the keymap's hold-tap flavor:
-
-| Flavor | Style |
-| ------ | ----- |
-| `tp` (tap-preferred, the default) | Outline box in the bottom-left quadrant |
-| `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
-| one-shot (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left): one-shot on tap, momentary on hold |
-
-Well-known taps render as icons instead of text. Each action gets one motif,
-so arrows are not reused for Tab, word-skip, home/end, or app-tab switching:
-
-| Keys | Motif |
-| --- | --- |
-| `LEFT` `RIGHT` `UP` `DOWN` | Single shafted arrow |
-| `TAB` / `SHFT_TAB` | Stacked double arrows to a bar (keyboard ↹) |
-| `HOME` / `END` | Text lines with a bar at the start vs end of the line |
-| `WORD_L` / `WORD_R` | Cursor arrow skipping a word-box |
-| `TAB_L` / `TAB_R` | Folder-tab with the ear on the selected end |
-| `FWD` / `BCK` | Circular history arrow |
-| `RET`, `BKSP`, `ESC`, `SPC` | Standard keycap pictograms |
-
-Pass `--no-png` to skip PNG export.
+Combos (two-key chords) appear only on the stacked reference card: a small
+rounded box sits on the seam between the two trigger keys and shows the
+result, using the same glyphs as taps. Per-layer boards omit them.
 
 ### Reference
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
+
+![Legend for the reference drawing](diagrams/legend.svg)
 
 ### default
 
