@@ -54,8 +54,20 @@ Hold box styling follows the keymap's hold-tap flavor:
 | `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
 | one-shot (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left): one-shot on tap, momentary on hold |
 
-Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
-render as icons instead of text. Pass `--no-png` to skip PNG export.
+Well-known taps render as icons instead of text. Each action gets one motif,
+so arrows are not reused for Tab, word-skip, home/end, or app-tab switching:
+
+| Keys | Motif |
+| --- | --- |
+| `LEFT` `RIGHT` `UP` `DOWN` | Single shafted arrow |
+| `TAB` / `SHFT_TAB` | Stacked double arrows to a bar (keyboard ↹) |
+| `HOME` / `END` | Text lines with a bar at the start vs end of the line |
+| `WORD_L` / `WORD_R` | Cursor arrow skipping a word-box |
+| `TAB_L` / `TAB_R` | Folder-tab with the ear on the selected end |
+| `FWD` / `BCK` | Circular history arrow |
+| `RET`, `BKSP`, `ESC`, `SPC` | Standard keycap pictograms |
+
+Pass `--no-png` to skip PNG export.
 
 ### Reference
 

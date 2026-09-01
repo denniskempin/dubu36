@@ -7,6 +7,8 @@ from pathlib import Path
 from keymap_generator.parser import Key, Layer, parse_keymap
 from keymap_generator.render import (
     EXCLUDED_LAYERS,
+    GLYPH_PATHS,
+    TAP_GLYPHS,
     build_stacked_specs,
     hold_flavor,
     layer_specs,
@@ -26,6 +28,12 @@ class TestTapDisplay:
         assert tap_display("ALT_BKSP") == ("", "delete-word")
         assert tap_display("WORD_L") == ("", "word-left")
         assert tap_display("FWD") == ("", "hist-fwd")
+        assert tap_display("TAB_L") == ("", "app-tab-prev")
+        assert tap_display("TAB_R") == ("", "app-tab-next")
+
+    def test_keyboard_tab_is_not_app_tab(self) -> None:
+        assert tap_display("TAB") != tap_display("TAB_R")
+        assert tap_display("SHFT_TAB") != tap_display("TAB_L")
 
     def test_symbol_aliases(self) -> None:
         assert tap_display("PIPE") == ("|", None)
@@ -103,6 +111,17 @@ class TestSpecsFromKeymap:
         assert specs[15]["base_glyph"] == "hist-fwd"
         assert specs[16]["base_glyph"] == "left"
         assert specs[19]["base_glyph"] == "hist-back"
+        # Bottom row: previous/next app tab, not the Tab-key arrows.
+        assert specs[25]["base_glyph"] == "app-tab-prev"
+        assert specs[29]["base_glyph"] == "app-tab-next"
+
+
+class TestGlyphVocabulary:
+    def test_every_tap_glyph_has_a_path(self) -> None:
+        assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
+
+    def test_every_path_is_used(self) -> None:
+        assert set(GLYPH_PATHS) <= set(TAP_GLYPHS.values())
 
 
 class TestRenderOutput:

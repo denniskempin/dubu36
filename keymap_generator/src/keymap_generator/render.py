@@ -19,8 +19,16 @@ instead, so layer-change labels always read as purple/orange.
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
 
-Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) render as
-icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
+Well-known taps render as icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
+
+Icon vocabulary (one motif per action, so arrows are not reused):
+  Cursor LEFT/RIGHT/UP/DOWN  — single shafted arrow
+  TAB / SHFT_TAB             — stacked double arrows to a bar (↹-style Tab)
+  HOME / END                 — text lines with a bar at the start vs end
+  WORD_L / WORD_R            — cursor arrow skipping a word-box
+  TAB_L / TAB_R              — folder-tab, ear on the selected end
+  FWD / BCK                  — circular history arrow
+  RET, BKSP, ESC, SPC        — standard keycap pictograms
 """
 
 from __future__ import annotations
@@ -96,8 +104,8 @@ TAP_GLYPHS = {
     "WORD_R": "word-right",
     "FWD": "hist-fwd",
     "BCK": "hist-back",
-    "TAB_L": "btab",
-    "TAB_R": "tab",
+    "TAB_L": "app-tab-prev",
+    "TAB_R": "app-tab-next",
 }
 
 # A few labels that read better as glyphs/symbols than as their raw codes.
@@ -106,6 +114,8 @@ TAP_DISPLAY = {
     "UML": "uml",
 }
 
+# Paths are drawn in a 48×48 box centred on (24, 24), then scaled down by
+# glyph_defs. Stroke-only: closed shapes read as outlines.
 GLYPH_PATHS = {
     "backspace": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z",
     # The backspace box's own point already reads as one chevron; add a
@@ -115,22 +125,32 @@ GLYPH_PATHS = {
     "return": "M42,13V27H6 m8-8l-8,8l8,8",
     "space": "M42,24V32H6V24",
     "escape": "M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24",
+    # Single shafted arrows: the only "move one unit" cursor keys.
     "up": "M24,42v-36 m-8,6l8-8l8,8",
     "down": "M24,6v36 m-8,-6l8,8l8-8",
     "left": "M42,24h-36 m6-8l-8,8l8,8",
     "right": "M6,24h36 m-6-8l8,8l-8,8",
-    "tab": "M6,24h27 m-6-8l8,8l-8,8 M42,12V36",
-    "btab": "M42,24h-27 m6-8l-8,8l8,8 M6,12V36",
-    "home": "M42,42l-28-28 m0,10v-10h10 m8-8h-26v26",
-    "end": "M6,6l28,28 m0-10v10h-10 m-8,8h26v-26",
-    # Double chevron ("»"/"«") for word-jump — visually distinct from the
-    # single-chevron cursor arrows above.
-    "word-right": "M8,13l10,11-10,11 M24,13l10,11-10,11",
-    "word-left": "M40,13l-10,11,10,11 M24,13l-10,11,10,11",
-    # Curved hook for browser history nav — distinct from both the
-    # straight cursor arrows and the word-jump chevrons.
-    "hist-fwd": "M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2",
-    "hist-back": "M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2",
+    # Keyboard Tab: stacked double arrows into a stop, the ↹ pictogram
+    # split by direction so TAB and SHFT_TAB stay distinguishable.
+    "tab": "M6,12H32m-5-6l7,6l-7,6 M6,36H32m-5-6l7,6l-7,6 M42,8v32",
+    "btab": "M42,12H16m5-6l-7,6l7,6 M42,36H16m5-6l-7,6l7,6 M6,8v32",
+    # Start vs end of a line: a full-height bar on that edge, plus two
+    # text lines. The bar side is obvious at diagram size; two lines stop
+    # this from reading as an arrow-to-bar.
+    "home": "M8,10v28 M8,16h32 M8,32h20",
+    "end": "M40,10v28 M8,16h32 M20,32h20",
+    # Skip a word: the cursor arrow plus a word-box, so it is "move, but
+    # by a word" rather than another arrow family.
+    "word-left": "M22,24h-16m6-8l-8,8l8,8 M26,17h16v14h-16z",
+    "word-right": "M6,17h16v14h-16z M26,24h16m-6-8l8,8l-8,8",
+    # 3/4 circular arrow: browser/editor history. Distinct from Return's
+    # inverted-L and from the straight cursor arrows.
+    "hist-back": "M36,32A14,14 0 1 0 24,12m8-8l-8,8l8,8",
+    "hist-fwd": "M12,32A14,14 0 1 1 24,12m-8-8l8,8l-8,8",
+    # Folder-tab silhouette; the ear sits on the selected end so previous
+    # vs next app-tab cannot be read as a signal-strength meter.
+    "app-tab-prev": "M6,10h18v10h18v20H6z",
+    "app-tab-next": "M6,20h18v-10h18v30H6z",
 }
 
 
