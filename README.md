@@ -36,26 +36,8 @@ make generated
 ## Layout diagrams
 
 `generate-keymap diagrams` writes a stacked reference card plus one board per
-layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Each key uses fixed
-legend positions:
-
-| Position | Content | Color |
-| -------- | ------- | ----- |
-| Top-left | Base (`default`) tap | Grey |
-| Bottom-left | Hold binding | Grey by default; purple/orange if the hold itself switches to `lwr`/`rse` |
-| Top-right | Symbols (`lwr`) | Purple |
-| Bottom-right | Numbers / nav (`rse`) | Orange |
-
-Hold box styling follows the keymap's hold-tap flavor:
-
-| Flavor | Style |
-| ------ | ----- |
-| `tp` (tap-preferred, the default) | Outline box in the bottom-left quadrant |
-| `hp` (hold-preferred) | Solid box in the bottom-left quadrant |
-| one-shot (`LABEL/LABEL`) | Solid bar covering the full left half (top-left + bottom-left): one-shot on tap, momentary on hold |
-
-Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
-render as icons instead of text. Pass `--no-png` to skip PNG export.
+layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Pass `--no-png` to
+skip PNG export.
 
 Combos (two-key chords) appear only on the stacked reference card: a small
 rounded box sits on the seam between the two trigger keys and shows the
@@ -64,6 +46,8 @@ result, using the same glyphs as taps. Per-layer boards omit them.
 ### Reference
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
+
+![Legend for the reference drawing](diagrams/legend.svg)
 
 ### default
 

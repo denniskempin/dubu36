@@ -13,9 +13,12 @@ from keymap_generator.parser import (
 )
 from keymap_generator.render import (
     EXCLUDED_LAYERS,
+    GLYPH_LEGEND,
+    GLYPH_PATHS,
     KH,
     KW,
     RADIUS,
+    TAP_GLYPHS,
     build_stacked_specs,
     combo_specs,
     grid_index,
@@ -24,6 +27,7 @@ from keymap_generator.render import (
     ortho_positions,
     render_board,
     render_diagrams,
+    render_legend,
     tap_display,
 )
 
@@ -225,6 +229,7 @@ class TestRenderOutput:
             "layer-lwr.svg",
             "layer-mou.svg",
             "layer-rse.svg",
+            "legend.svg",
             "reference.svg",
         ]
         # Excluded layers must not appear as diagram files.
@@ -239,3 +244,32 @@ class TestRenderOutput:
         assert 'class="glyph combo"' in reference
         default_layer = (tmp_path / "layer-default.svg").read_text(encoding="utf-8")
         assert '<rect class="combo-badge"' not in default_layer
+        legend = (tmp_path / "legend.svg").read_text(encoding="utf-8")
+        assert legend == render_legend()
+
+
+class TestRenderLegend:
+    def test_glyph_legend_covers_every_icon(self) -> None:
+        assert {name for name, _ in GLYPH_LEGEND} == set(GLYPH_PATHS)
+        assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
+
+    def test_legend_svg_covers_corners_flavors_and_icons(self) -> None:
+        svg = render_legend()
+        assert svg.startswith("<svg")
+        assert ">Legend</text>" in svg
+        assert ">Corners</text>" in svg
+        assert ">base tap</text>" in svg
+        assert ">hold</text>" in svg
+        assert ">symbols (lwr)</text>" in svg
+        assert ">numbers / nav (rse)</text>" in svg
+        assert ">Hold flavors</text>" in svg
+        assert ">tap-preferred</text>" in svg
+        assert ">hold-preferred</text>" in svg
+        assert ">one-shot</text>" in svg
+        assert 'class="hold-box tap-preferred mod"' in svg
+        assert 'class="hold-box hold-preferred nav"' in svg
+        assert 'class="hold-box oneshot sym"' in svg
+        assert ">Icons</text>" in svg
+        for name, label in GLYPH_LEGEND:
+            assert f'href="#glyph_{name}"' in svg
+            assert f">{label}</text>" in svg
