@@ -19,6 +19,10 @@ instead, so layer-change labels always read as purple/orange.
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
 
+Combos render on the stacked reference card only: a small circular badge
+sits on the seam between the two trigger keys and shows the result,
+using the same glyphs as taps. Per-layer boards omit them.
+
 Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) render as
 icons instead of text — see TAP_GLYPHS / GLYPH_PATHS.
 """
@@ -28,7 +32,14 @@ from __future__ import annotations
 import html
 from pathlib import Path
 
-from keymap_generator.parser import Key, Layer, parse_keymap
+from keymap_generator.parser import (
+    ROW_SIZES,
+    Combo,
+    Key,
+    Layer,
+    find_key_position,
+    parse_keymap,
+)
 
 DEFAULT_KEYMAP = Path("keymap.txt")
 DEFAULT_OUT = Path("diagrams")
@@ -43,6 +54,11 @@ KH = 56.67
 PAD = 1.0
 RADIUS = 4.0
 SPLIT_GAP = 30.0
+
+# Combo badges sit on the seam between the two trigger keys. Radius is
+# small enough to leave the surrounding quadrant labels readable.
+COMBO_R = 10.0
+COMBO_GLYPH_SCALE = 0.55
 
 STACK_BASE = "default"
 STACK_SYM = "lwr"
@@ -163,6 +179,11 @@ def flatten_layer(layer: Layer) -> list[Key]:
     return [key for row in layer.rows for key in row]
 
 
+def grid_index(row: int, column: int) -> int:
+    """Flatten a (row, column) cell into the 36-key ortho index."""
+    return sum(ROW_SIZES[:row]) + column
+
+
 def layers_by_name(layers: list[Layer]) -> dict[str, Layer]:
     return {layer.name: layer for layer in layers}
 
@@ -226,6 +247,34 @@ def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     return specs
 
 
+def combo_specs(
+    combos: list[Combo],
+    default_layer: Layer,
+    columns: int = 5,
+    thumbs: int = 3,
+) -> list[dict]:
+    """Place each combo at the midpoint of its two trigger keys.
+
+    Combos name those keys by the label they tap on the default layer, the
+    same way the firmware generators resolve them.
+    """
+    positions = ortho_positions(columns, thumbs)
+    marks: list[dict] = []
+    for combo in combos:
+        x1, y1 = positions[grid_index(*find_key_position(default_layer, combo.a))]
+        x2, y2 = positions[grid_index(*find_key_position(default_layer, combo.b))]
+        text, glyph = tap_display(combo.result)
+        marks.append(
+            {
+                "x": (x1 + x2 + KW) / 2,
+                "y": (y1 + y2 + KH) / 2,
+                "text": text,
+                "glyph": glyph,
+            }
+        )
+    return marks
+
+
 def layer_specs(layer: Layer) -> list[dict]:
     """Per-layer view: that layer's tap at TL, hold at BL (same anchors)."""
     specs: list[dict] = []
@@ -249,8 +298,8 @@ def layer_specs(layer: Layer) -> list[dict]:
     return specs
 
 
-def svg_style() -> str:
-    return """
+def svg_style(*, combos: bool = False) -> str:
+    style = """
     svg.keymap { background: #1e1e2e; font-family: sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
@@ -280,6 +329,12 @@ def svg_style() -> str:
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
+    if combos:
+        style += """
+    circle.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
+    text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }"""
+    return style
 
 
 def glyph_defs() -> str:
@@ -383,8 +438,32 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     return "\n".join(parts)
 
 
+def draw_combo_mark(mark: dict) -> str:
+    """Draw the combo result as a small badge at the seam of its trigger keys."""
+    text = mark.get("text") or ""
+    glyph = mark.get("glyph")
+    parts = [
+        f'<g class="combo" transform="translate({mark["x"]:.2f},{mark["y"]:.2f})">',
+        f'<circle class="combo-badge" r="{COMBO_R}"/>',
+    ]
+    if glyph:
+        parts.append(
+            f'<g transform="scale({COMBO_GLYPH_SCALE})">'
+            f'<use class="glyph combo" href="#glyph_{glyph}"/>'
+            f"</g>"
+        )
+    elif text:
+        parts.append(f'<text class="combo">{esc(text)}</text>')
+    parts.append("</g>")
+    return "\n".join(parts)
+
+
 def render_board(
-    specs: list[dict], title: str, columns: int = 5, thumbs: int = 3
+    specs: list[dict],
+    title: str,
+    columns: int = 5,
+    thumbs: int = 3,
+    combos: list[dict] | None = None,
 ) -> str:
     positions = ortho_positions(columns, thumbs)
     if len(specs) != len(positions):
@@ -394,12 +473,14 @@ def render_board(
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '
         f'viewBox="-10 -24 {width} {height}">',
-        f"<style>{svg_style()}</style>",
+        f"<style>{svg_style(combos=bool(combos))}</style>",
         glyph_defs(),
         f'<text class="title" x="0" y="-8">{esc(title)}</text>',
     ]
     for spec, (x, y) in zip(specs, positions, strict=True):
         body.append(draw_key(x, y, spec))
+    for mark in combos or []:
+        body.append(draw_combo_mark(mark))
     body.append("</svg>")
     return "\n".join(body)
 
@@ -431,7 +512,7 @@ def render_diagrams(
     no_png: bool = False,
 ) -> list[Path]:
     """Render SVG (+ optional PNG) diagrams for `keymap_path` into `out_dir`."""
-    layers, _combos = parse_keymap(keymap_path)
+    layers, combos = parse_keymap(keymap_path)
     out_dir.mkdir(parents=True, exist_ok=True)
 
     written: list[Path] = []
@@ -448,8 +529,13 @@ def render_diagrams(
 
     if not layers_only:
         path = out_dir / "reference.svg"
+        default = layers_by_name(layers)[STACK_BASE]
         path.write_text(
-            render_board(build_stacked_specs(layers), "Dubu36 reference"),
+            render_board(
+                build_stacked_specs(layers),
+                "Dubu36 reference",
+                combos=combo_specs(combos, default),
+            ),
             encoding="utf-8",
         )
         written.append(path)

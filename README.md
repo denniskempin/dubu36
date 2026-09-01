@@ -57,6 +57,10 @@ Hold box styling follows the keymap's hold-tap flavor:
 Well-known taps (`TAB`, `RET`, `BKSP`, `ESC`, `SPC`, arrows, `HOME`/`END`, …)
 render as icons instead of text. Pass `--no-png` to skip PNG export.
 
+Combos (two-key chords) appear only on the stacked reference card: a small
+badge sits on the seam between the two trigger keys and shows the result,
+using the same glyphs as taps. Per-layer boards omit them.
+
 ### Reference
 
 ![Dubu36 reference keymap](diagrams/reference.svg)

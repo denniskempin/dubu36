@@ -26,7 +26,10 @@
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
-    text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
+    text.title { font-size: 14px; fill: #888888; text-anchor: start; }
+    circle.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
+    text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
 <path id="glyph_delete-word" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7"/>
@@ -273,5 +276,9 @@
 </g>
 <g transform="translate(450.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+</g>
+<g class="combo" transform="translate(180.00,141.68)">
+<circle class="combo-badge" r="10.0"/>
+<g transform="scale(0.55)"><use class="glyph combo" href="#glyph_escape"/></g>
 </g>
 </svg>

@@ -108,7 +108,8 @@ Editing this file changes all three generated artifacts, so follow it with `make
   combo generator is handed the default layer, since a combo names its trigger keys by the
   label they tap there.
 - `render.py` — the SVG diagram renderer, plus `render_png` which lazily imports `cairosvg` from
-  the `diagrams` group. Legend positions and glyphs are documented in the README.
+  the `diagrams` group. Legend positions and glyphs are documented in the README. Combos appear
+  only on the stacked reference card, as a badge on the seam between the two trigger keys.
 - `cli.py` — `generate-keymap {zmk,qmk,diagrams}`. The keymaps print to stdout; `diagrams` writes
   files to `--out-dir`. Defaults resolve `keymap.txt` and the templates relative to the package,
   so it works from any cwd.
@@ -135,7 +136,8 @@ Known gaps, deliberate:
 - Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
   `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
   emits the combos that exist.
-- `render.py` drops combos, so `diagrams/` shows no sign of them.
+- Combos render on the stacked reference card only, as a badge on the seam between the two
+  trigger keys. Per-layer boards omit them.
 - The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
   QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
   so a thumb layer is easier to shift by accident there.
