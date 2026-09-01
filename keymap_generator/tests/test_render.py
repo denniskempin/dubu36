@@ -250,7 +250,8 @@ class TestRenderOutput:
 
 class TestRenderLegend:
     def test_glyph_legend_covers_every_icon(self) -> None:
-        assert {name for name, _ in GLYPH_LEGEND} == set(GLYPH_PATHS)
+        names = {name for glyphs, _ in GLYPH_LEGEND for name in glyphs}
+        assert names == set(GLYPH_PATHS)
         assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
 
     def test_legend_svg_covers_corners_flavors_and_icons(self) -> None:
@@ -270,6 +271,15 @@ class TestRenderLegend:
         assert 'class="hold-box hold-preferred nav"' in svg
         assert 'class="hold-box oneshot sym"' in svg
         assert ">Icons</text>" in svg
-        for name, label in GLYPH_LEGEND:
-            assert f'href="#glyph_{name}"' in svg
+        for names, label in GLYPH_LEGEND:
+            for name in names:
+                assert f'href="#glyph_{name}"' in svg
             assert f">{label}</text>" in svg
+        # Directional pairs share a label instead of listing each way.
+        assert ">arrows</text>" in svg
+        assert ">home / end</text>" in svg
+        assert ">word</text>" in svg
+        assert ">history</text>" in svg
+        assert ">shift-tab</text>" not in svg
+        assert ">word left</text>" not in svg
+        assert ">history back</text>" not in svg

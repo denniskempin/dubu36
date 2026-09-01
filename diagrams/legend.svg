@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="305" viewBox="-10 -24 650.0 304.67">
+<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="249" viewBox="-10 -24 650.0 248.67">
 <style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
@@ -97,36 +97,29 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <text class="section" x="0" y="132.7">Icons</text>
 <use class="glyph base" href="#glyph_escape" x="12.0" y="152.7"/>
 <text class="glyph-label" x="28.0" y="152.7">escape</text>
-<use class="glyph base" href="#glyph_tab" x="142.0" y="152.7"/>
-<text class="glyph-label" x="158.0" y="152.7">tab</text>
-<use class="glyph base" href="#glyph_btab" x="272.0" y="152.7"/>
-<text class="glyph-label" x="288.0" y="152.7">shift-tab</text>
-<use class="glyph base" href="#glyph_return" x="402.0" y="152.7"/>
-<text class="glyph-label" x="418.0" y="152.7">return</text>
-<use class="glyph base" href="#glyph_backspace" x="532.0" y="152.7"/>
-<text class="glyph-label" x="548.0" y="152.7">backspace</text>
-<use class="glyph base" href="#glyph_delete-word" x="12.0" y="180.7"/>
-<text class="glyph-label" x="28.0" y="180.7">delete word</text>
-<use class="glyph base" href="#glyph_space" x="142.0" y="180.7"/>
-<text class="glyph-label" x="158.0" y="180.7">space</text>
-<use class="glyph base" href="#glyph_up" x="272.0" y="180.7"/>
-<text class="glyph-label" x="288.0" y="180.7">up</text>
-<use class="glyph base" href="#glyph_down" x="402.0" y="180.7"/>
-<text class="glyph-label" x="418.0" y="180.7">down</text>
-<use class="glyph base" href="#glyph_left" x="532.0" y="180.7"/>
-<text class="glyph-label" x="548.0" y="180.7">left</text>
-<use class="glyph base" href="#glyph_right" x="12.0" y="208.7"/>
-<text class="glyph-label" x="28.0" y="208.7">right</text>
-<use class="glyph base" href="#glyph_home" x="142.0" y="208.7"/>
-<text class="glyph-label" x="158.0" y="208.7">home</text>
-<use class="glyph base" href="#glyph_end" x="272.0" y="208.7"/>
-<text class="glyph-label" x="288.0" y="208.7">end</text>
-<use class="glyph base" href="#glyph_word-left" x="402.0" y="208.7"/>
-<text class="glyph-label" x="418.0" y="208.7">word left</text>
-<use class="glyph base" href="#glyph_word-right" x="532.0" y="208.7"/>
-<text class="glyph-label" x="548.0" y="208.7">word right</text>
-<use class="glyph base" href="#glyph_hist-back" x="12.0" y="236.7"/>
-<text class="glyph-label" x="28.0" y="236.7">history back</text>
-<use class="glyph base" href="#glyph_hist-fwd" x="142.0" y="236.7"/>
-<text class="glyph-label" x="158.0" y="236.7">history forward</text>
+<use class="glyph base" href="#glyph_tab" x="94.4" y="152.7"/>
+<use class="glyph base" href="#glyph_btab" x="116.4" y="152.7"/>
+<text class="glyph-label" x="132.4" y="152.7">tab</text>
+<use class="glyph base" href="#glyph_return" x="184.4" y="152.7"/>
+<text class="glyph-label" x="200.4" y="152.7">return</text>
+<use class="glyph base" href="#glyph_backspace" x="266.8" y="152.7"/>
+<text class="glyph-label" x="282.8" y="152.7">backspace</text>
+<use class="glyph base" href="#glyph_delete-word" x="368.4" y="152.7"/>
+<text class="glyph-label" x="384.4" y="152.7">delete word</text>
+<use class="glyph base" href="#glyph_space" x="482.8" y="152.7"/>
+<text class="glyph-label" x="498.8" y="152.7">space</text>
+<use class="glyph base" href="#glyph_up" x="12.0" y="180.7"/>
+<use class="glyph base" href="#glyph_down" x="34.0" y="180.7"/>
+<use class="glyph base" href="#glyph_left" x="56.0" y="180.7"/>
+<use class="glyph base" href="#glyph_right" x="78.0" y="180.7"/>
+<text class="glyph-label" x="94.0" y="180.7">arrows</text>
+<use class="glyph base" href="#glyph_home" x="160.4" y="180.7"/>
+<use class="glyph base" href="#glyph_end" x="182.4" y="180.7"/>
+<text class="glyph-label" x="198.4" y="180.7">home / end</text>
+<use class="glyph base" href="#glyph_word-left" x="290.4" y="180.7"/>
+<use class="glyph base" href="#glyph_word-right" x="312.4" y="180.7"/>
+<text class="glyph-label" x="328.4" y="180.7">word</text>
+<use class="glyph base" href="#glyph_hist-back" x="382.0" y="180.7"/>
+<use class="glyph base" href="#glyph_hist-fwd" x="404.0" y="180.7"/>
+<text class="glyph-label" x="420.0" y="180.7">history</text>
 </svg>

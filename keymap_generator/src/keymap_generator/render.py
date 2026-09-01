@@ -124,27 +124,21 @@ TAP_DISPLAY = {
     "UML": "uml",
 }
 
-# Human-readable names for the icon legend, in display order. Every
+# Icon-legend entries: one or more glyphs sharing a label, in display
+# order. Directional pairs (and the four arrows) share a label. Every
 # GLYPH_PATHS key must appear here so a new icon cannot silently skip the
 # README legend.
-GLYPH_LEGEND: tuple[tuple[str, str], ...] = (
-    ("escape", "escape"),
-    ("tab", "tab"),
-    ("btab", "shift-tab"),
-    ("return", "return"),
-    ("backspace", "backspace"),
-    ("delete-word", "delete word"),
-    ("space", "space"),
-    ("up", "up"),
-    ("down", "down"),
-    ("left", "left"),
-    ("right", "right"),
-    ("home", "home"),
-    ("end", "end"),
-    ("word-left", "word left"),
-    ("word-right", "word right"),
-    ("hist-back", "history back"),
-    ("hist-fwd", "history forward"),
+GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
+    (("escape",), "escape"),
+    (("tab", "btab"), "tab"),
+    (("return",), "return"),
+    (("backspace",), "backspace"),
+    (("delete-word",), "delete word"),
+    (("space",), "space"),
+    (("up", "down", "left", "right"), "arrows"),
+    (("home", "end"), "home / end"),
+    (("word-left", "word-right"), "word"),
+    (("hist-back", "hist-fwd"), "history"),
 )
 
 GLYPH_PATHS = {
@@ -565,8 +559,6 @@ def render_legend() -> str:
     corner_x = 100.0
     flavor_x = 325.0
     flavor_gap = 100.0
-    icon_cols = 5
-    icon_col_w = width / icon_cols
     icon_row_h = 28.0
 
     parts = [
@@ -637,23 +629,36 @@ def render_legend() -> str:
     icon_title_y = key_y + KH + 48.0
     icon_y = icon_title_y + 20.0
     parts.append(f'<text class="section" x="0" y="{icon_title_y:.1f}">Icons</text>')
-    for i, (name, label) in enumerate(GLYPH_LEGEND):
-        col = i % icon_cols
-        row = i // icon_cols
-        x = col * icon_col_w
+    glyph_step = 22.0
+    # Pack groups left-to-right so a 4-arrow cluster can be wider than a
+    # single icon without forcing a rigid column grid.
+    x = 0.0
+    row = 0
+    n_icon_rows = 1
+    for names, label in GLYPH_LEGEND:
+        first_gx = 12.0
+        label_x = first_gx + (len(names) - 1) * glyph_step + 16.0
+        # 11px sans-serif is roughly 6.4px per character.
+        item_w = label_x + max(len(label) * 6.4, 24.0) + 16.0
+        if x > 0.0 and x + item_w > width:
+            x = 0.0
+            row += 1
+        n_icon_rows = row + 1
         y = icon_y + row * icon_row_h
+        for j, name in enumerate(names):
+            gx = x + first_gx + j * glyph_step
+            parts.append(
+                f'<use class="glyph base" href="#glyph_{name}" '
+                f'x="{gx:.1f}" y="{y:.1f}"/>'
+            )
         parts.append(
-            f'<use class="glyph base" href="#glyph_{name}" '
-            f'x="{x + 12:.1f}" y="{y:.1f}"/>'
-        )
-        parts.append(
-            f'<text class="glyph-label" x="{x + 28:.1f}" y="{y:.1f}">'
+            f'<text class="glyph-label" x="{x + label_x:.1f}" y="{y:.1f}">'
             f"{esc(label)}</text>"
         )
+        x += item_w
 
-    n_icon_rows = (len(GLYPH_LEGEND) + icon_cols - 1) // icon_cols
     # viewBox origin is ( -10, -24 ); height includes that top inset.
-    height = icon_y + n_icon_rows * icon_row_h + 16.0 + 24.0
+    height = round(icon_y + n_icon_rows * icon_row_h + 16.0 + 24.0, 2)
     header = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '
