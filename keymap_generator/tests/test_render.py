@@ -283,3 +283,8 @@ class TestRenderLegend:
         assert ">shift-tab</text>" not in svg
         assert ">word left</text>" not in svg
         assert ">history back</text>" not in svg
+        assert ">Combos</text>" in svg
+        assert ">combo</text>" in svg
+        assert ">two-key chord</text>" in svg
+        assert '<rect class="combo-badge"' in svg
+        assert 'class="glyph combo"' in svg

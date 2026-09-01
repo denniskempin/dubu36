@@ -25,7 +25,8 @@ using the same glyphs as taps. Per-layer boards omit them.
 
 Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) render as
 icons instead of text — see TAP_GLYPHS / GLYPH_PATHS. `render_legend` draws
-those icons plus the corner and hold-flavor keycaps into diagrams/legend.svg.
+those icons, the corner and hold-flavor keycaps, and a combo badge into
+diagrams/legend.svg.
 """
 
 from __future__ import annotations
@@ -368,6 +369,7 @@ def legend_style() -> str:
     text.callout.num { fill: #ee9944; }
     text.caption { font-size: 11px; fill: #aaaaaa; text-anchor: middle; }
     text.caption.sub { font-size: 10px; fill: #777777; }
+    text.caption.start { text-anchor: start; }
     text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }
     """.strip()
 
@@ -552,7 +554,7 @@ def slug(name: str) -> str:
 
 
 def render_legend() -> str:
-    """SVG legend for the stacked reference drawing: corners, flavors, icons."""
+    """SVG legend for the stacked reference: corners, flavors, combos, icons."""
     # Match the reference board's width so the two images line up in the README.
     width = 650.0
     key_y = 28.0
@@ -657,13 +659,40 @@ def render_legend() -> str:
         )
         x += item_w
 
+    combo_title_y = icon_y + n_icon_rows * icon_row_h + 18.0
+    combo_key_y = combo_title_y + 18.0
+    combo_x = 0.0
+    # Same placement as combo_specs: badge sits on the seam of two adjacent keys.
+    parts.append(f'<text class="section" x="0" y="{combo_title_y:.1f}">Combos</text>')
+    parts.append(draw_key(combo_x, combo_key_y, key_spec(base="C")))
+    parts.append(draw_key(combo_x + KW, combo_key_y, key_spec(base="V")))
+    parts.append(
+        draw_combo_mark(
+            {
+                "x": combo_x + KW,
+                "y": combo_key_y + KH / 2,
+                "text": "",
+                "glyph": "escape",
+            }
+        )
+    )
+    caption_x = combo_x + 2 * KW + 16.0
+    parts.append(
+        f'<text class="caption start" x="{caption_x:.1f}" '
+        f'y="{combo_key_y + KH * 0.38:.1f}">combo</text>'
+    )
+    parts.append(
+        f'<text class="caption sub start" x="{caption_x:.1f}" '
+        f'y="{combo_key_y + KH * 0.62:.1f}">two-key chord</text>'
+    )
+
     # viewBox origin is ( -10, -24 ); height includes that top inset.
-    height = round(icon_y + n_icon_rows * icon_row_h + 16.0 + 24.0, 2)
+    height = round(combo_key_y + KH + 16.0 + 24.0, 2)
     header = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '
         f'viewBox="-10 -24 {width} {height}">',
-        f"<style>{svg_style()}\n{legend_style()}</style>",
+        f"<style>{svg_style(combos=True)}\n{legend_style()}</style>",
         glyph_defs(),
         '<text class="title" x="0" y="-8">Legend</text>',
     ]

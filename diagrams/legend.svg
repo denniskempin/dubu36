@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="249" viewBox="-10 -24 650.0 248.67">
+<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="341" viewBox="-10 -24 650.0 341.34">
 <style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
@@ -27,6 +27,9 @@
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #c8c8c8; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
+    rect.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
+    text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }
 text.section { font-size: 12px; fill: #888888; text-anchor: start;
                    font-weight: 600; }
     text.callout { font-size: 11px; fill: #c8c8c8; }
@@ -36,6 +39,7 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
     text.callout.num { fill: #ee9944; }
     text.caption { font-size: 11px; fill: #aaaaaa; text-anchor: middle; }
     text.caption.sub { font-size: 10px; fill: #777777; }
+    text.caption.start { text-anchor: start; }
     text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
@@ -122,4 +126,19 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <use class="glyph base" href="#glyph_hist-back" x="382.0" y="180.7"/>
 <use class="glyph base" href="#glyph_hist-fwd" x="404.0" y="180.7"/>
 <text class="glyph-label" x="420.0" y="180.7">history</text>
+<text class="section" x="0" y="226.7">Combos</text>
+<g transform="translate(0.00,244.67)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">C</text>
+</g>
+<g transform="translate(60.00,244.67)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">V</text>
+</g>
+<g class="combo" transform="translate(60.00,273.00)">
+<rect class="combo-badge" x="-10.0" y="-9.5" width="20.0" height="19.0" rx="4.0" ry="4.0"/>
+<g transform="scale(0.55)"><use class="glyph combo" href="#glyph_escape"/></g>
+</g>
+<text class="caption start" x="136.0" y="266.2">combo</text>
+<text class="caption sub start" x="136.0" y="279.8">two-key chord</text>
 </svg>
