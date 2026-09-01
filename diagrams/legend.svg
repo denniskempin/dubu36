@@ -1,0 +1,144 @@
+<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="341" viewBox="-10 -24 650.0 341.34">
+<style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
+    rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
+    text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
+    text.base { font-size: 16px; font-weight: 600; fill: #dddddd; }
+    text.hold { font-size: 11px; }
+    text.sym { font-size: 13px; fill: #9999ff; }
+    text.num { font-size: 13px; fill: #ee9944; }
+    text.oneshot { font-size: 12px; font-weight: 600; }
+    use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
+                stroke-linecap: round; stroke-linejoin: round; }
+    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
+    use.glyph.sym { stroke: #9999ff; }
+    use.glyph.num { stroke: #ee9944; }
+    rect.hold-box { stroke-width: 1.2px; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
+    rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
+    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
+    rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
+    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
+    rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.sym, text.oneshot.sym,
+    text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
+    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.title { font-size: 14px; fill: #888888; text-anchor: start; }
+    rect.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
+    use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
+    text.combo { font-size: 9px; font-weight: 700; fill: #1a1a1a; }
+text.section { font-size: 12px; fill: #888888; text-anchor: start;
+                   font-weight: 600; }
+    text.callout { font-size: 11px; fill: #c8c8c8; }
+    text.callout.end { text-anchor: end; }
+    text.callout.start { text-anchor: start; }
+    text.callout.sym { fill: #9999ff; }
+    text.callout.num { fill: #ee9944; }
+    text.caption { font-size: 11px; fill: #aaaaaa; text-anchor: middle; }
+    text.caption.sub { font-size: 10px; fill: #777777; }
+    text.caption.start { text-anchor: start; }
+    text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }</style>
+<defs>
+<path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
+<path id="glyph_delete-word" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7"/>
+<path id="glyph_return" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,13V27H6 m8-8l-8,8l8,8"/>
+<path id="glyph_space" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24V32H6V24"/>
+<path id="glyph_escape" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24"/>
+<path id="glyph_up" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,42v-36 m-8,6l8-8l8,8"/>
+<path id="glyph_down" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,6v36 m-8,-6l8,8l8-8"/>
+<path id="glyph_left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-36 m6-8l-8,8l8,8"/>
+<path id="glyph_right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,24h36 m-6-8l8,8l-8,8"/>
+<path id="glyph_tab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,24h27 m-6-8l8,8l-8,8 M42,12V36"/>
+<path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-27 m6-8l-8,8l8,8 M6,12V36"/>
+<path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,42l-28-28 m0,10v-10h10 m8-8h-26v26"/>
+<path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,6l28,28 m0-10v10h-10 m-8,8h26v-26"/>
+<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,13l10,11-10,11 M24,13l10,11-10,11"/>
+<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
+<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
+<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
+</defs>
+<text class="title" x="0" y="-8">Legend</text>
+<g transform="translate(100.00,28.00)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">A</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
+<text class="sym" x="45.0" y="18.1344">@</text>
+<text class="num" x="45.0" y="45.336000000000006">8</text>
+</g>
+<text class="section" x="0" y="10">Corners</text>
+<text class="callout end" x="92.0" y="46.1">base tap</text>
+<text class="callout end" x="92.0" y="73.3">hold</text>
+<text class="callout start sym" x="168.0" y="46.1">symbols (lwr)</text>
+<text class="callout start num" x="168.0" y="73.3">numbers / nav (rse)</text>
+<text class="section" x="325.0" y="10">Hold flavors</text>
+<g transform="translate(325.00,28.00)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">A</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
+</g>
+<text class="caption" x="355.0" y="98.7">tap-preferred</text>
+<text class="caption sub" x="355.0" y="110.7">outline · home row</text>
+<g transform="translate(425.00,28.00)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
+<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
+</g>
+<text class="caption" x="455.0" y="98.7">hold-preferred</text>
+<text class="caption sub" x="455.0" y="110.7">solid · thumbs</text>
+<g transform="translate(525.00,28.00)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box oneshot sym" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="oneshot sym" transform="translate(15.5,28.335) rotate(-90)">lwr</text>
+</g>
+<text class="caption" x="555.0" y="98.7">one-shot</text>
+<text class="caption sub" x="555.0" y="110.7">left bar · sticky tap</text>
+<text class="section" x="0" y="132.7">Icons</text>
+<use class="glyph base" href="#glyph_escape" x="12.0" y="152.7"/>
+<text class="glyph-label" x="28.0" y="152.7">escape</text>
+<use class="glyph base" href="#glyph_tab" x="94.4" y="152.7"/>
+<use class="glyph base" href="#glyph_btab" x="116.4" y="152.7"/>
+<text class="glyph-label" x="132.4" y="152.7">tab</text>
+<use class="glyph base" href="#glyph_return" x="184.4" y="152.7"/>
+<text class="glyph-label" x="200.4" y="152.7">return</text>
+<use class="glyph base" href="#glyph_backspace" x="266.8" y="152.7"/>
+<text class="glyph-label" x="282.8" y="152.7">backspace</text>
+<use class="glyph base" href="#glyph_delete-word" x="368.4" y="152.7"/>
+<text class="glyph-label" x="384.4" y="152.7">delete word</text>
+<use class="glyph base" href="#glyph_space" x="482.8" y="152.7"/>
+<text class="glyph-label" x="498.8" y="152.7">space</text>
+<use class="glyph base" href="#glyph_up" x="12.0" y="180.7"/>
+<use class="glyph base" href="#glyph_down" x="34.0" y="180.7"/>
+<use class="glyph base" href="#glyph_left" x="56.0" y="180.7"/>
+<use class="glyph base" href="#glyph_right" x="78.0" y="180.7"/>
+<text class="glyph-label" x="94.0" y="180.7">arrows</text>
+<use class="glyph base" href="#glyph_home" x="160.4" y="180.7"/>
+<use class="glyph base" href="#glyph_end" x="182.4" y="180.7"/>
+<text class="glyph-label" x="198.4" y="180.7">home / end</text>
+<use class="glyph base" href="#glyph_word-left" x="290.4" y="180.7"/>
+<use class="glyph base" href="#glyph_word-right" x="312.4" y="180.7"/>
+<text class="glyph-label" x="328.4" y="180.7">word</text>
+<use class="glyph base" href="#glyph_hist-back" x="382.0" y="180.7"/>
+<use class="glyph base" href="#glyph_hist-fwd" x="404.0" y="180.7"/>
+<text class="glyph-label" x="420.0" y="180.7">history</text>
+<text class="section" x="0" y="226.7">Combos</text>
+<g transform="translate(0.00,244.67)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">C</text>
+</g>
+<g transform="translate(60.00,244.67)">
+<rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<text class="base" x="15.0" y="18.1344">V</text>
+</g>
+<g class="combo" transform="translate(60.00,273.00)">
+<rect class="combo-badge" x="-10.0" y="-9.5" width="20.0" height="19.0" rx="4.0" ry="4.0"/>
+<g transform="scale(0.55)"><use class="glyph combo" href="#glyph_escape"/></g>
+</g>
+<text class="caption start" x="136.0" y="266.2">combo</text>
+<text class="caption sub start" x="136.0" y="279.8">two-key chord</text>
+</svg>
