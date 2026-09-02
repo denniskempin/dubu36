@@ -301,6 +301,7 @@ class TestRenderLegend:
         assert ">two-key chord</text>" in svg
         assert '<rect class="combo-badge"' in svg
         assert 'class="glyph combo"' in svg
+        assert svg.index(">Combos</text>") < svg.index(">Icons</text>")
 
     def test_legend_icons_sit_on_a_column_grid(self) -> None:
         svg = render_legend()

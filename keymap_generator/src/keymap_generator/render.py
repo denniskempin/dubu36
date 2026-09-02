@@ -593,7 +593,10 @@ def render_legend() -> str:
     corner_x = 92.0
     flavor_start = 318.0
     flavor_end = 548.0
-    icon_title_y = caption_sub_y + 22.0
+    combo_title_y = caption_sub_y + 22.0
+    combo_key_y = combo_title_y + 18.0
+    combo_x = 0.0
+    icon_title_y = combo_key_y + KH + 22.0
     icon_y = icon_title_y + 18.0
     col_w = width / LEGEND_ICON_COLS
 
@@ -666,31 +669,6 @@ def render_legend() -> str:
             f"{esc(subtitle)}</text>"
         )
 
-    parts.append(f'<text class="section" x="0" y="{icon_title_y:.1f}">Icons</text>')
-    n_icon_rows = 0
-    for i, (names, label) in enumerate(GLYPH_LEGEND):
-        col = i % LEGEND_ICON_COLS
-        row = i // LEGEND_ICON_COLS
-        n_icon_rows = row + 1
-        cell_x = col * col_w
-        mid = cell_x + col_w / 2
-        y = icon_y + row * LEGEND_ICON_ROW_H
-        group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
-        first_gx = mid - group_w / 2
-        for j, name in enumerate(names):
-            gx = first_gx + j * LEGEND_GLYPH_STEP
-            parts.append(
-                f'<use class="glyph base" href="#glyph_{name}" '
-                f'x="{gx:.1f}" y="{y:.1f}"/>'
-            )
-        parts.append(
-            f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
-            f"{esc(label)}</text>"
-        )
-
-    combo_title_y = icon_y + n_icon_rows * LEGEND_ICON_ROW_H + 16.0
-    combo_key_y = combo_title_y + 18.0
-    combo_x = 0.0
     # Same placement as combo_specs: badge sits on the seam of two adjacent keys.
     parts.append(f'<text class="section" x="0" y="{combo_title_y:.1f}">Combos</text>')
     parts.append(draw_key(combo_x, combo_key_y, key_spec(base="C")))
@@ -715,8 +693,30 @@ def render_legend() -> str:
         f'y="{combo_key_y + KH * 0.62:.1f}">two-key chord</text>'
     )
 
+    parts.append(f'<text class="section" x="0" y="{icon_title_y:.1f}">Icons</text>')
+    n_icon_rows = 0
+    for i, (names, label) in enumerate(GLYPH_LEGEND):
+        col = i % LEGEND_ICON_COLS
+        row = i // LEGEND_ICON_COLS
+        n_icon_rows = row + 1
+        cell_x = col * col_w
+        mid = cell_x + col_w / 2
+        y = icon_y + row * LEGEND_ICON_ROW_H
+        group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
+        first_gx = mid - group_w / 2
+        for j, name in enumerate(names):
+            gx = first_gx + j * LEGEND_GLYPH_STEP
+            parts.append(
+                f'<use class="glyph base" href="#glyph_{name}" '
+                f'x="{gx:.1f}" y="{y:.1f}"/>'
+            )
+        parts.append(
+            f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
+            f"{esc(label)}</text>"
+        )
+
     # viewBox origin is ( -10, -24 ); height includes that top inset.
-    height = round(combo_key_y + KH + 16.0 + 24.0, 2)
+    height = round(icon_y + n_icon_rows * LEGEND_ICON_ROW_H + 16.0 + 24.0, 2)
     header = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '
         f'width="{width:.0f}" height="{height:.0f}" '
