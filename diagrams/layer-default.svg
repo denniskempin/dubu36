@@ -106,67 +106,67 @@
 </g>
 <g transform="translate(0.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
 <text class="hold tap-preferred mod symbol dejavu" x="15.0" y="45.336000000000006">✦</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">R</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(120.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">S</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌥</text>
 </g>
 <g transform="translate(180.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">T</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 </g>
 <g transform="translate(240.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">D</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(330.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">H</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">N</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 </g>
 <g transform="translate(450.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">E</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌥</text>
 </g>
 <g transform="translate(510.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">I</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">O</text>
 <text class="hold tap-preferred mod symbol dejavu" x="15.0" y="45.336000000000006">✦</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">Z</text>
 <g transform="translate(15.0,45.336000000000006) scale(0.875)"><use class="glyph hold tap-preferred mod" href="#glyph_bluetooth"/></g>
 </g>
@@ -204,7 +204,7 @@
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">&#x27;</text>
 <g transform="translate(15.0,45.336000000000006) scale(0.875)"><use class="glyph hold tap-preferred mod" href="#glyph_bluetooth"/></g>
 </g>
@@ -224,7 +224,7 @@
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred nav" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred nav symbol dejavu" x="15.0" y="45.336000000000006">⇈</text>
 </g>

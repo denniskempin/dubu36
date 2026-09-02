@@ -81,7 +81,7 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <text class="title" x="0" y="-8">Legend</text>
 <g transform="translate(92.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 <text class="num" x="45.0" y="18.1344">8</text>
@@ -95,7 +95,7 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <text class="section" x="318.0" y="10">Hold flavors</text>
 <g transform="translate(318.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
 <text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 </g>
@@ -103,7 +103,7 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <text class="caption sub" x="348.0" y="110.7">outline · home row</text>
 <g transform="translate(433.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
+<rect class="hold-box hold-preferred nav" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
 <text class="hold hold-preferred nav symbol dejavu" x="15.0" y="45.336000000000006">⇈</text>
 </g>

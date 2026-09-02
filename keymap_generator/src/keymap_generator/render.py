@@ -348,6 +348,24 @@ def board_size(columns: int = 5, thumbs: int = 3) -> tuple[float, float]:
     return width, height
 
 
+def hold_box_rect() -> tuple[float, float, float, float]:
+    """Return (x, y, w, h) for the bottom-left hold badge.
+
+    The box stays flush with the keycap's bottom-left padding. Top and
+    right are pulled in so the hold mark at the BL legend anchor
+    (KW*0.25, KH*0.80) is the centre, instead of sitting low in a
+    full-quadrant box.
+    """
+    ikh = KH - 2 * PAD
+    cx = KW * 0.25
+    cy = KH * 0.80
+    left = PAD
+    bottom = PAD + ikh
+    width = 2 * (cx - left)
+    height = 2 * (bottom - cy)
+    return left, bottom - height, width, height
+
+
 def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     """Project semantic layers into per-key visual specs for the reference card.
 
@@ -570,9 +588,10 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             f'width="{ikw / 2}" height="{ikh}" rx="{RADIUS}" ry="{RADIUS}"/>'
         )
     elif hold and flavor in ("tap-preferred", "hold-preferred"):
+        hx, hy, hw, hh = hold_box_rect()
         parts.append(
-            f'<rect class="hold-box {flavor} {accent}" x="{PAD}" '
-            f'y="{PAD + ikh / 2}" width="{ikw / 2}" height="{ikh / 2}" '
+            f'<rect class="hold-box {flavor} {accent}" x="{hx}" '
+            f'y="{hy}" width="{hw}" height="{hh}" '
             f'rx="{RADIUS}" ry="{RADIUS}"/>'
         )
 

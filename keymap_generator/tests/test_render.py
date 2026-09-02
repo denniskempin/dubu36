@@ -29,6 +29,7 @@ from keymap_generator.render import (
     LEGEND_GLYPH_STEP,
     LEGEND_ICON_COLS,
     LEGEND_WIDTH,
+    PAD,
     RADIUS,
     TAP_GLYPHS,
     TEXT_LEGEND,
@@ -36,6 +37,7 @@ from keymap_generator.render import (
     combo_specs,
     dejavu_class,
     grid_index,
+    hold_box_rect,
     hold_display,
     hold_flavor,
     layer_specs,
@@ -269,6 +271,23 @@ class TestRenderOutput:
         assert ">rse</text>" not in svg
         assert 'href="#glyph_rse"' not in svg
         assert '<rect class="combo-badge"' not in svg
+
+    def test_hold_box_is_inset_to_centre_the_mark(self) -> None:
+        hx, hy, hw, hh = hold_box_rect()
+        assert hx == PAD
+        assert hx + hw / 2 == KW * 0.25
+        assert hy + hh / 2 == KH * 0.80
+        ikh = KH - 2 * PAD
+        assert hy + hh == PAD + ikh
+        # Smaller than the full bottom-left quadrant on the top and right.
+        assert hw < (KW - 2 * PAD) / 2
+        assert hh < ikh / 2
+        svg = render_legend()
+        assert (
+            f'<rect class="hold-box tap-preferred mod" x="{hx}" '
+            f'y="{hy}" width="{hw}" height="{hh}" '
+            f'rx="{RADIUS}" ry="{RADIUS}"/>'
+        ) in svg
 
     def test_combo_mark_emits_badge_and_glyph(self) -> None:
         layer = Layer(
