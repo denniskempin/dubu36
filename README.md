@@ -5,45 +5,7 @@ This repository contains my work-in-progress keyboard layout for 36 key keyboard
 The keyboard layout is specified in [`keymap.txt`](keymap.txt), and converted into ZMK and QMK
 keymaps using the [`keymap_generator`](keymap_generator/) tool.
 
-## Development
-
-The keymap generator is a small Python package managed with
-[uv](https://docs.astral.sh/uv/). Install uv, then from the repo root:
-
-```sh
-cd keymap_generator
-uv sync --group diagrams
-uv run generate-keymap zmk        # print the ZMK keymap
-uv run generate-keymap qmk        # print the QMK keymap
-uv run generate-keymap diagrams --out-dir ../diagrams
-uv run pytest                     # run the test suite
-uv run ruff check                 # lint
-uv run ruff format                # format
-uv run ty check                   # type check
-```
-
-The `diagrams` group provides cairosvg, which the renderer needs for PNG export
-and `ty` needs to resolve the import.
-
-The committed keymaps and diagrams are checked against `keymap.txt` by the test
-suite, so regenerate all of them together after editing the layout. From the
-repo root, with `uv` on `PATH`:
-
-```sh
-make generated
-```
-
 ## Layout diagrams
-
-`generate-keymap diagrams` writes a stacked reference card plus one board per
-layer (except `hyp` and `adj`) to [`diagrams/`](diagrams/). Pass `--no-png` to
-skip PNG export.
-
-Combos (two-key chords) appear only on the stacked reference card: a small
-rounded box sits on the seam between the two trigger keys and shows the
-result, using the same glyphs as taps. Per-layer boards omit them.
-
-### Reference
 
 ![Dubu36 reference keymap](diagrams/reference.svg)
 
