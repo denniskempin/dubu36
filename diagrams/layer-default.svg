@@ -51,8 +51,8 @@
 <path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
-<path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M16,8l4,32 M28,8l4,32 M8,18h32 M8,30h32"/>
-<path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M9,9h7v7h-7z M20,9h7v7h-7z M31,9h7v7h-7z M9,20h7v7h-7z M20,20h7v7h-7z M31,20h7v7h-7z M9,31h7v7h-7z M20,31h7v7h-7z M31,31h7v7h-7z"/>
+<path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,10l14,14 14,-14 M10,24l14,14 14,-14"/>
+<path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,24l14,-14 14,14 M10,38l14,-14 14,14"/>
 </defs>
 <text class="title" x="0" y="-8">default</text>
 <g transform="translate(0.00,0.00)">

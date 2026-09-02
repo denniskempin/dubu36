@@ -15,8 +15,8 @@ Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
 Hold labels/boxes are grey by default. A hold binding that itself switches
 to the symbol (lwr) or number/nav (rse) layer is colored like that layer
 instead, so layer-change labels always read as purple/orange. Those two
-layer holds render as icons (`#` for lwr, a 3×3 pad for rse) rather than
-the letters "lwr"/"rse".
+layer holds render as double chevrons (down for lwr, up for rse) rather
+than the letters "lwr"/"rse".
 
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
@@ -179,14 +179,10 @@ GLYPH_PATHS = {
     # straight cursor arrows and the word-jump chevrons.
     "hist-fwd": "M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2",
     "hist-back": "M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2",
-    # Hash for the symbols (lwr / lower) layer.
-    "lwr": "M16,8l4,32 M28,8l4,32 M8,18h32 M8,30h32",
-    # 3×3 pad for the numbers/nav (rse / raise) layer.
-    "rse": (
-        "M9,9h7v7h-7z M20,9h7v7h-7z M31,9h7v7h-7z "
-        "M9,20h7v7h-7z M20,20h7v7h-7z M31,20h7v7h-7z "
-        "M9,31h7v7h-7z M20,31h7v7h-7z M31,31h7v7h-7z"
-    ),
+    # Double chevron down / up for the lower (lwr) and raise (rse) layers.
+    # Shaftless so they stay distinct from the single-arrow cursor keys.
+    "lwr": "M10,10l14,14 14,-14 M10,24l14,14 14,-14",
+    "rse": "M10,24l14,-14 14,14 M10,38l14,-14 14,14",
 }
 
 
