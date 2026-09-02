@@ -18,6 +18,9 @@ from keymap_generator.render import (
     HOLD_GLYPHS,
     KH,
     KW,
+    LEGEND_GLYPH_STEP,
+    LEGEND_ICON_COLS,
+    LEGEND_WIDTH,
     RADIUS,
     TAP_GLYPHS,
     TEXT_LEGEND,
@@ -45,6 +48,8 @@ class TestTapDisplay:
         assert tap_display("ALT_BKSP") == ("", "delete-word")
         assert tap_display("WORD_L") == ("", "word-left")
         assert tap_display("FWD") == ("", "hist-fwd")
+        assert tap_display("TAB_L") == ("", "app-tab-prev")
+        assert tap_display("TAB_R") == ("", "app-tab-next")
         assert tap_display("LWR") == ("⇊", None)
         assert tap_display("RSE") == ("⇈", None)
         assert tap_display("SHFT") == ("⇧", None)
@@ -52,6 +57,10 @@ class TestTapDisplay:
         assert tap_display("ALT") == ("⌥", None)
         assert tap_display("CTRL") == ("⌃", None)
         assert tap_display("HYP") == ("✦", None)
+
+    def test_keyboard_tab_is_not_app_tab(self) -> None:
+        assert tap_display("TAB") != tap_display("TAB_R")
+        assert tap_display("SHFT_TAB") != tap_display("TAB_L")
 
     def test_symbol_aliases(self) -> None:
         assert tap_display("PIPE") == ("|", None)
@@ -185,6 +194,9 @@ class TestSpecsFromKeymap:
         assert specs[15]["base_glyph"] == "hist-fwd"
         assert specs[16]["base_glyph"] == "left"
         assert specs[19]["base_glyph"] == "hist-back"
+        # Bottom row: previous/next app tab, not the Tab-key arrows.
+        assert specs[25]["base_glyph"] == "app-tab-prev"
+        assert specs[29]["base_glyph"] == "app-tab-next"
 
 
 class TestComboMarks:
@@ -365,6 +377,7 @@ class TestRenderLegend:
         assert ">home / end</text>" in svg
         assert ">word</text>" in svg
         assert ">history</text>" in svg
+        assert ">app tab</text>" in svg
         for char, label in TEXT_LEGEND:
             assert f">{char}</text>" in svg
             assert f">{label}</text>" in svg
@@ -379,3 +392,13 @@ class TestRenderLegend:
         assert ">two-key chord</text>" in svg
         assert '<rect class="combo-badge"' in svg
         assert 'class="glyph combo"' in svg
+        assert svg.index(">Combos</text>") < svg.index(">Icons</text>")
+
+    def test_legend_icons_sit_on_a_column_grid(self) -> None:
+        svg = render_legend()
+        col_w = LEGEND_WIDTH / LEGEND_ICON_COLS
+        for i, (names, _label) in enumerate(GLYPH_LEGEND):
+            col = i % LEGEND_ICON_COLS
+            group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
+            first_x = col * col_w + col_w / 2 - group_w / 2
+            assert f'href="#glyph_{names[0]}" x="{first_x:.1f}"' in svg

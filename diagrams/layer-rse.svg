@@ -48,14 +48,16 @@
 <path id="glyph_down" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,6v36 m-8,-6l8,8l8-8"/>
 <path id="glyph_left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-36 m6-8l-8,8l8,8"/>
 <path id="glyph_right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,24h36 m-6-8l8,8l-8,8"/>
-<path id="glyph_tab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,24h27 m-6-8l8,8l-8,8 M42,12V36"/>
-<path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,24h-27 m6-8l-8,8l8,8 M6,12V36"/>
-<path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,42l-28-28 m0,10v-10h10 m8-8h-26v26"/>
-<path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,6l28,28 m0-10v10h-10 m-8,8h26v-26"/>
-<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,13l10,11-10,11 M24,13l10,11-10,11"/>
-<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
-<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
-<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
+<path id="glyph_tab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,12H32m-5-6l7,6l-7,6 M6,36H32m-5-6l7,6l-7,6 M42,8v32"/>
+<path id="glyph_btab" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M42,12H16m5-6l-7,6l7,6 M42,36H16m5-6l-7,6l7,6 M6,8v32"/>
+<path id="glyph_home" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M8,10v28 M8,16h32 M8,32h20"/>
+<path id="glyph_end" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,10v28 M8,16h32 M20,32h20"/>
+<path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,24h-16m6-8l-8,8l8,8 M26,17h16v14h-16z"/>
+<path id="glyph_word-right" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,17h16v14h-16z M26,24h16m-6-8l8,8l-8,8"/>
+<path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M36,32A14,14 0 1 0 24,12m8-8l-8,8l8,8"/>
+<path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M12,32A14,14 0 1 1 24,12m-8-8l8,8l-8,8"/>
+<path id="glyph_app-tab-prev" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,10h18v10h18v20H6z"/>
+<path id="glyph_app-tab-next" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,20h18v-10h18v30H6z"/>
 <path id="glyph_bluetooth" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M12,16 L36,32 L24,40 L24,8 L36,16 L12,32"/>
 </defs>
 <text class="title" x="0" y="-8">rse</text>
@@ -176,7 +178,7 @@
 </g>
 <g transform="translate(330.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_btab" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_app-tab-prev" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(390.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -192,7 +194,7 @@
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<use class="glyph base" href="#glyph_tab" x="15.0" y="18.1344"/>
+<use class="glyph base" href="#glyph_app-tab-next" x="15.0" y="18.1344"/>
 </g>
 <g transform="translate(120.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
