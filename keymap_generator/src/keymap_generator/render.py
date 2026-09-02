@@ -17,7 +17,8 @@ to the symbol (lwr) or number/nav (rse) layer is colored like that layer
 instead, so layer-change labels always read as purple/orange. Those two
 layer holds render as double chevrons (down for lwr, up for rse). The
 standard modifiers use their usual keycap symbols (shift, command,
-option, control) instead of "shft"/"cmd"/"alt"/"ctrl".
+option, control) instead of "shft"/"cmd"/"alt"/"ctrl". Hyper is the
+four-pointed star ✦ (U+2726); adjust is the Bluetooth rune.
 
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
@@ -27,10 +28,10 @@ sits on the seam between the two trigger keys and shows the result,
 using the same glyphs as taps. Per-layer boards omit them.
 
 Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …), the
-standard modifiers, and the lwr/rse layer holds render as icons instead
-of text — see TAP_GLYPHS / HOLD_GLYPHS / GLYPH_PATHS. `render_legend`
-draws those icons, the corner and hold-flavor keycaps, and a combo badge
-into diagrams/legend.svg.
+standard modifiers, and the lwr/rse/hyp/adj holds render as icons
+instead of text — see TAP_GLYPHS / HOLD_GLYPHS / GLYPH_PATHS.
+`render_legend` draws those icons, the corner and hold-flavor keycaps,
+and a combo badge into diagrams/legend.svg.
 """
 
 from __future__ import annotations
@@ -78,8 +79,7 @@ EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 # Short hold labels shown in the bottom-left quadrant. Holds listed in
 # HOLD_GLYPHS skip this and draw the glyph instead.
 HOLD_DISPLAY = {
-    "HYP": "hyp",
-    "ADJ": "adj",
+    "HYP": "✦",
     "MOU": "mou",
 }
 
@@ -122,10 +122,12 @@ TAP_GLYPHS = {
     "CMD": "cmd",
     "ALT": "alt",
     "CTRL": "ctrl",
+    "ADJ": "bluetooth",
 }
 
 # Holds that draw an icon in the hold box / one-shot bar: layer shifts
-# and the four standard modifiers.
+# and the four standard modifiers. Hyper is a Unicode star in
+# HOLD_DISPLAY instead of a stroke path.
 HOLD_GLYPHS = {
     "LWR": "lwr",
     "RSE": "rse",
@@ -133,6 +135,7 @@ HOLD_GLYPHS = {
     "CMD": "cmd",
     "ALT": "alt",
     "CTRL": "ctrl",
+    "ADJ": "bluetooth",
 }
 
 # A few labels that read better as glyphs/symbols than as their raw codes.
@@ -162,7 +165,13 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("cmd",), "command"),
     (("lwr",), "lower"),
     (("rse",), "raise"),
+    (("bluetooth",), "bluetooth"),
 )
+
+# Unicode symbols drawn as text in the icon legend (not stroke paths).
+# Hyper uses U+2726 BLACK FOUR POINTED STAR so the hold label and the
+# legend stay the same character.
+TEXT_LEGEND: tuple[tuple[str, str], ...] = (("✦", "hyper"),)
 
 GLYPH_PATHS = {
     "backspace": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z",
@@ -204,6 +213,8 @@ GLYPH_PATHS = {
         "M10,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 "
         "M38,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"
     ),
+    # Bluetooth rune (bind of Hagall + Bjarkan) for the adj layer.
+    "bluetooth": "M12,16 L36,32 L24,40 L24,8 L36,16 L12,32",
 }
 
 
@@ -423,6 +434,7 @@ def legend_style() -> str:
     text.caption.sub { font-size: 10px; fill: #777777; }
     text.caption.start { text-anchor: start; }
     text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }
+    text.unicode-icon { font-size: 16px; fill: #dddddd; }
     """.strip()
 
 
@@ -724,6 +736,27 @@ def render_legend() -> str:
                 f'<use class="glyph base" href="#glyph_{name}" '
                 f'x="{gx:.1f}" y="{y:.1f}"/>'
             )
+        parts.append(
+            f'<text class="glyph-label" x="{x + label_x:.1f}" y="{y:.1f}">'
+            f"{esc(label)}</text>"
+        )
+        x += item_w
+
+    # Unicode icons (hyper star, …) share the same packing as stroke glyphs
+    # so they sit in the leftover space of the last Icons row, then wrap.
+    for symbol, label in TEXT_LEGEND:
+        first_gx = 12.0
+        label_x = first_gx + 16.0
+        item_w = label_x + max(len(label) * 6.4, 24.0) + 16.0
+        if x > 0.0 and x + item_w > width:
+            x = 0.0
+            row += 1
+        n_icon_rows = row + 1
+        y = icon_y + row * icon_row_h
+        parts.append(
+            f'<text class="unicode-icon" x="{x + first_gx:.1f}" y="{y:.1f}">'
+            f"{esc(symbol)}</text>"
+        )
         parts.append(
             f'<text class="glyph-label" x="{x + label_x:.1f}" y="{y:.1f}">'
             f"{esc(label)}</text>"

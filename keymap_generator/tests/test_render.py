@@ -20,6 +20,7 @@ from keymap_generator.render import (
     KW,
     RADIUS,
     TAP_GLYPHS,
+    TEXT_LEGEND,
     build_stacked_specs,
     combo_specs,
     grid_index,
@@ -73,9 +74,13 @@ class TestHoldDisplay:
         assert hold_display("ALT") == ("", "alt")
         assert hold_display("CTRL") == ("", "ctrl")
 
+    def test_hyper_hold_uses_star(self) -> None:
+        assert hold_display("HYP") == ("✦", None)
+
+    def test_adjust_hold_uses_bluetooth_glyph(self) -> None:
+        assert hold_display("ADJ") == ("", "bluetooth")
+
     def test_other_holds_stay_text(self) -> None:
-        assert hold_display("HYP") == ("hyp", None)
-        assert hold_display("ADJ") == ("adj", None)
         assert hold_display("MOU") == ("mou", None)
 
     def test_empty_hold(self) -> None:
@@ -159,6 +164,10 @@ class TestSpecsFromKeymap:
         assert ">cmd</text>" not in svg
         assert ">alt</text>" not in svg
         assert ">ctrl</text>" not in svg
+        assert "✦" in svg
+        assert 'href="#glyph_bluetooth"' in svg
+        assert ">hyp</text>" not in svg
+        assert ">adj</text>" not in svg
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -353,6 +362,13 @@ class TestRenderLegend:
         assert 'href="#glyph_rse"' in svg
         assert 'href="#glyph_shift"' in svg
         assert 'href="#glyph_cmd"' in svg
+        assert 'href="#glyph_bluetooth"' in svg
+        assert ">bluetooth</text>" in svg
+        for symbol, label in TEXT_LEGEND:
+            assert symbol in svg
+            assert f">{label}</text>" in svg
+        assert ">hyper</text>" in svg
+        assert "✦" in svg
         assert ">shift-tab</text>" not in svg
         assert ">word left</text>" not in svg
         assert ">history back</text>" not in svg
