@@ -151,6 +151,14 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("app-tab-prev", "app-tab-next"), "app tab"),
 )
 
+# Legend layout. Width matches the reference board. Icons sit on a
+# column grid so rows share x origins instead of packing to ragged
+# label widths.
+LEGEND_WIDTH = 650.0
+LEGEND_ICON_COLS = 4
+LEGEND_GLYPH_STEP = 22.0
+LEGEND_ICON_ROW_H = 44.0
+
 # Paths are drawn in a 48×48 box centred on (24, 24), then scaled down by
 # glyph_defs. Stroke-only: closed shapes read as outlines.
 GLYPH_PATHS = {
@@ -391,7 +399,7 @@ def legend_style() -> str:
     text.caption { font-size: 11px; fill: #aaaaaa; text-anchor: middle; }
     text.caption.sub { font-size: 10px; fill: #777777; }
     text.caption.start { text-anchor: start; }
-    text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: start; }
+    text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: middle; }
     """.strip()
 
 
@@ -576,13 +584,18 @@ def slug(name: str) -> str:
 
 def render_legend() -> str:
     """SVG legend for the stacked reference: corners, flavors, combos, icons."""
-    # Match the reference board's width so the two images line up in the README.
-    width = 650.0
+    width = LEGEND_WIDTH
+    section_y = 10.0
     key_y = 28.0
-    corner_x = 100.0
-    flavor_x = 325.0
-    flavor_gap = 100.0
-    icon_row_h = 28.0
+    caption_y = key_y + KH + 14.0
+    caption_sub_y = key_y + KH + 26.0
+    # Left pane holds the annotated corner key; right pane the three flavors.
+    corner_x = 92.0
+    flavor_start = 318.0
+    flavor_end = 548.0
+    icon_title_y = caption_sub_y + 22.0
+    icon_y = icon_title_y + 18.0
+    col_w = width / LEGEND_ICON_COLS
 
     parts = [
         draw_key(
@@ -601,7 +614,7 @@ def render_legend() -> str:
     y_bot = key_y + KH * 0.80
     parts.extend(
         [
-            '<text class="section" x="0" y="10">Corners</text>',
+            f'<text class="section" x="0" y="{section_y:.0f}">Corners</text>',
             f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_top:.1f}">'
             "base tap</text>",
             f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_bot:.1f}">'
@@ -635,52 +648,47 @@ def render_legend() -> str:
             "left bar · sticky tap",
         ),
     )
-    parts.append(f'<text class="section" x="{flavor_x:.1f}" y="10">Hold flavors</text>')
+    flavor_step = (flavor_end - flavor_start) / (len(flavors) - 1)
+    parts.append(
+        f'<text class="section" x="{flavor_start:.1f}" y="{section_y:.0f}">'
+        "Hold flavors</text>"
+    )
     for i, (spec, title, subtitle) in enumerate(flavors):
-        x = flavor_x + i * flavor_gap
+        x = flavor_start + i * flavor_step
         cx = x + KW / 2
         parts.append(draw_key(x, key_y, spec))
         parts.append(
-            f'<text class="caption" x="{cx:.1f}" y="{key_y + KH + 14:.1f}">'
+            f'<text class="caption" x="{cx:.1f}" y="{caption_y:.1f}">'
             f"{esc(title)}</text>"
         )
         parts.append(
-            f'<text class="caption sub" x="{cx:.1f}" y="{key_y + KH + 26:.1f}">'
+            f'<text class="caption sub" x="{cx:.1f}" y="{caption_sub_y:.1f}">'
             f"{esc(subtitle)}</text>"
         )
 
-    icon_title_y = key_y + KH + 48.0
-    icon_y = icon_title_y + 20.0
     parts.append(f'<text class="section" x="0" y="{icon_title_y:.1f}">Icons</text>')
-    glyph_step = 22.0
-    # Pack groups left-to-right so a 4-arrow cluster can be wider than a
-    # single icon without forcing a rigid column grid.
-    x = 0.0
-    row = 0
-    n_icon_rows = 1
-    for names, label in GLYPH_LEGEND:
-        first_gx = 12.0
-        label_x = first_gx + (len(names) - 1) * glyph_step + 16.0
-        # 11px sans-serif is roughly 6.4px per character.
-        item_w = label_x + max(len(label) * 6.4, 24.0) + 16.0
-        if x > 0.0 and x + item_w > width:
-            x = 0.0
-            row += 1
+    n_icon_rows = 0
+    for i, (names, label) in enumerate(GLYPH_LEGEND):
+        col = i % LEGEND_ICON_COLS
+        row = i // LEGEND_ICON_COLS
         n_icon_rows = row + 1
-        y = icon_y + row * icon_row_h
+        cell_x = col * col_w
+        mid = cell_x + col_w / 2
+        y = icon_y + row * LEGEND_ICON_ROW_H
+        group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
+        first_gx = mid - group_w / 2
         for j, name in enumerate(names):
-            gx = x + first_gx + j * glyph_step
+            gx = first_gx + j * LEGEND_GLYPH_STEP
             parts.append(
                 f'<use class="glyph base" href="#glyph_{name}" '
                 f'x="{gx:.1f}" y="{y:.1f}"/>'
             )
         parts.append(
-            f'<text class="glyph-label" x="{x + label_x:.1f}" y="{y:.1f}">'
+            f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
             f"{esc(label)}</text>"
         )
-        x += item_w
 
-    combo_title_y = icon_y + n_icon_rows * icon_row_h + 18.0
+    combo_title_y = icon_y + n_icon_rows * LEGEND_ICON_ROW_H + 16.0
     combo_key_y = combo_title_y + 18.0
     combo_x = 0.0
     # Same placement as combo_specs: badge sits on the seam of two adjacent keys.

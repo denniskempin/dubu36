@@ -17,6 +17,9 @@ from keymap_generator.render import (
     GLYPH_PATHS,
     KH,
     KW,
+    LEGEND_GLYPH_STEP,
+    LEGEND_ICON_COLS,
+    LEGEND_WIDTH,
     RADIUS,
     TAP_GLYPHS,
     build_stacked_specs,
@@ -298,3 +301,12 @@ class TestRenderLegend:
         assert ">two-key chord</text>" in svg
         assert '<rect class="combo-badge"' in svg
         assert 'class="glyph combo"' in svg
+
+    def test_legend_icons_sit_on_a_column_grid(self) -> None:
+        svg = render_legend()
+        col_w = LEGEND_WIDTH / LEGEND_ICON_COLS
+        for i, (names, _label) in enumerate(GLYPH_LEGEND):
+            col = i % LEGEND_ICON_COLS
+            group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
+            first_x = col * col_w + col_w / 2 - group_w / 2
+            assert f'href="#glyph_{names[0]}" x="{first_x:.1f}"' in svg
