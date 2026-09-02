@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="341" viewBox="-10 -24 650.0 341.34">
+<svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="369" viewBox="-10 -24 650.0 369.34">
 <style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
@@ -67,13 +67,17 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 <path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,10l14,14 14,-14 M10,24l14,14 14,-14"/>
 <path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,24l14,-14 14,14 M10,38l14,-14 14,14"/>
+<path id="glyph_shift" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,8 L40,26 H32 V40 H16 V26 H8 Z"/>
+<path id="glyph_ctrl" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32 L24,14 L38,32"/>
+<path id="glyph_alt" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,16 H22 L34,36 H42 M26,16 H42"/>
+<path id="glyph_cmd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,17v14 M17,24h14 M24,10m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M24,38m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M10,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M38,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"/>
 </defs>
 <text class="title" x="0" y="-8">Legend</text>
 <g transform="translate(100.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
-<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
+<use class="glyph hold tap-preferred mod" href="#glyph_cmd" x="15.0" y="45.336000000000006"/>
 <text class="num" x="45.0" y="18.1344">8</text>
 <text class="sym" x="45.0" y="45.336000000000006">@</text>
 </g>
@@ -87,7 +91,7 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
-<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
+<use class="glyph hold tap-preferred mod" href="#glyph_cmd" x="15.0" y="45.336000000000006"/>
 </g>
 <text class="caption" x="355.0" y="98.7">tap-preferred</text>
 <text class="caption sub" x="355.0" y="110.7">outline · home row</text>
@@ -134,23 +138,31 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <use class="glyph base" href="#glyph_hist-back" x="382.0" y="180.7"/>
 <use class="glyph base" href="#glyph_hist-fwd" x="404.0" y="180.7"/>
 <text class="glyph-label" x="420.0" y="180.7">history</text>
-<use class="glyph base" href="#glyph_lwr" x="492.8" y="180.7"/>
-<text class="glyph-label" x="508.8" y="180.7">lower</text>
-<use class="glyph base" href="#glyph_rse" x="568.8" y="180.7"/>
-<text class="glyph-label" x="584.8" y="180.7">raise</text>
-<text class="section" x="0" y="226.7">Combos</text>
-<g transform="translate(0.00,244.67)">
+<use class="glyph base" href="#glyph_shift" x="492.8" y="180.7"/>
+<text class="glyph-label" x="508.8" y="180.7">shift</text>
+<use class="glyph base" href="#glyph_ctrl" x="568.8" y="180.7"/>
+<text class="glyph-label" x="584.8" y="180.7">control</text>
+<use class="glyph base" href="#glyph_alt" x="12.0" y="208.7"/>
+<text class="glyph-label" x="28.0" y="208.7">option</text>
+<use class="glyph base" href="#glyph_cmd" x="94.4" y="208.7"/>
+<text class="glyph-label" x="110.4" y="208.7">command</text>
+<use class="glyph base" href="#glyph_lwr" x="183.2" y="208.7"/>
+<text class="glyph-label" x="199.2" y="208.7">lower</text>
+<use class="glyph base" href="#glyph_rse" x="259.2" y="208.7"/>
+<text class="glyph-label" x="275.2" y="208.7">raise</text>
+<text class="section" x="0" y="254.7">Combos</text>
+<g transform="translate(0.00,272.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">C</text>
 </g>
-<g transform="translate(60.00,244.67)">
+<g transform="translate(60.00,272.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">V</text>
 </g>
-<g class="combo" transform="translate(60.00,273.00)">
+<g class="combo" transform="translate(60.00,301.00)">
 <rect class="combo-badge" x="-10.0" y="-9.5" width="20.0" height="19.0" rx="4.0" ry="4.0"/>
 <g transform="scale(0.55)"><use class="glyph combo" href="#glyph_escape"/></g>
 </g>
-<text class="caption start" x="136.0" y="266.2">combo</text>
-<text class="caption sub start" x="136.0" y="279.8">two-key chord</text>
+<text class="caption start" x="136.0" y="294.2">combo</text>
+<text class="caption sub start" x="136.0" y="307.8">two-key chord</text>
 </svg>

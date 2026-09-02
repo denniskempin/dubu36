@@ -53,6 +53,10 @@
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
 <path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,10l14,14 14,-14 M10,24l14,14 14,-14"/>
 <path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,24l14,-14 14,14 M10,38l14,-14 14,14"/>
+<path id="glyph_shift" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,8 L40,26 H32 V40 H16 V26 H8 Z"/>
+<path id="glyph_ctrl" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32 L24,14 L38,32"/>
+<path id="glyph_alt" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,16 H22 L34,36 H42 M26,16 H42"/>
+<path id="glyph_cmd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,17v14 M17,24h14 M24,10m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M24,38m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M10,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M38,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"/>
 </defs>
 <text class="title" x="0" y="-8">mou</text>
 <g transform="translate(0.00,0.00)">

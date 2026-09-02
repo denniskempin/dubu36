@@ -15,8 +15,9 @@ Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
 Hold labels/boxes are grey by default. A hold binding that itself switches
 to the symbol (lwr) or number/nav (rse) layer is colored like that layer
 instead, so layer-change labels always read as purple/orange. Those two
-layer holds render as double chevrons (down for lwr, up for rse) rather
-than the letters "lwr"/"rse".
+layer holds render as double chevrons (down for lwr, up for rse). The
+standard modifiers use their usual keycap symbols (shift, command,
+option, control) instead of "shft"/"cmd"/"alt"/"ctrl".
 
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
@@ -25,10 +26,11 @@ Combos render on the stacked reference card only: a small rounded box
 sits on the seam between the two trigger keys and shows the result,
 using the same glyphs as taps. Per-layer boards omit them.
 
-Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) and the
-lwr/rse layer holds render as icons instead of text — see TAP_GLYPHS /
-HOLD_GLYPHS / GLYPH_PATHS. `render_legend` draws those icons, the corner
-and hold-flavor keycaps, and a combo badge into diagrams/legend.svg.
+Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …), the
+standard modifiers, and the lwr/rse layer holds render as icons instead
+of text — see TAP_GLYPHS / HOLD_GLYPHS / GLYPH_PATHS. `render_legend`
+draws those icons, the corner and hold-flavor keycaps, and a combo badge
+into diagrams/legend.svg.
 """
 
 from __future__ import annotations
@@ -73,13 +75,9 @@ STACK_NUM = "rse"
 # elsewhere, but they don't get their own reference/layer boards).
 EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 
-# Short hold labels shown in the bottom-left quadrant. Layer holds that
-# have an icon (HOLD_GLYPHS) skip this and draw the glyph instead.
+# Short hold labels shown in the bottom-left quadrant. Holds listed in
+# HOLD_GLYPHS skip this and draw the glyph instead.
 HOLD_DISPLAY = {
-    "SHFT": "shft",
-    "ALT": "alt",
-    "CMD": "cmd",
-    "CTRL": "ctrl",
     "HYP": "hyp",
     "ADJ": "adj",
     "MOU": "mou",
@@ -120,13 +118,21 @@ TAP_GLYPHS = {
     "TAB_R": "tab",
     "LWR": "lwr",
     "RSE": "rse",
+    "SHFT": "shift",
+    "CMD": "cmd",
+    "ALT": "alt",
+    "CTRL": "ctrl",
 }
 
-# Layer-shift holds (and the matching one-shot taps) use these icons in
-# the hold box / one-shot bar instead of the letters "lwr" / "rse".
+# Holds that draw an icon in the hold box / one-shot bar: layer shifts
+# and the four standard modifiers.
 HOLD_GLYPHS = {
     "LWR": "lwr",
     "RSE": "rse",
+    "SHFT": "shift",
+    "CMD": "cmd",
+    "ALT": "alt",
+    "CTRL": "ctrl",
 }
 
 # A few labels that read better as glyphs/symbols than as their raw codes.
@@ -150,6 +156,10 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("home", "end"), "home / end"),
     (("word-left", "word-right"), "word"),
     (("hist-back", "hist-fwd"), "history"),
+    (("shift",), "shift"),
+    (("ctrl",), "control"),
+    (("alt",), "option"),
+    (("cmd",), "command"),
     (("lwr",), "lower"),
     (("rse",), "raise"),
 )
@@ -183,6 +193,17 @@ GLYPH_PATHS = {
     # Shaftless so they stay distinct from the single-arrow cursor keys.
     "lwr": "M10,10l14,14 14,-14 M10,24l14,14 14,-14",
     "rse": "M10,24l14,-14 14,14 M10,38l14,-14 14,14",
+    # Standard modifier keycap symbols: ⇧ ⌃ ⌥ ⌘.
+    "shift": "M24,8 L40,26 H32 V40 H16 V26 H8 Z",
+    "ctrl": "M10,32 L24,14 L38,32",
+    "alt": "M6,16 H22 L34,36 H42 M26,16 H42",
+    "cmd": (
+        "M24,17v14 M17,24h14 "
+        "M24,10m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 "
+        "M24,38m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 "
+        "M10,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 "
+        "M38,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"
+    ),
 }
 
 

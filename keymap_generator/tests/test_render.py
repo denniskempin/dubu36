@@ -46,6 +46,10 @@ class TestTapDisplay:
         assert tap_display("FWD") == ("", "hist-fwd")
         assert tap_display("LWR") == ("", "lwr")
         assert tap_display("RSE") == ("", "rse")
+        assert tap_display("SHFT") == ("", "shift")
+        assert tap_display("CMD") == ("", "cmd")
+        assert tap_display("ALT") == ("", "alt")
+        assert tap_display("CTRL") == ("", "ctrl")
 
     def test_symbol_aliases(self) -> None:
         assert tap_display("PIPE") == ("|", None)
@@ -63,9 +67,16 @@ class TestHoldDisplay:
         assert HOLD_GLYPHS["LWR"] == "lwr"
         assert HOLD_GLYPHS["RSE"] == "rse"
 
-    def test_modifier_holds_stay_text(self) -> None:
-        assert hold_display("CMD") == ("cmd", None)
-        assert hold_display("SHFT") == ("shft", None)
+    def test_modifier_holds_use_glyphs(self) -> None:
+        assert hold_display("SHFT") == ("", "shift")
+        assert hold_display("CMD") == ("", "cmd")
+        assert hold_display("ALT") == ("", "alt")
+        assert hold_display("CTRL") == ("", "ctrl")
+
+    def test_other_holds_stay_text(self) -> None:
+        assert hold_display("HYP") == ("hyp", None)
+        assert hold_display("ADJ") == ("adj", None)
+        assert hold_display("MOU") == ("mou", None)
 
     def test_empty_hold(self) -> None:
         assert hold_display("") == ("", None)
@@ -140,6 +151,14 @@ class TestSpecsFromKeymap:
         assert 'href="#glyph_rse"' in svg
         assert ">lwr</text>" not in svg
         assert ">rse</text>" not in svg
+        assert 'href="#glyph_shift"' in svg
+        assert 'href="#glyph_cmd"' in svg
+        assert 'href="#glyph_alt"' in svg
+        assert 'href="#glyph_ctrl"' in svg
+        assert ">shft</text>" not in svg
+        assert ">cmd</text>" not in svg
+        assert ">alt</text>" not in svg
+        assert ">ctrl</text>" not in svg
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -326,8 +345,14 @@ class TestRenderLegend:
         assert ">history</text>" in svg
         assert ">lower</text>" in svg
         assert ">raise</text>" in svg
+        assert ">shift</text>" in svg
+        assert ">control</text>" in svg
+        assert ">option</text>" in svg
+        assert ">command</text>" in svg
         assert 'href="#glyph_lwr"' in svg
         assert 'href="#glyph_rse"' in svg
+        assert 'href="#glyph_shift"' in svg
+        assert 'href="#glyph_cmd"' in svg
         assert ">shift-tab</text>" not in svg
         assert ">word left</text>" not in svg
         assert ">history back</text>" not in svg
