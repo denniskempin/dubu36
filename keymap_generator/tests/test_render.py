@@ -45,12 +45,13 @@ class TestTapDisplay:
         assert tap_display("ALT_BKSP") == ("", "delete-word")
         assert tap_display("WORD_L") == ("", "word-left")
         assert tap_display("FWD") == ("", "hist-fwd")
-        assert tap_display("LWR") == ("", "lwr")
-        assert tap_display("RSE") == ("", "rse")
-        assert tap_display("SHFT") == ("", "shift")
-        assert tap_display("CMD") == ("", "cmd")
-        assert tap_display("ALT") == ("", "alt")
-        assert tap_display("CTRL") == ("", "ctrl")
+        assert tap_display("LWR") == ("⇊", None)
+        assert tap_display("RSE") == ("⇈", None)
+        assert tap_display("SHFT") == ("⇧", None)
+        assert tap_display("CMD") == ("⌘", None)
+        assert tap_display("ALT") == ("⌥", None)
+        assert tap_display("CTRL") == ("⌃", None)
+        assert tap_display("HYP") == ("✦", None)
 
     def test_symbol_aliases(self) -> None:
         assert tap_display("PIPE") == ("|", None)
@@ -62,17 +63,18 @@ class TestTapDisplay:
 
 
 class TestHoldDisplay:
-    def test_layer_holds_use_glyphs(self) -> None:
-        assert hold_display("LWR") == ("", "lwr")
-        assert hold_display("RSE") == ("", "rse")
-        assert HOLD_GLYPHS["LWR"] == "lwr"
-        assert HOLD_GLYPHS["RSE"] == "rse"
+    def test_layer_holds_use_unicode(self) -> None:
+        assert hold_display("LWR") == ("⇊", None)
+        assert hold_display("RSE") == ("⇈", None)
+        assert "LWR" not in HOLD_GLYPHS
+        assert "RSE" not in HOLD_GLYPHS
 
-    def test_modifier_holds_use_glyphs(self) -> None:
-        assert hold_display("SHFT") == ("", "shift")
-        assert hold_display("CMD") == ("", "cmd")
-        assert hold_display("ALT") == ("", "alt")
-        assert hold_display("CTRL") == ("", "ctrl")
+    def test_modifier_holds_use_unicode(self) -> None:
+        assert hold_display("SHFT") == ("⇧", None)
+        assert hold_display("CMD") == ("⌘", None)
+        assert hold_display("ALT") == ("⌥", None)
+        assert hold_display("CTRL") == ("⌃", None)
+        assert not {"SHFT", "CMD", "ALT", "CTRL"} & HOLD_GLYPHS.keys()
 
     def test_hyper_hold_uses_star(self) -> None:
         assert hold_display("HYP") == ("✦", None)
@@ -152,22 +154,22 @@ class TestSpecsFromKeymap:
     def test_layer_holds_emit_glyphs_not_letters(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         svg = render_board(build_stacked_specs(layers), "stacked")
-        assert 'href="#glyph_lwr"' in svg
-        assert 'href="#glyph_rse"' in svg
+        assert ">⇊</text>" in svg
+        assert ">⇈</text>" in svg
+        assert ">✦</text>" in svg
+        assert ">⇧</text>" in svg
+        assert ">⌘</text>" in svg
+        assert ">⌥</text>" in svg
+        assert ">⌃</text>" in svg
+        assert 'href="#glyph_bluetooth"' in svg
         assert ">lwr</text>" not in svg
         assert ">rse</text>" not in svg
-        assert 'href="#glyph_shift"' in svg
-        assert 'href="#glyph_cmd"' in svg
-        assert 'href="#glyph_alt"' in svg
-        assert 'href="#glyph_ctrl"' in svg
-        assert ">shft</text>" not in svg
-        assert ">cmd</text>" not in svg
-        assert ">alt</text>" not in svg
-        assert ">ctrl</text>" not in svg
-        assert "✦" in svg
-        assert 'href="#glyph_bluetooth"' in svg
         assert ">hyp</text>" not in svg
         assert ">adj</text>" not in svg
+        assert ">shft</text>" not in svg
+        assert ">cmd</text>" not in svg
+        assert 'href="#glyph_lwr"' not in svg
+        assert 'href="#glyph_cmd"' not in svg
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -240,9 +242,10 @@ class TestRenderOutput:
         assert 'class="hold-box oneshot nav"' in svg
         # One-shot keys draw only the left-bar label, not a duplicate base.
         assert svg.count(">RSE<") == 0
-        assert 'class="glyph oneshot nav"' in svg
-        assert 'href="#glyph_rse"' in svg
+        assert 'class="oneshot symbol nav"' in svg
+        assert ">⇈</text>" in svg
         assert ">rse</text>" not in svg
+        assert 'href="#glyph_rse"' not in svg
         assert '<rect class="combo-badge"' not in svg
 
     def test_combo_mark_emits_badge_and_glyph(self) -> None:
@@ -319,6 +322,16 @@ class TestRenderLegend:
         assert names == set(GLYPH_PATHS)
         assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
         assert set(HOLD_GLYPHS.values()) <= set(GLYPH_PATHS)
+        # Unicode marks stay text; do not grow a custom path for them.
+        assert not {
+            "cmd",
+            "lwr",
+            "rse",
+            "shft",
+            "alt",
+            "ctrl",
+            "hyp",
+        } & set(GLYPH_PATHS)
 
     def test_legend_svg_covers_corners_flavors_and_icons(self) -> None:
         svg = render_legend()
@@ -352,23 +365,12 @@ class TestRenderLegend:
         assert ">home / end</text>" in svg
         assert ">word</text>" in svg
         assert ">history</text>" in svg
-        assert ">lower</text>" in svg
-        assert ">raise</text>" in svg
-        assert ">shift</text>" in svg
-        assert ">control</text>" in svg
-        assert ">option</text>" in svg
-        assert ">command</text>" in svg
-        assert 'href="#glyph_lwr"' in svg
-        assert 'href="#glyph_rse"' in svg
-        assert 'href="#glyph_shift"' in svg
-        assert 'href="#glyph_cmd"' in svg
-        assert 'href="#glyph_bluetooth"' in svg
-        assert ">bluetooth</text>" in svg
-        for symbol, label in TEXT_LEGEND:
-            assert symbol in svg
+        for char, label in TEXT_LEGEND:
+            assert f">{char}</text>" in svg
             assert f">{label}</text>" in svg
-        assert ">hyper</text>" in svg
-        assert "✦" in svg
+        assert 'href="#glyph_bluetooth"' in svg
+        assert 'href="#glyph_lwr"' not in svg
+        assert 'href="#glyph_cmd"' not in svg
         assert ">shift-tab</text>" not in svg
         assert ">word left</text>" not in svg
         assert ">history back</text>" not in svg

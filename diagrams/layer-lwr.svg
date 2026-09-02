@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="267" viewBox="-10 -24 650.0 266.68">
-<style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
+<style>/* Cairo has no font fallback; DejaVu Sans has ⌘ ⌥ ⌃ ⇧ ✦ ⇊ ⇈. */
+    svg.keymap { background: #1e1e2e;
+                 font-family: "DejaVu Sans", "Segoe UI Symbol",
+                              "Apple Symbols", sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
     text.base { font-size: 16px; font-weight: 600; fill: #dddddd; }
@@ -32,6 +35,8 @@
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #8a8a8a; }
+    text.hold.symbol { font-size: 14px; }
+    text.oneshot.symbol { font-size: 16px; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
@@ -51,12 +56,7 @@
 <path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
-<path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,10l14,14 14,-14 M10,24l14,14 14,-14"/>
-<path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,24l14,-14 14,14 M10,38l14,-14 14,14"/>
-<path id="glyph_shift" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,8 L40,26 H32 V40 H16 V26 H8 Z"/>
-<path id="glyph_ctrl" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32 L24,14 L38,32"/>
-<path id="glyph_alt" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,16 H22 L34,36 H42 M26,16 H42"/>
-<path id="glyph_cmd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M24,17v14 M17,24h14 M24,10m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M24,38m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M10,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0 M38,24m-6,0a6,6 0 1,0 12,0a6,6 0 1,0 -12,0"/>
+<path id="glyph_bluetooth" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M12,16 L36,32 L24,40 L24,8 L36,16 L12,32"/>
 </defs>
 <text class="title" x="0" y="-8">lwr</text>
 <g transform="translate(0.00,0.00)">
@@ -103,61 +103,61 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_escape" x="15.0" y="18.1344"/>
-<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">✦</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">&lt;</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_shift" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(120.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">[</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_alt" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌥</text>
 </g>
 <g transform="translate(180.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">(</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_cmd" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 </g>
 <g transform="translate(240.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">{</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_ctrl" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(330.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">-</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_ctrl" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">_</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_cmd" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌘</text>
 </g>
 <g transform="translate(450.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">:</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_alt" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌥</text>
 </g>
 <g transform="translate(510.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">;</text>
-<use class="glyph hold tap-preferred mod" href="#glyph_shift" x="15.0" y="45.336000000000006"/>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">#</text>
-<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">hyp</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">✦</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
