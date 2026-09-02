@@ -1,10 +1,10 @@
 """Render keymap.txt to Selenium-style SVG (and PNG) diagrams.
 
-Per-key legend layout (matches https://onedeadkey.github.io/selenium/):
+Per-key legend layout (Selenium-style corners, raise on top / lower below):
   Top-left     base layer tap (grey)
   Bottom-left  hold binding (grey by default, boxed)
-  Top-right    symbol layer (lwr) — purple
-  Bottom-right number/nav layer (rse) — orange
+  Top-right    number/nav layer (rse) — orange
+  Bottom-right symbol layer (lwr) — purple
 
 Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
   tp (tap-preferred)  — outline box in the bottom-left quadrant
@@ -14,7 +14,9 @@ Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
 
 Hold labels/boxes are grey by default. A hold binding that itself switches
 to the symbol (lwr) or number/nav (rse) layer is colored like that layer
-instead, so layer-change labels always read as purple/orange.
+instead, so layer-change labels always read as purple/orange. Those two
+layer holds render as icons (`#` for lwr, a 3×3 pad for rse) rather than
+the letters "lwr"/"rse".
 
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
@@ -23,10 +25,10 @@ Combos render on the stacked reference card only: a small rounded box
 sits on the seam between the two trigger keys and shows the result,
 using the same glyphs as taps. Per-layer boards omit them.
 
-Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) render as
-icons instead of text — see TAP_GLYPHS / GLYPH_PATHS. `render_legend` draws
-those icons, the corner and hold-flavor keycaps, and a combo badge into
-diagrams/legend.svg.
+Well-known taps (TAB, RET, BKSP, ESC, SPC, arrows, HOME/END, …) and the
+lwr/rse layer holds render as icons instead of text — see TAP_GLYPHS /
+HOLD_GLYPHS / GLYPH_PATHS. `render_legend` draws those icons, the corner
+and hold-flavor keycaps, and a combo badge into diagrams/legend.svg.
 """
 
 from __future__ import annotations
@@ -71,7 +73,8 @@ STACK_NUM = "rse"
 # elsewhere, but they don't get their own reference/layer boards).
 EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 
-# Short hold labels shown in the bottom-left quadrant.
+# Short hold labels shown in the bottom-left quadrant. Layer holds that
+# have an icon (HOLD_GLYPHS) skip this and draw the glyph instead.
 HOLD_DISPLAY = {
     "SHFT": "shft",
     "ALT": "alt",
@@ -79,8 +82,6 @@ HOLD_DISPLAY = {
     "CTRL": "ctrl",
     "HYP": "hyp",
     "ADJ": "adj",
-    "LWR": "lwr",
-    "RSE": "rse",
     "MOU": "mou",
 }
 
@@ -117,6 +118,15 @@ TAP_GLYPHS = {
     "BCK": "hist-back",
     "TAB_L": "btab",
     "TAB_R": "tab",
+    "LWR": "lwr",
+    "RSE": "rse",
+}
+
+# Layer-shift holds (and the matching one-shot taps) use these icons in
+# the hold box / one-shot bar instead of the letters "lwr" / "rse".
+HOLD_GLYPHS = {
+    "LWR": "lwr",
+    "RSE": "rse",
 }
 
 # A few labels that read better as glyphs/symbols than as their raw codes.
@@ -140,6 +150,8 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("home", "end"), "home / end"),
     (("word-left", "word-right"), "word"),
     (("hist-back", "hist-fwd"), "history"),
+    (("lwr",), "lower"),
+    (("rse",), "raise"),
 )
 
 GLYPH_PATHS = {
@@ -167,6 +179,14 @@ GLYPH_PATHS = {
     # straight cursor arrows and the word-jump chevrons.
     "hist-fwd": "M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2",
     "hist-back": "M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2",
+    # Hash for the symbols (lwr / lower) layer.
+    "lwr": "M16,8l4,32 M28,8l4,32 M8,18h32 M8,30h32",
+    # 3×3 pad for the numbers/nav (rse / raise) layer.
+    "rse": (
+        "M9,9h7v7h-7z M20,9h7v7h-7z M31,9h7v7h-7z "
+        "M9,20h7v7h-7z M20,20h7v7h-7z M31,20h7v7h-7z "
+        "M9,31h7v7h-7z M20,31h7v7h-7z M31,31h7v7h-7z"
+    ),
 }
 
 
@@ -179,6 +199,15 @@ def tap_display(label: str) -> tuple[str, str | None]:
     if label in TAP_GLYPHS:
         return "", TAP_GLYPHS[label]
     return TAP_DISPLAY.get(label, label), None
+
+
+def hold_display(label: str) -> tuple[str, str | None]:
+    """Return (text, glyph) for a hold label; layer holds prefer an icon."""
+    if not label:
+        return "", None
+    if label in HOLD_GLYPHS:
+        return "", HOLD_GLYPHS[label]
+    return HOLD_DISPLAY.get(label, label.lower()), None
 
 
 def hold_flavor(key: Key) -> str | None:
@@ -235,7 +264,7 @@ def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     """Project semantic layers into per-key visual specs for the reference card.
 
     Every key uses the same corners:
-      TL base (default), BL hold, TR symbols (lwr), BR numbers/nav (rse).
+      TL base (default), BL hold, TR numbers/nav (rse), BR symbols (lwr).
     """
     by_name = layers_by_name(layers)
     base = flatten_layer(by_name[STACK_BASE])
@@ -333,20 +362,26 @@ def svg_style(*, combos: bool = False) -> str:
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
+    use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
+    use.glyph.hold.hold-preferred.mod, use.glyph.oneshot.mod { stroke: #d0d0d0; }
+    use.glyph.hold.hold-preferred.sym, use.glyph.oneshot.sym,
+    use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
+    use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
+    use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
-    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #d0d0d0; font-weight: 700; }
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
-    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.hold.tap-preferred { fill: #8a8a8a; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
     if combos:
@@ -416,8 +451,8 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
     Top-left      base
     Bottom-left   hold (outline / solid / one-shot left bar)
-    Top-right     symbol
-    Bottom-right  number / nav
+    Top-right     number / nav (rse)
+    Bottom-right  symbol (lwr)
     """
     ikw = KW - 2 * PAD
     ikh = KH - 2 * PAD
@@ -430,7 +465,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     hold = spec.get("hold") or ""
     flavor = spec.get("flavor")
     accent = spec.get("accent") or DEFAULT_HOLD_ACCENT
-    hold_label = HOLD_DISPLAY.get(hold, hold.lower() if hold else "")
+    hold_label, hold_glyph = hold_display(hold)
 
     if hold and flavor == "oneshot":
         parts.append(
@@ -464,36 +499,55 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             )
 
     if hold and flavor == "oneshot":
-        parts.append(
-            f'<text class="oneshot {accent}" '
-            f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
-            f"{esc(hold_label)}</text>"
-        )
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph oneshot {accent}" href="#glyph_{hold_glyph}" '
+                f'x="{PAD + ikw / 4}" y="{KH / 2}"/>'
+            )
+        else:
+            parts.append(
+                f'<text class="oneshot {accent}" '
+                f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
+                f"{esc(hold_label)}</text>"
+            )
     elif hold and flavor:
-        parts.append(
-            f'<text class="hold {flavor} {accent}" x="{x_left}" y="{y_bot}">'
-            f"{esc(hold_label)}</text>"
-        )
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph hold {flavor} {accent}" '
+                f'href="#glyph_{hold_glyph}" x="{x_left}" y="{y_bot}"/>'
+            )
+        else:
+            parts.append(
+                f'<text class="hold {flavor} {accent}" x="{x_left}" y="{y_bot}">'
+                f"{esc(hold_label)}</text>"
+            )
     elif hold:
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph hold" href="#glyph_{hold_glyph}" '
+                f'x="{x_left}" y="{y_bot}"/>'
+            )
+        else:
+            parts.append(
+                f'<text class="hold" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>'
+            )
+
+    # Raise (rse / numbers) sits top-right; lower (lwr / symbols) bottom-right.
+    num = spec.get("num") or ""
+    if num:
+        parts.append(f'<text class="num" x="{x_right}" y="{y_top}">{esc(num)}</text>')
+    elif spec.get("num_glyph"):
         parts.append(
-            f'<text class="hold" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>'
+            f'<use class="glyph num" href="#glyph_{spec["num_glyph"]}" '
+            f'x="{x_right}" y="{y_top}"/>'
         )
 
     sym = spec.get("sym") or ""
     if sym:
-        parts.append(f'<text class="sym" x="{x_right}" y="{y_top}">{esc(sym)}</text>')
+        parts.append(f'<text class="sym" x="{x_right}" y="{y_bot}">{esc(sym)}</text>')
     elif spec.get("sym_glyph"):
         parts.append(
             f'<use class="glyph sym" href="#glyph_{spec["sym_glyph"]}" '
-            f'x="{x_right}" y="{y_top}"/>'
-        )
-
-    num = spec.get("num") or ""
-    if num:
-        parts.append(f'<text class="num" x="{x_right}" y="{y_bot}">{esc(num)}</text>')
-    elif spec.get("num_glyph"):
-        parts.append(
-            f'<use class="glyph num" href="#glyph_{spec["num_glyph"]}" '
             f'x="{x_right}" y="{y_bot}"/>'
         )
 
@@ -585,10 +639,10 @@ def render_legend() -> str:
             "base tap</text>",
             f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_bot:.1f}">'
             "hold</text>",
-            f'<text class="callout start sym" x="{corner_x + KW + 8:.1f}" '
-            f'y="{y_top:.1f}">symbols (lwr)</text>',
             f'<text class="callout start num" x="{corner_x + KW + 8:.1f}" '
-            f'y="{y_bot:.1f}">numbers / nav (rse)</text>',
+            f'y="{y_top:.1f}">numbers / nav (rse)</text>',
+            f'<text class="callout start sym" x="{corner_x + KW + 8:.1f}" '
+            f'y="{y_bot:.1f}">symbols (lwr)</text>',
         ]
     )
 

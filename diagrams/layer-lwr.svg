@@ -12,20 +12,26 @@
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
+    use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
+    use.glyph.hold.hold-preferred.mod, use.glyph.oneshot.mod { stroke: #d0d0d0; }
+    use.glyph.hold.hold-preferred.sym, use.glyph.oneshot.sym,
+    use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
+    use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
+    use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
-    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #d0d0d0; font-weight: 700; }
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
-    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.hold.tap-preferred { fill: #8a8a8a; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
@@ -45,6 +51,8 @@
 <path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
+<path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M16,8l4,32 M28,8l4,32 M8,18h32 M8,30h32"/>
+<path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M9,9h7v7h-7z M20,9h7v7h-7z M31,9h7v7h-7z M9,20h7v7h-7z M20,20h7v7h-7z M31,20h7v7h-7z M9,31h7v7h-7z M20,31h7v7h-7z M31,31h7v7h-7z"/>
 </defs>
 <text class="title" x="0" y="-8">lwr</text>
 <g transform="translate(0.00,0.00)">

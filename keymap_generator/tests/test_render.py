@@ -15,6 +15,7 @@ from keymap_generator.render import (
     EXCLUDED_LAYERS,
     GLYPH_LEGEND,
     GLYPH_PATHS,
+    HOLD_GLYPHS,
     KH,
     KW,
     RADIUS,
@@ -22,6 +23,7 @@ from keymap_generator.render import (
     build_stacked_specs,
     combo_specs,
     grid_index,
+    hold_display,
     hold_flavor,
     layer_specs,
     ortho_positions,
@@ -42,6 +44,8 @@ class TestTapDisplay:
         assert tap_display("ALT_BKSP") == ("", "delete-word")
         assert tap_display("WORD_L") == ("", "word-left")
         assert tap_display("FWD") == ("", "hist-fwd")
+        assert tap_display("LWR") == ("", "lwr")
+        assert tap_display("RSE") == ("", "rse")
 
     def test_symbol_aliases(self) -> None:
         assert tap_display("PIPE") == ("|", None)
@@ -50,6 +54,21 @@ class TestTapDisplay:
     def test_plain_label_unchanged(self) -> None:
         assert tap_display("Q") == ("Q", None)
         assert tap_display("HYP_[") == ("HYP_[", None)
+
+
+class TestHoldDisplay:
+    def test_layer_holds_use_glyphs(self) -> None:
+        assert hold_display("LWR") == ("", "lwr")
+        assert hold_display("RSE") == ("", "rse")
+        assert HOLD_GLYPHS["LWR"] == "lwr"
+        assert HOLD_GLYPHS["RSE"] == "rse"
+
+    def test_modifier_holds_stay_text(self) -> None:
+        assert hold_display("CMD") == ("cmd", None)
+        assert hold_display("SHFT") == ("shft", None)
+
+    def test_empty_hold(self) -> None:
+        assert hold_display("") == ("", None)
 
 
 class TestHoldFlavor:
@@ -104,6 +123,23 @@ class TestSpecsFromKeymap:
         assert specs[34]["sym_glyph"] == "tab"
         # BKSP sits on the outer left thumb, opposite RET.
         assert specs[30]["base_glyph"] == "backspace"
+
+    def test_stacked_board_puts_raise_above_lower(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        svg = render_board(build_stacked_specs(layers), "stacked")
+        # W: rse 7 top-right (num), lwr ^ bottom-right (sym).
+        w_key = svg.split('<g transform="translate(60.00,0.00)">', 1)[1]
+        w_key = w_key.split("</g>", 1)[0]
+        assert 'class="num" x="45.0" y="18.1344">7</text>' in w_key
+        assert 'class="sym" x="45.0" y="45.336000000000006">^</text>' in w_key
+
+    def test_layer_holds_emit_glyphs_not_letters(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        svg = render_board(build_stacked_specs(layers), "stacked")
+        assert 'href="#glyph_lwr"' in svg
+        assert 'href="#glyph_rse"' in svg
+        assert ">lwr</text>" not in svg
+        assert ">rse</text>" not in svg
 
     def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -176,8 +212,9 @@ class TestRenderOutput:
         assert 'class="hold-box oneshot nav"' in svg
         # One-shot keys draw only the left-bar label, not a duplicate base.
         assert svg.count(">RSE<") == 0
-        assert 'class="oneshot nav"' in svg
-        assert ">rse</text>" in svg
+        assert 'class="glyph oneshot nav"' in svg
+        assert 'href="#glyph_rse"' in svg
+        assert ">rse</text>" not in svg
         assert '<rect class="combo-badge"' not in svg
 
     def test_combo_mark_emits_badge_and_glyph(self) -> None:
@@ -253,6 +290,7 @@ class TestRenderLegend:
         names = {name for glyphs, _ in GLYPH_LEGEND for name in glyphs}
         assert names == set(GLYPH_PATHS)
         assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
+        assert set(HOLD_GLYPHS.values()) <= set(GLYPH_PATHS)
 
     def test_legend_svg_covers_corners_flavors_and_icons(self) -> None:
         svg = render_legend()
@@ -261,8 +299,14 @@ class TestRenderLegend:
         assert ">Corners</text>" in svg
         assert ">base tap</text>" in svg
         assert ">hold</text>" in svg
-        assert ">symbols (lwr)</text>" in svg
         assert ">numbers / nav (rse)</text>" in svg
+        assert ">symbols (lwr)</text>" in svg
+        # Raise sits top-right, lower bottom-right.
+        rse_at = svg.index(">numbers / nav (rse)</text>")
+        lwr_at = svg.index(">symbols (lwr)</text>")
+        assert 'y="46.1">numbers / nav (rse)</text>' in svg
+        assert 'y="73.3">symbols (lwr)</text>' in svg
+        assert rse_at < lwr_at
         assert ">Hold flavors</text>" in svg
         assert ">tap-preferred</text>" in svg
         assert ">hold-preferred</text>" in svg
@@ -280,6 +324,10 @@ class TestRenderLegend:
         assert ">home / end</text>" in svg
         assert ">word</text>" in svg
         assert ">history</text>" in svg
+        assert ">lower</text>" in svg
+        assert ">raise</text>" in svg
+        assert 'href="#glyph_lwr"' in svg
+        assert 'href="#glyph_rse"' in svg
         assert ">shift-tab</text>" not in svg
         assert ">word left</text>" not in svg
         assert ">history back</text>" not in svg

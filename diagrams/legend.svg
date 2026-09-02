@@ -12,20 +12,26 @@
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
+    use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
+    use.glyph.hold.hold-preferred.mod, use.glyph.oneshot.mod { stroke: #d0d0d0; }
+    use.glyph.hold.hold-preferred.sym, use.glyph.oneshot.sym,
+    use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
+    use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
+    use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
-    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #d0d0d0; font-weight: 700; }
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
-    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.hold.tap-preferred { fill: #8a8a8a; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     rect.combo-badge { fill: #4a8f7a; stroke: #4a8f7a; }
     use.glyph.combo { stroke: #1a1a1a; stroke-width: 3.5px; }
@@ -59,6 +65,8 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <path id="glyph_word-left" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M40,13l-10,11,10,11 M24,13l-10,11,10,11"/>
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M10,32A16,14,0,1,0,36,18 m-2,-8l2,8l-8,2"/>
 <path id="glyph_hist-back" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M38,32A16,14,0,1,1,12,18 m2,-8l-2,8l8,2"/>
+<path id="glyph_lwr" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M16,8l4,32 M28,8l4,32 M8,18h32 M8,30h32"/>
+<path id="glyph_rse" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M9,9h7v7h-7z M20,9h7v7h-7z M31,9h7v7h-7z M9,20h7v7h-7z M20,20h7v7h-7z M31,20h7v7h-7z M9,31h7v7h-7z M20,31h7v7h-7z M31,31h7v7h-7z"/>
 </defs>
 <text class="title" x="0" y="-8">Legend</text>
 <g transform="translate(100.00,28.00)">
@@ -66,14 +74,14 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <rect class="hold-box tap-preferred mod" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
 <text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">cmd</text>
-<text class="sym" x="45.0" y="18.1344">@</text>
-<text class="num" x="45.0" y="45.336000000000006">8</text>
+<text class="num" x="45.0" y="18.1344">8</text>
+<text class="sym" x="45.0" y="45.336000000000006">@</text>
 </g>
 <text class="section" x="0" y="10">Corners</text>
 <text class="callout end" x="92.0" y="46.1">base tap</text>
 <text class="callout end" x="92.0" y="73.3">hold</text>
-<text class="callout start sym" x="168.0" y="46.1">symbols (lwr)</text>
-<text class="callout start num" x="168.0" y="73.3">numbers / nav (rse)</text>
+<text class="callout start num" x="168.0" y="46.1">numbers / nav (rse)</text>
+<text class="callout start sym" x="168.0" y="73.3">symbols (lwr)</text>
 <text class="section" x="325.0" y="10">Hold flavors</text>
 <g transform="translate(325.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -87,14 +95,14 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box hold-preferred nav" x="1.0" y="28.335" width="29.0" height="27.335" rx="4.0" ry="4.0"/>
 <use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>
-<text class="hold hold-preferred nav" x="15.0" y="45.336000000000006">rse</text>
+<use class="glyph hold hold-preferred nav" href="#glyph_rse" x="15.0" y="45.336000000000006"/>
 </g>
 <text class="caption" x="455.0" y="98.7">hold-preferred</text>
 <text class="caption sub" x="455.0" y="110.7">solid · thumbs</text>
 <g transform="translate(525.00,28.00)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box oneshot sym" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
-<text class="oneshot sym" transform="translate(15.5,28.335) rotate(-90)">lwr</text>
+<use class="glyph oneshot sym" href="#glyph_lwr" x="15.5" y="28.335"/>
 </g>
 <text class="caption" x="555.0" y="98.7">one-shot</text>
 <text class="caption sub" x="555.0" y="110.7">left bar · sticky tap</text>
@@ -126,6 +134,10 @@ text.section { font-size: 12px; fill: #888888; text-anchor: start;
 <use class="glyph base" href="#glyph_hist-back" x="382.0" y="180.7"/>
 <use class="glyph base" href="#glyph_hist-fwd" x="404.0" y="180.7"/>
 <text class="glyph-label" x="420.0" y="180.7">history</text>
+<use class="glyph base" href="#glyph_lwr" x="492.8" y="180.7"/>
+<text class="glyph-label" x="508.8" y="180.7">lower</text>
+<use class="glyph base" href="#glyph_rse" x="568.8" y="180.7"/>
+<text class="glyph-label" x="584.8" y="180.7">raise</text>
 <text class="section" x="0" y="226.7">Combos</text>
 <g transform="translate(0.00,244.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
