@@ -12,21 +12,32 @@ from keymap_generator.parser import (
     parse_keymap,
 )
 from keymap_generator.render import (
+    DEJAVU_FALLBACK_CHARS,
     EXCLUDED_LAYERS,
+    FONT_SIZE_BASE,
+    FONT_SIZE_COMBO,
+    FONT_SIZE_HOLD_SYMBOL,
+    FONT_SIZE_NUM,
+    FONT_SIZE_SYM,
+    GLYPH_EM,
     GLYPH_LEGEND,
     GLYPH_PATHS,
+    GLYPH_SCALE,
     HOLD_GLYPHS,
     KH,
     KW,
     LEGEND_GLYPH_STEP,
     LEGEND_ICON_COLS,
     LEGEND_WIDTH,
+    PAD,
     RADIUS,
     TAP_GLYPHS,
     TEXT_LEGEND,
     build_stacked_specs,
     combo_specs,
+    dejavu_class,
     grid_index,
+    hold_box_rect,
     hold_display,
     hold_flavor,
     layer_specs,
@@ -35,6 +46,7 @@ from keymap_generator.render import (
     render_diagrams,
     render_legend,
     tap_display,
+    use_glyph,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -254,11 +266,28 @@ class TestRenderOutput:
         assert 'class="hold-box oneshot nav"' in svg
         # One-shot keys draw only the left-bar label, not a duplicate base.
         assert svg.count(">RSE<") == 0
-        assert 'class="oneshot symbol nav"' in svg
+        assert 'class="oneshot symbol nav dejavu"' in svg
         assert ">⇈</text>" in svg
         assert ">rse</text>" not in svg
         assert 'href="#glyph_rse"' not in svg
         assert '<rect class="combo-badge"' not in svg
+
+    def test_hold_box_is_inset_to_centre_the_mark(self) -> None:
+        hx, hy, hw, hh = hold_box_rect()
+        assert hx == PAD
+        assert hx + hw / 2 == KW * 0.25
+        assert hy + hh / 2 == KH * 0.80
+        ikh = KH - 2 * PAD
+        assert hy + hh == PAD + ikh
+        # Smaller than the full bottom-left quadrant on the top and right.
+        assert hw < (KW - 2 * PAD) / 2
+        assert hh < ikh / 2
+        svg = render_legend()
+        assert (
+            f'<rect class="hold-box tap-preferred mod" x="{hx}" '
+            f'y="{hy}" width="{hw}" height="{hh}" '
+            f'rx="{RADIUS}" ry="{RADIUS}"/>'
+        ) in svg
 
     def test_combo_mark_emits_badge_and_glyph(self) -> None:
         layer = Layer(
@@ -402,3 +431,69 @@ class TestRenderLegend:
             group_w = (len(names) - 1) * LEGEND_GLYPH_STEP
             first_x = col * col_w + col_w / 2 - group_w / 2
             assert f'href="#glyph_{names[0]}" x="{first_x:.1f}"' in svg
+
+
+class TestFontAndGlyphMetrics:
+    def test_dejavu_class_only_for_marks_inter_lacks(self) -> None:
+        assert {"✦", "⇊", "⇈"} == DEJAVU_FALLBACK_CHARS
+        assert dejavu_class("✦") == " dejavu"
+        assert dejavu_class("⇊") == " dejavu"
+        assert dejavu_class("⇈") == " dejavu"
+        assert dejavu_class("⇧") == ""
+        assert dejavu_class("⌘") == ""
+        assert dejavu_class("⌥") == ""
+        assert dejavu_class("⌃") == ""
+        assert dejavu_class("A") == ""
+        assert dejavu_class("") == ""
+
+    def test_svg_leads_with_inter_and_dejavu_fallback(self) -> None:
+        svg = render_legend()
+        assert 'font-family: Inter, "DejaVu Sans"' in svg
+        assert "text.dejavu" in svg
+
+    def test_hold_marks_select_dejavu_when_inter_cannot_draw_them(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        svg = render_board(build_stacked_specs(layers), "stacked")
+        assert 'class="oneshot symbol sym dejavu"' in svg
+        assert 'class="hold hold-preferred nav symbol dejavu"' in svg
+        shift_at = svg.index(">⇧</text>")
+        assert "dejavu" not in svg[shift_at - 80 : shift_at]
+        star_at = svg.index(">✦</text>")
+        assert "dejavu" in svg[star_at - 80 : star_at]
+        legend = render_legend()
+        assert 'class="legend-symbol dejavu"' in legend
+        hyper_at = legend.index(">✦</text>")
+        assert "legend-symbol dejavu" in legend[hyper_at - 80 : hyper_at]
+        shift_legend = legend.index(">⇧</text>")
+        assert "dejavu" not in legend[shift_legend - 80 : shift_legend]
+
+    def test_glyph_em_matches_base_text_size(self) -> None:
+        assert GLYPH_SCALE == FONT_SIZE_BASE / GLYPH_EM
+        svg = render_legend()
+        assert f'transform="scale({GLYPH_SCALE:.6f}) translate(-24,-24)"' in svg
+
+    def test_overlay_and_combo_glyphs_scale_to_their_text(self) -> None:
+        layers, _ = parse_keymap(KEYMAP)
+        svg = render_board(
+            build_stacked_specs(layers),
+            "stacked",
+            combos=[{"x": 180.0, "y": 141.67, "text": "", "glyph": "escape"}],
+        )
+        overlay = FONT_SIZE_NUM / FONT_SIZE_BASE
+        combo = FONT_SIZE_COMBO / FONT_SIZE_BASE
+        assert overlay == FONT_SIZE_SYM / FONT_SIZE_BASE
+        assert f"scale({overlay:g})" in svg
+        assert f"scale({combo:g})" in svg
+        hold = FONT_SIZE_HOLD_SYMBOL / FONT_SIZE_BASE
+        assert f"scale({hold:g})" in svg
+
+    def test_use_glyph_skips_scale_at_base_size(self) -> None:
+        assert (
+            use_glyph("return", "base", 15.0, 18.1344)
+            == '<use class="glyph base" href="#glyph_return" x="15.0" y="18.1344"/>'
+        )
+        assert (
+            use_glyph("escape", "combo", 0, 0, font_size=FONT_SIZE_COMBO)
+            == '<g transform="scale(0.5625)"><use class="glyph combo" '
+            'href="#glyph_escape"/></g>'
+        )

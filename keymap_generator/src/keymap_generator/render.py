@@ -73,7 +73,6 @@ SPLIT_GAP = 30.0
 # a compact keycap (same corner radius) so it reads as part of the board.
 COMBO_W = 20.0
 COMBO_H = 19.0
-COMBO_GLYPH_SCALE = 0.55
 
 STACK_BASE = "default"
 STACK_SYM = "lwr"
@@ -174,6 +173,24 @@ TEXT_LEGEND: tuple[tuple[str, str], ...] = (
     ("⇈", "raise"),
 )
 
+# Inter has ⇧ ⌘ ⌥ ⌃ but not these. cairosvg selects only the first
+# font-family, so they must set .dejavu; browsers still walk the stack.
+DEJAVU_FALLBACK_CHARS = frozenset("✦⇊⇈")
+
+# Text sizes (px) used both as CSS font-size and to scale stroke glyphs
+# so a 48-unit drawing's 0.75em inset matches Inter's cap-height.
+FONT_SIZE_BASE = 16.0
+FONT_SIZE_HOLD_SYMBOL = 14.0
+FONT_SIZE_ONESHOT_SYMBOL = 16.0
+FONT_SIZE_SYM = 13.0
+FONT_SIZE_NUM = 13.0
+FONT_SIZE_COMBO = 9.0
+
+# Design space for GLYPH_PATHS. Centre is (24, 24); drawings inset by 6
+# units (0.75em) so they sit on Inter's cap-height at FONT_SIZE_BASE.
+GLYPH_EM = 48.0
+GLYPH_SCALE = FONT_SIZE_BASE / GLYPH_EM
+
 # Legend layout. Width matches the reference board. Icons sit on a
 # column grid so rows share x origins instead of packing to ragged
 # label widths.
@@ -182,8 +199,10 @@ LEGEND_ICON_COLS = 4
 LEGEND_GLYPH_STEP = 22.0
 LEGEND_ICON_ROW_H = 44.0
 
-# Paths are drawn in a 48×48 box centred on (24, 24), then scaled down by
-# glyph_defs. Stroke-only: closed shapes read as outlines.
+# Paths are drawn in a 48×48 em square centred on (24, 24). glyph_defs
+# scales that em to FONT_SIZE_BASE and recentres on the origin; other
+# slots scale from there so overlay/hold/combo icons match their text.
+# Stroke-only: closed shapes read as outlines.
 GLYPH_PATHS = {
     "backspace": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z",
     # The backspace box's own point already reads as one chevron; add a
@@ -226,6 +245,37 @@ GLYPH_PATHS = {
 
 def esc(text: str) -> str:
     return html.escape(text, quote=True)
+
+
+def dejavu_class(text: str) -> str:
+    """Return ' dejavu' when Inter cannot draw every character in `text`."""
+    if text and DEJAVU_FALLBACK_CHARS.issuperset(text):
+        return " dejavu"
+    return ""
+
+
+def use_glyph(
+    name: str,
+    class_name: str,
+    x: float,
+    y: float,
+    *,
+    font_size: float = FONT_SIZE_BASE,
+) -> str:
+    """Place a stroke glyph, scaled to the matching text size.
+
+    Path defs are already sized to FONT_SIZE_BASE. Smaller slots wrap the
+    <use> in a scale group so the icon's em matches that slot's font-size.
+    """
+    href = f'href="#glyph_{name}"'
+    cls = f'class="glyph {class_name}"'
+    if font_size == FONT_SIZE_BASE:
+        if x == 0 and y == 0:
+            return f"<use {cls} {href}/>"
+        return f'<use {cls} {href} x="{x}" y="{y}"/>'
+    scale = font_size / FONT_SIZE_BASE
+    origin = f"translate({x},{y}) " if x or y else ""
+    return f'<g transform="{origin}scale({scale:g})"><use {cls} {href}/></g>'
 
 
 def tap_display(label: str) -> tuple[str, str | None]:
@@ -296,6 +346,24 @@ def board_size(columns: int = 5, thumbs: int = 3) -> tuple[float, float]:
     width = columns * 2 * KW + SPLIT_GAP + 20
     height = 3 * KH + KH + 40
     return width, height
+
+
+def hold_box_rect() -> tuple[float, float, float, float]:
+    """Return (x, y, w, h) for the bottom-left hold badge.
+
+    The box stays flush with the keycap's bottom-left padding. Top and
+    right are pulled in so the hold mark at the BL legend anchor
+    (KW*0.25, KH*0.80) is the centre, instead of sitting low in a
+    full-quadrant box.
+    """
+    ikh = KH - 2 * PAD
+    cx = KW * 0.25
+    cy = KH * 0.80
+    left = PAD
+    bottom = PAD + ikh
+    width = 2 * (cx - left)
+    height = 2 * (bottom - cy)
+    return left, bottom - height, width, height
 
 
 def build_stacked_specs(layers: list[Layer]) -> list[dict]:
@@ -387,10 +455,13 @@ def layer_specs(layer: Layer) -> list[dict]:
 
 def svg_style(*, combos: bool = False) -> str:
     style = """
-    /* Cairo has no font fallback; DejaVu Sans has ⌘ ⌥ ⌃ ⇧ ✦ ⇊ ⇈. */
+    /* Inter for letters. cairosvg uses only the first family, so marks
+       Inter lacks (✦ ⇊ ⇈) set .dejavu; browsers still walk the stack. */
     svg.keymap { background: #1e1e2e;
-                 font-family: "DejaVu Sans", "Segoe UI Symbol",
+                 font-family: Inter, "DejaVu Sans", "Segoe UI Symbol",
                               "Apple Symbols", sans-serif; }
+    text.dejavu { font-family: "DejaVu Sans", "Segoe UI Symbol",
+                  "Apple Symbols", sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
     text.base { font-size: 16px; font-weight: 600; fill: #dddddd; }
@@ -398,9 +469,9 @@ def svg_style(*, combos: bool = False) -> str:
     text.sym { font-size: 13px; fill: #9999ff; }
     text.num { font-size: 13px; fill: #ee9944; }
     text.oneshot { font-size: 12px; font-weight: 600; }
-    use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2.5px;
+    use.glyph { fill: none; stroke: #c8c8c8; stroke-width: 2px;
                 stroke-linecap: round; stroke-linejoin: round; }
-    use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
+    use.glyph.base { stroke: #dddddd; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
     use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
@@ -484,7 +555,7 @@ def glyph_defs() -> str:
     for name, d in GLYPH_PATHS.items():
         parts.append(
             f'<path id="glyph_{name}" class="symbol" '
-            f'transform="scale(0.4) translate(-24,-30)" d="{d}"/>'
+            f'transform="scale({GLYPH_SCALE:.6f}) translate(-24,-24)" d="{d}"/>'
         )
     parts.append("</defs>")
     return "\n".join(parts)
@@ -517,9 +588,10 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             f'width="{ikw / 2}" height="{ikh}" rx="{RADIUS}" ry="{RADIUS}"/>'
         )
     elif hold and flavor in ("tap-preferred", "hold-preferred"):
+        hx, hy, hw, hh = hold_box_rect()
         parts.append(
-            f'<rect class="hold-box {flavor} {accent}" x="{PAD}" '
-            f'y="{PAD + ikh / 2}" width="{ikw / 2}" height="{ikh / 2}" '
+            f'<rect class="hold-box {flavor} {accent}" x="{hx}" '
+            f'y="{hy}" width="{hw}" height="{hh}" '
             f'rx="{RADIUS}" ry="{RADIUS}"/>'
         )
 
@@ -534,76 +606,95 @@ def draw_key(x: float, y: float, spec: dict) -> str:
         base = spec.get("base") or ""
         if base:
             parts.append(
-                f'<text class="base" x="{x_left}" y="{y_top}">{esc(base)}</text>'
+                f'<text class="base{dejavu_class(base)}" '
+                f'x="{x_left}" y="{y_top}">{esc(base)}</text>'
             )
         elif spec.get("base_glyph"):
-            parts.append(
-                f'<use class="glyph base" href="#glyph_{spec["base_glyph"]}" '
-                f'x="{x_left}" y="{y_top}"/>'
-            )
+            parts.append(use_glyph(spec["base_glyph"], "base", x_left, y_top))
 
     if hold and flavor == "oneshot":
         if hold_glyph:
             parts.append(
-                f'<use class="glyph oneshot {accent}" href="#glyph_{hold_glyph}" '
-                f'x="{PAD + ikw / 4}" y="{KH / 2}"/>'
+                use_glyph(
+                    hold_glyph,
+                    f"oneshot {accent}",
+                    PAD + ikw / 4,
+                    KH / 2,
+                    font_size=FONT_SIZE_ONESHOT_SYMBOL,
+                )
             )
         elif len(hold_label) <= 1:
             # A single Unicode symbol sits upright in the left bar.
             parts.append(
-                f'<text class="oneshot symbol {accent}" '
+                f'<text class="oneshot symbol {accent}{dejavu_class(hold_label)}" '
                 f'x="{PAD + ikw / 4}" y="{KH / 2}">'
                 f"{esc(hold_label)}</text>"
             )
         else:
             parts.append(
-                f'<text class="oneshot {accent}" '
+                f'<text class="oneshot {accent}{dejavu_class(hold_label)}" '
                 f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
                 f"{esc(hold_label)}</text>"
             )
     elif hold and flavor:
         if hold_glyph:
             parts.append(
-                f'<use class="glyph hold {flavor} {accent}" '
-                f'href="#glyph_{hold_glyph}" x="{x_left}" y="{y_bot}"/>'
+                use_glyph(
+                    hold_glyph,
+                    f"hold {flavor} {accent}",
+                    x_left,
+                    y_bot,
+                    font_size=FONT_SIZE_HOLD_SYMBOL,
+                )
             )
         else:
             symbol = " symbol" if len(hold_label) <= 1 else ""
             parts.append(
-                f'<text class="hold {flavor} {accent}{symbol}" '
+                f'<text class="hold {flavor} {accent}{symbol}'
+                f'{dejavu_class(hold_label)}" '
                 f'x="{x_left}" y="{y_bot}">'
                 f"{esc(hold_label)}</text>"
             )
     elif hold:
         if hold_glyph:
             parts.append(
-                f'<use class="glyph hold" href="#glyph_{hold_glyph}" '
-                f'x="{x_left}" y="{y_bot}"/>'
+                use_glyph(
+                    hold_glyph,
+                    "hold",
+                    x_left,
+                    y_bot,
+                    font_size=FONT_SIZE_HOLD_SYMBOL,
+                )
             )
         else:
             symbol = " symbol" if len(hold_label) <= 1 else ""
             parts.append(
-                f'<text class="hold{symbol}" x="{x_left}" y="{y_bot}">'
+                f'<text class="hold{symbol}{dejavu_class(hold_label)}" '
+                f'x="{x_left}" y="{y_bot}">'
                 f"{esc(hold_label)}</text>"
             )
 
     # Raise (rse / numbers) sits top-right; lower (lwr / symbols) bottom-right.
     num = spec.get("num") or ""
     if num:
-        parts.append(f'<text class="num" x="{x_right}" y="{y_top}">{esc(num)}</text>')
+        parts.append(
+            f'<text class="num{dejavu_class(num)}" x="{x_right}" y="{y_top}">'
+            f"{esc(num)}</text>"
+        )
     elif spec.get("num_glyph"):
         parts.append(
-            f'<use class="glyph num" href="#glyph_{spec["num_glyph"]}" '
-            f'x="{x_right}" y="{y_top}"/>'
+            use_glyph(spec["num_glyph"], "num", x_right, y_top, font_size=FONT_SIZE_NUM)
         )
 
     sym = spec.get("sym") or ""
     if sym:
-        parts.append(f'<text class="sym" x="{x_right}" y="{y_bot}">{esc(sym)}</text>')
+        parts.append(
+            f'<text class="sym{dejavu_class(sym)}" x="{x_right}" y="{y_bot}">'
+            f"{esc(sym)}</text>"
+        )
     elif spec.get("sym_glyph"):
         parts.append(
-            f'<use class="glyph sym" href="#glyph_{spec["sym_glyph"]}" '
-            f'x="{x_right}" y="{y_bot}"/>'
+            use_glyph(spec["sym_glyph"], "sym", x_right, y_bot, font_size=FONT_SIZE_SYM)
         )
 
     parts.append("</g>")
@@ -620,13 +711,9 @@ def draw_combo_mark(mark: dict) -> str:
         f'width="{COMBO_W}" height="{COMBO_H}" rx="{RADIUS}" ry="{RADIUS}"/>',
     ]
     if glyph:
-        parts.append(
-            f'<g transform="scale({COMBO_GLYPH_SCALE})">'
-            f'<use class="glyph combo" href="#glyph_{glyph}"/>'
-            f"</g>"
-        )
+        parts.append(use_glyph(glyph, "combo", 0, 0, font_size=FONT_SIZE_COMBO))
     elif text:
-        parts.append(f'<text class="combo">{esc(text)}</text>')
+        parts.append(f'<text class="combo{dejavu_class(text)}">{esc(text)}</text>')
     parts.append("</g>")
     return "\n".join(parts)
 
@@ -804,7 +891,8 @@ def render_legend() -> str:
         mid = col * col_w + col_w / 2
         y = icon_y + row * LEGEND_ICON_ROW_H
         parts.append(
-            f'<text class="legend-symbol" x="{mid:.1f}" y="{y:.1f}">{esc(char)}</text>'
+            f'<text class="legend-symbol{dejavu_class(char)}" '
+            f'x="{mid:.1f}" y="{y:.1f}">{esc(char)}</text>'
         )
         parts.append(
             f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
