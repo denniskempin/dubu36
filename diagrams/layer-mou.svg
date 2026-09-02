@@ -1,5 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="267" viewBox="-10 -24 650.0 266.68">
-<style>svg.keymap { background: #1e1e2e; font-family: sans-serif; }
+<style>/* Cairo has no font fallback; DejaVu Sans has ⌘ ⌥ ⌃ ⇧ ✦ ⇊ ⇈. */
+    svg.keymap { background: #1e1e2e;
+                 font-family: "DejaVu Sans", "Segoe UI Symbol",
+                              "Apple Symbols", sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
     text.base { font-size: 16px; font-weight: 600; fill: #dddddd; }
@@ -12,20 +15,28 @@
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
+    use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
+    use.glyph.hold.hold-preferred.mod, use.glyph.oneshot.mod { stroke: #d0d0d0; }
+    use.glyph.hold.hold-preferred.sym, use.glyph.oneshot.sym,
+    use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
+    use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
+    use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
-    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #d0d0d0; font-weight: 700; }
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
-    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.hold.tap-preferred { fill: #8a8a8a; }
+    text.hold.symbol { font-size: 14px; }
+    text.oneshot.symbol { font-size: 16px; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }</style>
 <defs>
 <path id="glyph_backspace" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z"/>
@@ -47,6 +58,7 @@
 <path id="glyph_hist-fwd" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M12,32A14,14 0 1 1 24,12m-8-8l8,8l-8,8"/>
 <path id="glyph_app-tab-prev" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,10h18v10h18v20H6z"/>
 <path id="glyph_app-tab-next" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M6,20h18v-10h18v30H6z"/>
+<path id="glyph_bluetooth" class="symbol" transform="scale(0.4) translate(-24,-30)" d="M12,16 L36,32 L24,40 L24,8 L36,16 L12,32"/>
 </defs>
 <text class="title" x="0" y="-8">mou</text>
 <g transform="translate(0.00,0.00)">

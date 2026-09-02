@@ -1,10 +1,10 @@
 """Render keymap.txt to Selenium-style SVG (and PNG) diagrams.
 
-Per-key legend layout (matches https://onedeadkey.github.io/selenium/):
+Per-key legend layout (Selenium-style corners, raise on top / lower below):
   Top-left     base layer tap (grey)
   Bottom-left  hold binding (grey by default, boxed)
-  Top-right    symbol layer (lwr) — purple
-  Bottom-right number/nav layer (rse) — orange
+  Top-right    number/nav layer (rse) — orange
+  Bottom-right symbol layer (lwr) — purple
 
 Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
   tp (tap-preferred)  — outline box in the bottom-left quadrant
@@ -14,7 +14,9 @@ Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
 
 Hold labels/boxes are grey by default. A hold binding that itself switches
 to the symbol (lwr) or number/nav (rse) layer is colored like that layer
-instead, so layer-change labels always read as purple/orange.
+instead, so layer-change labels always read as purple/orange. Layer
+holds use Unicode ⇊ / ⇈; modifiers use ⇧ ⌘ ⌥ ⌃; hyper is ✦ (U+2726).
+Adjust is a Bluetooth rune path — Unicode has no Bluetooth character.
 
 The hyp and adj layers are excluded from diagram generation (their
 mod-tap holds still render elsewhere, just in the default grey).
@@ -24,8 +26,10 @@ sits on the seam between the two trigger keys and shows the result,
 using the same glyphs as taps. Per-layer boards omit them.
 
 Well-known taps render as icons instead of text — see TAP_GLYPHS /
-GLYPH_PATHS. `render_legend` draws those icons, the corner and
-hold-flavor keycaps, and a combo badge into diagrams/legend.svg.
+GLYPH_PATHS. Holds use a Unicode character when one exists
+(HOLD_DISPLAY) and a stroke path only when it does not (Bluetooth).
+`render_legend` draws those icons, the corner and hold-flavor keycaps,
+and a combo badge into diagrams/legend.svg.
 
 Icon vocabulary (one motif per action, so arrows are not reused):
   Cursor LEFT/RIGHT/UP/DOWN  — single shafted arrow
@@ -79,16 +83,17 @@ STACK_NUM = "rse"
 # elsewhere, but they don't get their own reference/layer boards).
 EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 
-# Short hold labels shown in the bottom-left quadrant.
+# Hold labels shown in the bottom-left quadrant. Prefer a Unicode
+# character when one exists; HOLD_GLYPHS is only for marks with no
+# character (today: Bluetooth).
 HOLD_DISPLAY = {
-    "SHFT": "shft",
-    "ALT": "alt",
-    "CMD": "cmd",
-    "CTRL": "ctrl",
-    "HYP": "hyp",
-    "ADJ": "adj",
-    "LWR": "lwr",
-    "RSE": "rse",
+    "SHFT": "⇧",  # U+21E7 UPWARDS WHITE ARROW
+    "CMD": "⌘",  # U+2318 PLACE OF INTEREST SIGN
+    "ALT": "⌥",  # U+2325 OPTION KEY
+    "CTRL": "⌃",  # U+2303 UP ARROWHEAD
+    "HYP": "✦",  # U+2726 BLACK FOUR POINTED STAR
+    "LWR": "⇊",  # U+21CA DOWNWARDS PAIRED ARROWS
+    "RSE": "⇈",  # U+21C8 UPWARDS PAIRED ARROWS
     "MOU": "mou",
 }
 
@@ -127,10 +132,16 @@ TAP_GLYPHS = {
     "TAB_R": "app-tab-next",
 }
 
+# Stroke-path holds: only when Unicode has no character for the mark.
+HOLD_GLYPHS = {
+    "ADJ": "bluetooth",
+}
+
 # A few labels that read better as glyphs/symbols than as their raw codes.
 TAP_DISPLAY = {
     "PIPE": "|",
     "UML": "uml",
+    **{name: char for name, char in HOLD_DISPLAY.items() if name != "MOU"},
 }
 
 # Icon-legend entries: one or more glyphs sharing a label, in display
@@ -149,6 +160,18 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("word-left", "word-right"), "word"),
     (("hist-back", "hist-fwd"), "history"),
     (("app-tab-prev", "app-tab-next"), "app tab"),
+    (("bluetooth",), "bluetooth"),
+)
+
+# Unicode hold symbols drawn as text in the icon legend.
+TEXT_LEGEND: tuple[tuple[str, str], ...] = (
+    ("⇧", "shift"),
+    ("⌃", "control"),
+    ("⌥", "option"),
+    ("⌘", "command"),
+    ("✦", "hyper"),
+    ("⇊", "lower"),
+    ("⇈", "raise"),
 )
 
 # Legend layout. Width matches the reference board. Icons sit on a
@@ -196,6 +219,8 @@ GLYPH_PATHS = {
     # vs next app-tab cannot be read as a signal-strength meter.
     "app-tab-prev": "M6,10h18v10h18v20H6z",
     "app-tab-next": "M6,20h18v-10h18v30H6z",
+    # Bluetooth rune (Hagall + Bjarkan). Unicode has no Bluetooth character.
+    "bluetooth": "M12,16 L36,32 L24,40 L24,8 L36,16 L12,32",
 }
 
 
@@ -208,6 +233,19 @@ def tap_display(label: str) -> tuple[str, str | None]:
     if label in TAP_GLYPHS:
         return "", TAP_GLYPHS[label]
     return TAP_DISPLAY.get(label, label), None
+
+
+def hold_display(label: str) -> tuple[str, str | None]:
+    """Return (text, glyph) for a hold label.
+
+    Uses a Unicode character when one exists (HOLD_DISPLAY) and a stroke
+    path only when it does not (HOLD_GLYPHS, today Bluetooth).
+    """
+    if not label:
+        return "", None
+    if label in HOLD_GLYPHS:
+        return "", HOLD_GLYPHS[label]
+    return HOLD_DISPLAY.get(label, label.lower()), None
 
 
 def hold_flavor(key: Key) -> str | None:
@@ -264,7 +302,7 @@ def build_stacked_specs(layers: list[Layer]) -> list[dict]:
     """Project semantic layers into per-key visual specs for the reference card.
 
     Every key uses the same corners:
-      TL base (default), BL hold, TR symbols (lwr), BR numbers/nav (rse).
+      TL base (default), BL hold, TR numbers/nav (rse), BR symbols (lwr).
     """
     by_name = layers_by_name(layers)
     base = flatten_layer(by_name[STACK_BASE])
@@ -349,7 +387,10 @@ def layer_specs(layer: Layer) -> list[dict]:
 
 def svg_style(*, combos: bool = False) -> str:
     style = """
-    svg.keymap { background: #1e1e2e; font-family: sans-serif; }
+    /* Cairo has no font fallback; DejaVu Sans has ⌘ ⌥ ⌃ ⇧ ✦ ⇊ ⇈. */
+    svg.keymap { background: #1e1e2e;
+                 font-family: "DejaVu Sans", "Segoe UI Symbol",
+                              "Apple Symbols", sans-serif; }
     rect.keycap { fill: #333333; stroke: #555555; stroke-width: 0.5px; }
     text { fill: #c8c8c8; text-anchor: middle; dominant-baseline: central; }
     text.base { font-size: 16px; font-weight: 600; fill: #dddddd; }
@@ -362,20 +403,28 @@ def svg_style(*, combos: bool = False) -> str:
     use.glyph.base { stroke: #dddddd; stroke-width: 3px; }
     use.glyph.sym { stroke: #9999ff; }
     use.glyph.num { stroke: #ee9944; }
+    use.glyph.hold.tap-preferred.mod { stroke: #8a8a8a; }
+    use.glyph.hold.hold-preferred.mod, use.glyph.oneshot.mod { stroke: #d0d0d0; }
+    use.glyph.hold.hold-preferred.sym, use.glyph.oneshot.sym,
+    use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
+    use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
+    use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
     rect.hold-box { stroke-width: 1.2px; }
-    rect.hold-box.tap-preferred.mod { fill: none; stroke: #c8c8c8; }
+    rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.hold-preferred.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
-    rect.hold-box.oneshot.mod { fill: #666666; stroke: #666666; }
+    rect.hold-box.oneshot.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.oneshot.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.oneshot.nav { fill: #aa7755; stroke: #aa7755; }
-    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #eeeeee; font-weight: 700; }
+    text.hold.hold-preferred.mod, text.oneshot.mod { fill: #d0d0d0; font-weight: 700; }
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
-    text.hold.tap-preferred { fill: #c8c8c8; }
+    text.hold.tap-preferred { fill: #8a8a8a; }
+    text.hold.symbol { font-size: 14px; }
+    text.oneshot.symbol { font-size: 16px; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
     """.strip()
     if combos:
@@ -400,6 +449,7 @@ def legend_style() -> str:
     text.caption.sub { font-size: 10px; fill: #777777; }
     text.caption.start { text-anchor: start; }
     text.glyph-label { font-size: 11px; fill: #c8c8c8; text-anchor: middle; }
+    text.legend-symbol { font-size: 16px; fill: #dddddd; }
     """.strip()
 
 
@@ -445,8 +495,8 @@ def draw_key(x: float, y: float, spec: dict) -> str:
 
     Top-left      base
     Bottom-left   hold (outline / solid / one-shot left bar)
-    Top-right     symbol
-    Bottom-right  number / nav
+    Top-right     number / nav (rse)
+    Bottom-right  symbol (lwr)
     """
     ikw = KW - 2 * PAD
     ikh = KH - 2 * PAD
@@ -459,7 +509,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     hold = spec.get("hold") or ""
     flavor = spec.get("flavor")
     accent = spec.get("accent") or DEFAULT_HOLD_ACCENT
-    hold_label = HOLD_DISPLAY.get(hold, hold.lower() if hold else "")
+    hold_label, hold_glyph = hold_display(hold)
 
     if hold and flavor == "oneshot":
         parts.append(
@@ -493,36 +543,66 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             )
 
     if hold and flavor == "oneshot":
-        parts.append(
-            f'<text class="oneshot {accent}" '
-            f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
-            f"{esc(hold_label)}</text>"
-        )
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph oneshot {accent}" href="#glyph_{hold_glyph}" '
+                f'x="{PAD + ikw / 4}" y="{KH / 2}"/>'
+            )
+        elif len(hold_label) <= 1:
+            # A single Unicode symbol sits upright in the left bar.
+            parts.append(
+                f'<text class="oneshot symbol {accent}" '
+                f'x="{PAD + ikw / 4}" y="{KH / 2}">'
+                f"{esc(hold_label)}</text>"
+            )
+        else:
+            parts.append(
+                f'<text class="oneshot {accent}" '
+                f'transform="translate({PAD + ikw / 4},{KH / 2}) rotate(-90)">'
+                f"{esc(hold_label)}</text>"
+            )
     elif hold and flavor:
-        parts.append(
-            f'<text class="hold {flavor} {accent}" x="{x_left}" y="{y_bot}">'
-            f"{esc(hold_label)}</text>"
-        )
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph hold {flavor} {accent}" '
+                f'href="#glyph_{hold_glyph}" x="{x_left}" y="{y_bot}"/>'
+            )
+        else:
+            symbol = " symbol" if len(hold_label) <= 1 else ""
+            parts.append(
+                f'<text class="hold {flavor} {accent}{symbol}" '
+                f'x="{x_left}" y="{y_bot}">'
+                f"{esc(hold_label)}</text>"
+            )
     elif hold:
+        if hold_glyph:
+            parts.append(
+                f'<use class="glyph hold" href="#glyph_{hold_glyph}" '
+                f'x="{x_left}" y="{y_bot}"/>'
+            )
+        else:
+            symbol = " symbol" if len(hold_label) <= 1 else ""
+            parts.append(
+                f'<text class="hold{symbol}" x="{x_left}" y="{y_bot}">'
+                f"{esc(hold_label)}</text>"
+            )
+
+    # Raise (rse / numbers) sits top-right; lower (lwr / symbols) bottom-right.
+    num = spec.get("num") or ""
+    if num:
+        parts.append(f'<text class="num" x="{x_right}" y="{y_top}">{esc(num)}</text>')
+    elif spec.get("num_glyph"):
         parts.append(
-            f'<text class="hold" x="{x_left}" y="{y_bot}">{esc(hold_label)}</text>'
+            f'<use class="glyph num" href="#glyph_{spec["num_glyph"]}" '
+            f'x="{x_right}" y="{y_top}"/>'
         )
 
     sym = spec.get("sym") or ""
     if sym:
-        parts.append(f'<text class="sym" x="{x_right}" y="{y_top}">{esc(sym)}</text>')
+        parts.append(f'<text class="sym" x="{x_right}" y="{y_bot}">{esc(sym)}</text>')
     elif spec.get("sym_glyph"):
         parts.append(
             f'<use class="glyph sym" href="#glyph_{spec["sym_glyph"]}" '
-            f'x="{x_right}" y="{y_top}"/>'
-        )
-
-    num = spec.get("num") or ""
-    if num:
-        parts.append(f'<text class="num" x="{x_right}" y="{y_bot}">{esc(num)}</text>')
-    elif spec.get("num_glyph"):
-        parts.append(
-            f'<use class="glyph num" href="#glyph_{spec["num_glyph"]}" '
             f'x="{x_right}" y="{y_bot}"/>'
         )
 
@@ -622,10 +702,10 @@ def render_legend() -> str:
             "base tap</text>",
             f'<text class="callout end" x="{corner_x - 8:.1f}" y="{y_bot:.1f}">'
             "hold</text>",
-            f'<text class="callout start sym" x="{corner_x + KW + 8:.1f}" '
-            f'y="{y_top:.1f}">symbols (lwr)</text>',
             f'<text class="callout start num" x="{corner_x + KW + 8:.1f}" '
-            f'y="{y_bot:.1f}">numbers / nav (rse)</text>',
+            f'y="{y_top:.1f}">numbers / nav (rse)</text>',
+            f'<text class="callout start sym" x="{corner_x + KW + 8:.1f}" '
+            f'y="{y_bot:.1f}">symbols (lwr)</text>',
         ]
     )
 
@@ -710,6 +790,22 @@ def render_legend() -> str:
                 f'<use class="glyph base" href="#glyph_{name}" '
                 f'x="{gx:.1f}" y="{y:.1f}"/>'
             )
+        parts.append(
+            f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
+            f"{esc(label)}</text>"
+        )
+
+    # Unicode hold marks continue on the same column grid.
+    glyph_count = len(GLYPH_LEGEND)
+    for i, (char, label) in enumerate(TEXT_LEGEND):
+        col = (glyph_count + i) % LEGEND_ICON_COLS
+        row = (glyph_count + i) // LEGEND_ICON_COLS
+        n_icon_rows = row + 1
+        mid = col * col_w + col_w / 2
+        y = icon_y + row * LEGEND_ICON_ROW_H
+        parts.append(
+            f'<text class="legend-symbol" x="{mid:.1f}" y="{y:.1f}">{esc(char)}</text>'
+        )
         parts.append(
             f'<text class="glyph-label" x="{mid:.1f}" y="{y + 16:.1f}">'
             f"{esc(label)}</text>"
