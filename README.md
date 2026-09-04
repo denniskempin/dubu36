@@ -90,6 +90,10 @@ dongle use. Switching between them needs a `settings_reset` flash on every devic
 (`make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2`), then
 pair the left half before the right so the dongle's battery widget orders them correctly.
 
+The dongle shows the Prospector module's Classic status screen: the active layer, both halves'
+battery levels, the modifiers currently held and the BLE output. Three other screens ship with
+the module and are selected in `config/corne_dongle.conf`.
+
 ### dubu36-ergo
 
 A more ergonomic dactyl style version for the desk. Due to chip shortages, it is currently wired and

@@ -10,7 +10,7 @@ diagrams, all of which are committed.
 | --- | --- |
 | `keymap.txt` | The layout: 36 keys per layer. Edit this, never the generated output. |
 | `keymap_generator/` | uv-managed Python package that renders `keymap.txt`. |
-| `config/` | ZMK user config: `west.yml` (pins ZMK to `v0.3` and the Prospector module), `*.conf`, `*.keymap`. |
+| `config/` | ZMK user config: `west.yml` (tracks ZMK `main`, pins the Prospector module), `*.conf`, `*.keymap`. |
 | `config/shared_keymap.dtsi` | **Generated** ZMK keymap, included by both `.keymap` files. |
 | `dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c` | **Generated** QMK keymap. |
 | `diagrams/` | **Generated** SVG and PNG layout diagrams, embedded in the README. |
@@ -65,16 +65,43 @@ re-run; a plain `make all` will not pull a new west project.
 `make clean` drops `build/`; `make distclean` also drops `.zmk-workspace/`, which means the next
 `make setup` re-clones.
 
+The toolchain comes from `.devcontainer/Dockerfile`, whose tag has to match the Zephyr version
+ZMK is on: `zmkfirmware/zmk-dev-arm:4.1` ships the Zephyr SDK 0.16.9 that Zephyr 4.1 wants, and
+the older `:3.5` image cannot build it. CI gets the matching image from ZMK's reusable workflow
+instead, so the two are bumped separately.
+
 `make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2` are
 not part of `all`. Flash them on every device before switching the travel board between
 standalone and dongle firmware.
 
 `config/west.yml` pins the Prospector module (`carrefinho/prospector-zmk-module`) to commit
-`77a8522`, which is the last `main` revision that targets ZMK v0.3 / Zephyr 3.5. The dongle
-build is `seeeduino_xiao_ble` with shields `corne_dongle prospector_adapter`. The shield name
-`corne_dongle` is load-bearing: ZMK's config lookup strips `_dongle` and then picks up
-`config/corne.keymap` and `config/corne.conf`. `config/corne_dongle.conf` is merged after
-those and overrides `CONFIG_ZMK_SLEEP` for the USB-powered dongle.
+`ed98221`, the tip of its `feat/new-status-screens` branch. That branch is the only one built
+against Zephyr 4.1; the module's `main` still targets ZMK v0.3. It also replaces the single
+status screen with four, selected by `CONFIG_PROSPECTOR_STATUS_SCREEN_*` in
+`config/corne_dongle.conf`, and sets the display thread's stack size itself, so this repo no
+longer has to. The dongle build is `xiao_ble//zmk` with shields
+`corne_dongle prospector_adapter`. The shield name `corne_dongle` is load-bearing: ZMK's config
+lookup strips `_dongle` and then picks up `config/corne.keymap` and `config/corne.conf`.
+`config/corne_dongle.conf` is merged after those and overrides `CONFIG_ZMK_SLEEP` for the
+USB-powered dongle.
+
+### Board targets
+
+ZMK `main` runs Zephyr 4.1, whose HWMv2 board names carry qualifiers, so every build target
+gained a suffix and `nice_nano` alone now means the v2:
+
+| Was | Is |
+| --- | --- |
+| `nice_nano` | `nice_nano@1.0.0//zmk` |
+| `seeeduino_xiao_ble` | `xiao_ble//zmk` |
+
+The Makefile keeps these in `NICE_NANO` and `XIAO_BLE`. `build.yaml` spells them out and then
+sets `artifact-name` on every entry, because the default name is derived from the board target
+and would otherwise carry the qualifiers into each firmware file name. ZMK's reusable workflow
+fails the build outright if a board that has a `zmk` variant is requested without it.
+
+Shields need no HWMv2 changes, which is why `boards/shields/` came through the migration
+untouched.
 
 ### Why the west workspace is off to the side
 
