@@ -7,10 +7,12 @@ manifest:
   projects:
     - name: zmk
       remote: zmkfirmware
-      revision: v0.3
+      revision: main
       import: app/west.yml
+    # The feat/new-status-screens branch is the only one that builds against
+    # Zephyr 4.1; the module's main still targets ZMK v0.3.
     - name: prospector-zmk-module
       remote: carrefinho
-      revision: 77a852293532879c992847e01db27abe4f94fa9f
+      revision: ed98221f3b52b7066dbb10ba3af8a29150b93a5a
   self:
     path: config
