@@ -81,21 +81,21 @@
             };
 
             raise_layer {
-                    display-name = "Rse";
+                    display-name = "Nav/Num";
                     bindings = <
 #LAYER_1#
                     >;
             };
 
             lower_layer {
-                    display-name = "Lwr";
+                    display-name = "Symbols";
                     bindings = <
 #LAYER_2#
                     >;
             };
 
             hyper_layer {
-                    display-name = "Hyp";
+                    display-name = "Hyper";
                     bindings = <
 #LAYER_3#
                     >;
