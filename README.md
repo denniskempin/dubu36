@@ -81,6 +81,14 @@ Specs:
 - [NuType F1](https://nuphy.com/collections/shop/products/nutype-f1-aw20-late-summer-night-ver-keycaps)
   Keycaps
 - Custom printed [travel case](dubu36-travel/case)
+- [Prospector](https://github.com/carrefinho/prospector) dongle (Seeed XIAO BLE + 1.69" ST7789V LCD)
+
+The travel board can run standalone, with the left half as the split central, or with
+the Prospector as the central over USB. Both firmwares are built: `build/dubu36t_{left,right}.uf2`
+for standalone use, and `build/dubu36t_left_peripheral.uf2` plus `build/dubu36t_dongle.uf2` for
+dongle use. Switching between them needs a `settings_reset` flash on every device first
+(`make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2`), then
+pair the left half before the right so the dongle's battery widget orders them correctly.
 
 ### dubu36-ergo
 

@@ -20,3 +20,13 @@ include:
     shield: dubu36e_left
   - board: nice_nano
     shield: dubu36e_right
+  - board: nice_nano
+    shield: corne_left
+    cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
+    artifact-name: corne_left_peripheral
+  - board: seeeduino_xiao_ble
+    shield: corne_dongle prospector_adapter
+  - board: nice_nano
+    shield: settings_reset
+  - board: seeeduino_xiao_ble
+    shield: settings_reset

@@ -14,7 +14,7 @@ WEST_BUILD := env ZEPHYR_BASE="$(ZMK_WS)/zephyr" west
 QMK_KEYMAP := dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c
 GENERATOR := keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt
 
-all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
+all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 build/dubu36t_dongle.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
 # Everything the golden tests check against keymap.txt. Regenerate all of it
 # after editing keymap.txt, or the tests fail on whatever was left behind.
@@ -71,6 +71,30 @@ build/dubu36t_left.uf2: config/* config/shared_keymap.dtsi
 build/dubu36t_right.uf2: config/* config/shared_keymap.dtsi
 	$(sync-config)
 	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=corne_right $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/dubu36t_left_peripheral.uf2: config/* config/shared_keymap.dtsi
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=corne_left -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/dubu36t_dongle.uf2: boards/shields/corne_dongle/* config/* config/shared_keymap.dtsi
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b seeeduino_xiao_ble -- -DSHIELD="corne_dongle prospector_adapter" $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/settings_reset_nice_nano.uf2:
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b nice_nano -- -DSHIELD=settings_reset $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/settings_reset_xiao_ble.uf2:
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b seeeduino_xiao_ble -- -DSHIELD=settings_reset $(ZMK_CMAKE) || exit
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 

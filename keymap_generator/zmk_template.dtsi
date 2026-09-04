@@ -74,36 +74,42 @@
             compatible = "zmk,keymap";
 
             default_layer {
+                    display-name = "Base";
                     bindings = <
 #LAYER_0#
                     >;
             };
 
             raise_layer {
+                    display-name = "Rse";
                     bindings = <
 #LAYER_1#
                     >;
             };
 
             lower_layer {
+                    display-name = "Lwr";
                     bindings = <
 #LAYER_2#
                     >;
             };
 
             hyper_layer {
+                    display-name = "Hyp";
                     bindings = <
 #LAYER_3#
                     >;
             };
 
             adjust_layer {
+                    display-name = "Adj";
                     bindings = <
 #LAYER_4#
                     >;
             };
 
             mouse_layer {
+                    display-name = "Mou";
                     bindings = <
 #LAYER_5#
                     >;

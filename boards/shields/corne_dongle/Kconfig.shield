@@ -1,0 +1,6 @@
+# Copyright (c) 2026 Dennis Kempin
+# SPDX-License-Identifier: MIT
+
+# No whitespace after the comma or in the shield name.
+config SHIELD_CORNE_DONGLE
+    def_bool $(shields_list_contains,corne_dongle)
