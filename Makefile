@@ -19,7 +19,12 @@ WEST_BUILD := env ZEPHYR_BASE="$(ZMK_WS)/zephyr" west
 QMK_KEYMAP := dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c
 GENERATOR := keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt
 
-all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 build/dubu36t_dongle.uf2 build/dubu36e_left.uf2 build/dubu36e_right.uf2
+# The Prospector module's status screens. Which one a dongle build gets is fixed
+# at compile time by a Kconfig choice, so each screen needs its own firmware.
+DONGLE_SCREENS := classic radii field operator
+DONGLE_UF2 := $(DONGLE_SCREENS:%=build/dubu36t_dongle_%.uf2)
+
+all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 $(DONGLE_UF2) build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
 # Everything the golden tests check against keymap.txt. Regenerate all of it
 # after editing keymap.txt, or the tests fail on whatever was left behind.
@@ -85,9 +90,9 @@ build/dubu36t_left_peripheral.uf2: config/* config/shared_keymap.dtsi
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
-build/dubu36t_dongle.uf2: boards/shields/corne_dongle/* config/* config/shared_keymap.dtsi
+build/dubu36t_dongle_%.uf2: boards/shields/corne_dongle/* config/* config/shared_keymap.dtsi
 	$(sync-config)
-	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(XIAO_BLE) -- -DSHIELD="corne_dongle prospector_adapter" $(ZMK_CMAKE) || exit
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(XIAO_BLE) -- -DSHIELD="corne_dongle prospector_adapter" -DCONFIG_PROSPECTOR_STATUS_SCREEN_$$(echo $* | tr 'a-z' 'A-Z')=y $(ZMK_CMAKE) || exit
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 

@@ -85,14 +85,16 @@ Specs:
 
 The travel board can run standalone, with the left half as the split central, or with
 the Prospector as the central over USB. Both firmwares are built: `build/dubu36t_{left,right}.uf2`
-for standalone use, and `build/dubu36t_left_peripheral.uf2` plus `build/dubu36t_dongle.uf2` for
-dongle use. Switching between them needs a `settings_reset` flash on every device first
-(`make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2`), then
-pair the left half before the right so the dongle's battery widget orders them correctly.
+for standalone use, and `build/dubu36t_left_peripheral.uf2` plus one of the
+`build/dubu36t_dongle_*.uf2` for dongle use. Switching between them needs a `settings_reset` flash
+on every device first (`make build/settings_reset_nice_nano.uf2` and
+`make build/settings_reset_xiao_ble.uf2`), then pair the left half before the right so the
+dongle's battery widget orders them correctly.
 
-The dongle shows the Prospector module's Classic status screen: the active layer, both halves'
-battery levels, the modifiers currently held and the BLE output. Three other screens ship with
-the module and are selected in `config/corne_dongle.conf`.
+The dongle displays the active layer, both halves' battery levels, the modifiers currently held
+and the BLE output. The Prospector module draws that four different ways and the choice is
+compiled in, so there is one dongle firmware per screen: `dubu36t_dongle_classic.uf2`,
+`_radii.uf2`, `_field.uf2` and `_operator.uf2`. Flash whichever one you want to look at.
 
 ### dubu36-ergo
 

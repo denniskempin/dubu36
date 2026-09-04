@@ -56,9 +56,10 @@ optional for the checks: without it `ty` cannot resolve the `cairosvg` import in
 ## Firmware builds
 
 CI builds firmware via ZMK's reusable `build-user-config.yml` workflow, driven by `build.yaml`.
-Locally, `.cursor/install.sh` already ran `make setup`, so `make all` produces the six `.uf2`
-files in `build/` (`dubu36t_{left,right,left_peripheral,dongle}`, `dubu36e_{left,right}`) in
-under a minute. On a fresh checkout `make setup` comes first and needs about a minute and a
+Locally, `.cursor/install.sh` already ran `make setup`, so `make all` produces the nine `.uf2`
+files in `build/` (`dubu36t_{left,right,left_peripheral}`,
+`dubu36t_dongle_{classic,radii,field,operator}`, `dubu36e_{left,right}`). A warm tree takes
+under a minute per target. On a fresh checkout `make setup` comes first and needs about a minute and a
 half to clone Zephyr and its modules. A change to `config/west.yml` also needs `make setup`
 re-run; a plain `make all` will not pull a new west project.
 
@@ -77,13 +78,17 @@ standalone and dongle firmware.
 `config/west.yml` pins the Prospector module (`carrefinho/prospector-zmk-module`) to commit
 `ed98221`, the tip of its `feat/new-status-screens` branch. That branch is the only one built
 against Zephyr 4.1; the module's `main` still targets ZMK v0.3. It also replaces the single
-status screen with four, selected by `CONFIG_PROSPECTOR_STATUS_SCREEN_*` in
-`config/corne_dongle.conf`, and sets the display thread's stack size itself, so this repo no
-longer has to. The dongle build is `xiao_ble//zmk` with shields
-`corne_dongle prospector_adapter`. The shield name `corne_dongle` is load-bearing: ZMK's config
-lookup strips `_dongle` and then picks up `config/corne.keymap` and `config/corne.conf`.
-`config/corne_dongle.conf` is merged after those and overrides `CONFIG_ZMK_SLEEP` for the
-USB-powered dongle.
+status screen with four and sets the display thread's stack size itself, so this repo no longer
+has to. The dongle build is `xiao_ble//zmk` with shields `corne_dongle prospector_adapter`. The
+shield name `corne_dongle` is load-bearing: ZMK's config lookup strips `_dongle` and then picks
+up `config/corne.keymap` and `config/corne.conf`. `config/corne_dongle.conf` is merged after
+those and overrides `CONFIG_ZMK_SLEEP` for the USB-powered dongle.
+
+`PROSPECTOR_STATUS_SCREEN_LAYOUT` is a Kconfig choice, so a dongle can only show the one screen
+it was flashed with. All four are therefore built, by passing
+`-DCONFIG_PROSPECTOR_STATUS_SCREEN_<SCREEN>=y` per target: `DONGLE_SCREENS` in the Makefile
+drives a pattern rule, and `build.yaml` has one entry per screen. Nothing selects a screen in
+`config/corne_dongle.conf`; a value there would apply to every build and defeat this.
 
 ### Board targets
 
