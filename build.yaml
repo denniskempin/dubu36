@@ -10,23 +10,51 @@
 #   - board: bdn9_rev2
 #   - board: nice_nano_v2
 #     shield: reviung41
+#
+# Board targets carry Zephyr's HWMv2 qualifiers since ZMK moved to Zephyr 4.1:
+# nice_nano@1.0.0//zmk is the nice!nano v1 with ZMK's board variant, and
+# xiao_ble//zmk replaces seeeduino_xiao_ble. artifact-name is set on every entry
+# because the default derives from the board target, which would otherwise put
+# the qualifiers into every firmware file name.
 ---
 include:
-  - board: nice_nano
+  - board: nice_nano@1.0.0//zmk
     shield: corne_left
-  - board: nice_nano
+    artifact-name: corne_left-nice_nano-zmk
+  - board: nice_nano@1.0.0//zmk
     shield: corne_right
-  - board: nice_nano
+    artifact-name: corne_right-nice_nano-zmk
+  - board: nice_nano@1.0.0//zmk
     shield: dubu36e_left
-  - board: nice_nano
+    artifact-name: dubu36e_left-nice_nano-zmk
+  - board: nice_nano@1.0.0//zmk
     shield: dubu36e_right
-  - board: nice_nano
+    artifact-name: dubu36e_right-nice_nano-zmk
+  - board: nice_nano@1.0.0//zmk
     shield: corne_left
     cmake-args: -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n
     artifact-name: corne_left_peripheral
-  - board: seeeduino_xiao_ble
+  # One dongle firmware per Prospector status screen. The module picks the
+  # screen with a Kconfig choice, so it cannot be switched after flashing.
+  - board: xiao_ble//zmk
     shield: corne_dongle prospector_adapter
-  - board: nice_nano
+    cmake-args: -DCONFIG_PROSPECTOR_STATUS_SCREEN_CLASSIC=y
+    artifact-name: corne_dongle_classic-xiao_ble-zmk
+  - board: xiao_ble//zmk
+    shield: corne_dongle prospector_adapter
+    cmake-args: -DCONFIG_PROSPECTOR_STATUS_SCREEN_RADII=y
+    artifact-name: corne_dongle_radii-xiao_ble-zmk
+  - board: xiao_ble//zmk
+    shield: corne_dongle prospector_adapter
+    cmake-args: -DCONFIG_PROSPECTOR_STATUS_SCREEN_FIELD=y
+    artifact-name: corne_dongle_field-xiao_ble-zmk
+  - board: xiao_ble//zmk
+    shield: corne_dongle prospector_adapter
+    cmake-args: -DCONFIG_PROSPECTOR_STATUS_SCREEN_OPERATOR=y
+    artifact-name: corne_dongle_operator-xiao_ble-zmk
+  - board: nice_nano@1.0.0//zmk
     shield: settings_reset
-  - board: seeeduino_xiao_ble
+    artifact-name: settings_reset-nice_nano-zmk
+  - board: xiao_ble//zmk
     shield: settings_reset
+    artifact-name: settings_reset-xiao_ble-zmk
