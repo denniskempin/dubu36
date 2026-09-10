@@ -278,6 +278,7 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box oneshot sym" x="1.0" y="1.0" width="29.0" height="54.67" rx="4.0" ry="4.0"/>
 <text class="oneshot symbol sym dejavu" x="15.5" y="28.335">⇊</text>
+<g transform="translate(45.0,18.1344) scale(0.8125)"><use class="glyph num" href="#glyph_return"/></g>
 </g>
 <g transform="translate(330.00,178.01)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>

@@ -160,8 +160,9 @@ class TestSpecsFromKeymap:
         assert specs[33]["base_glyph"] is None
         assert specs[33]["sym_glyph"] == "btab"
         assert specs[34]["sym_glyph"] == "tab"
-        # BKSP sits on the outer left thumb.
+        # BKSP sits on the outer left thumb. Raise puts Enter on the inner left.
         assert specs[30]["base_glyph"] == "backspace"
+        assert specs[32]["num_glyph"] == "return"
 
     def test_stacked_board_puts_raise_above_lower(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -209,6 +210,8 @@ class TestSpecsFromKeymap:
         # Bottom row: previous/next app tab, not the Tab-key arrows.
         assert specs[25]["base_glyph"] == "app-tab-prev"
         assert specs[29]["base_glyph"] == "app-tab-next"
+        # Inner left thumb is Enter on raise.
+        assert specs[32]["base_glyph"] == "return"
 
 
 class TestComboMarks:
