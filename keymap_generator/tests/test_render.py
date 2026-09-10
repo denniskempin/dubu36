@@ -135,13 +135,13 @@ class TestSpecsFromKeymap:
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Left inner thumb lwr/lwr (one-shot) and right inner thumb RET/rse:hp.
+        # Left inner thumb lwr/lwr and right inner thumb rse/rse (both one-shot).
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
         assert specs[32]["flavor"] == "oneshot"
         assert specs[33]["hold"] == "RSE"
         assert specs[33]["accent"] == "nav"
-        assert specs[33]["flavor"] == "hold-preferred"
+        assert specs[33]["flavor"] == "oneshot"
         # Space carries no hold at all, so nothing can shift under it.
         assert not specs[34]["hold"]
 
@@ -156,11 +156,11 @@ class TestSpecsFromKeymap:
     def test_symbol_overlay_includes_tab_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Right thumbs: RET with SHFT_TAB on lwr, SPC with TAB on lwr.
-        assert specs[33]["base_glyph"] == "return"
+        # Right thumbs: rse/rse with SHFT_TAB on lwr, SPC with TAB on lwr.
+        assert specs[33]["base_glyph"] is None
         assert specs[33]["sym_glyph"] == "btab"
         assert specs[34]["sym_glyph"] == "tab"
-        # BKSP sits on the outer left thumb, opposite RET.
+        # BKSP sits on the outer left thumb.
         assert specs[30]["base_glyph"] == "backspace"
 
     def test_stacked_board_puts_raise_above_lower(self) -> None:
@@ -224,15 +224,26 @@ class TestComboMarks:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
         marks = combo_specs(combos, default)
-        assert len(marks) == 1
-        mark = marks[0]
-        assert mark["glyph"] == "escape"
+        assert len(marks) == 2
+        mark = next(m for m in marks if m["glyph"] == "escape")
         assert mark["text"] == ""
         positions = ortho_positions()
         c = positions[grid_index(*find_key_position(default, "C"))]
         v = positions[grid_index(*find_key_position(default, "V"))]
         assert mark["x"] == (c[0] + v[0] + KW) / 2
         assert mark["y"] == (c[1] + v[1] + KH) / 2
+
+    def test_ret_combo_sits_between_m_and_comma(self) -> None:
+        layers, combos = parse_keymap(KEYMAP)
+        default = next(layer for layer in layers if layer.name == "default")
+        marks = combo_specs(combos, default)
+        mark = next(m for m in marks if m["glyph"] == "return")
+        assert mark["text"] == ""
+        positions = ortho_positions()
+        m = positions[grid_index(*find_key_position(default, "M"))]
+        comma = positions[grid_index(*find_key_position(default, ","))]
+        assert mark["x"] == (m[0] + comma[0] + KW) / 2
+        assert mark["y"] == (m[1] + comma[1] + KH) / 2
 
     def test_plain_label_combo_uses_text(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
@@ -455,12 +466,13 @@ class TestFontAndGlyphMetrics:
         layers, _ = parse_keymap(KEYMAP)
         svg = render_board(build_stacked_specs(layers), "stacked")
         assert 'class="oneshot symbol sym dejavu"' in svg
-        assert 'class="hold hold-preferred nav symbol dejavu"' in svg
+        assert 'class="oneshot symbol nav dejavu"' in svg
         shift_at = svg.index(">⇧</text>")
         assert "dejavu" not in svg[shift_at - 80 : shift_at]
         star_at = svg.index(">✦</text>")
         assert "dejavu" in svg[star_at - 80 : star_at]
         legend = render_legend()
+        assert 'class="hold hold-preferred nav symbol dejavu"' in legend
         assert 'class="legend-symbol dejavu"' in legend
         hyper_at = legend.index(">✦</text>")
         assert "legend-symbol dejavu" in legend[hyper_at - 80 : hyper_at]

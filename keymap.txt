@@ -11,7 +11,8 @@
 //
 // FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
 // (tap-preferred), which is the default and suits the home-row, or hp
-// (hold-preferred), which the thumb keys use. One-shot keys take no flavor.
+// (hold-preferred), for keys that should shift as soon as another key
+// goes down. One-shot keys take no flavor.
 // The behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
@@ -35,7 +36,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-          BKSP shft/shft lwr/lwr         RET/rse:hp  SPC      _
+          BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.
 layer rse: homerow
@@ -77,7 +78,10 @@ layer mou
 //
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word: `cv` does not occur, where a home-row pair like
-// S+T would have caught every `st`. Esc stays on the lwr layer as well, as a
-// way to reach it that does not depend on two keys landing together.
+// S+T would have caught every `st`. `m,` is adjacent on the right bottom row
+// and is a letter-then-punctuation pair, not a Colemak letter roll. Esc stays
+// on the lwr layer as well, as a way to reach it that does not depend on two
+// keys landing together.
 combos
   C  V -> ESC
+  M  , -> RET
