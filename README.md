@@ -37,7 +37,7 @@ layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
   Z/adj  X      C      V      B          K      M      ,      .      '/adj
-              ESC/mou:hp  _/shft  TAB/lwr:hp    RET  SPC/rse:hp  BKSP/hyp:hp
+          BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 ```
 
 A cell is either a label, or a `TAP/HOLD` pair for keys that do something else when held, such as
