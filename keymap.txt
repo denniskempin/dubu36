@@ -43,7 +43,7 @@ layer rse: homerow
   _      7      8      9      _          HOME   WORD_L  UP        WORD_R  END
   _      4      5      6      _          FWD    LEFT    DOWN      RIGHT   BCK
   0      1      2      3      _          TAB_L  HYP_[   HYP_\\    HYP_]   TAB_R
-                _      _      RET        _      _       _
+                ESC    _      RET        _      _       _
 
 // Symbols.
 layer lwr: homerow
@@ -79,10 +79,8 @@ layer mou
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word: `cv` does not occur, where a home-row pair like
 // S+T would have caught every `st`. `m,` is adjacent on the right bottom row
-// and is a letter-then-punctuation pair, not a Colemak letter roll. Esc stays
-// on the lwr layer as well, as a way to reach it that does not depend on two
-// keys landing together. Enter is also on rse at the inner left thumb, so
-// one-shot or held raise plus that key types it without a chord.
+// and is a letter-then-punctuation pair, not a Colemak letter roll. Esc and
+// Enter also sit on rse (outer and inner left thumbs), so one-shot or held
+// raise plus that key types them without a chord. Esc stays on lwr as well.
 combos
-  C  V -> ESC
   M  , -> RET

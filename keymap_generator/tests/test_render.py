@@ -160,8 +160,10 @@ class TestSpecsFromKeymap:
         assert specs[33]["base_glyph"] is None
         assert specs[33]["sym_glyph"] == "btab"
         assert specs[34]["sym_glyph"] == "tab"
-        # BKSP sits on the outer left thumb. Raise puts Enter on the inner left.
+        # BKSP sits on the outer left thumb. Raise puts Esc there and Enter
+        # on the inner left thumb.
         assert specs[30]["base_glyph"] == "backspace"
+        assert specs[30]["num_glyph"] == "escape"
         assert specs[32]["num_glyph"] == "return"
 
     def test_stacked_board_puts_raise_above_lower(self) -> None:
@@ -210,7 +212,8 @@ class TestSpecsFromKeymap:
         # Bottom row: previous/next app tab, not the Tab-key arrows.
         assert specs[25]["base_glyph"] == "app-tab-prev"
         assert specs[29]["base_glyph"] == "app-tab-next"
-        # Inner left thumb is Enter on raise.
+        # Left thumbs: Esc on the outer, Enter on the inner.
+        assert specs[30]["base_glyph"] == "escape"
         assert specs[32]["base_glyph"] == "return"
 
 
@@ -223,18 +226,12 @@ class TestComboMarks:
         assert grid_index(3, 0) == 30
         assert grid_index(3, 5) == 35
 
-    def test_esc_combo_sits_between_c_and_v(self) -> None:
+    def test_keymap_has_only_the_enter_combo(self) -> None:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
         marks = combo_specs(combos, default)
-        assert len(marks) == 2
-        mark = next(m for m in marks if m["glyph"] == "escape")
-        assert mark["text"] == ""
-        positions = ortho_positions()
-        c = positions[grid_index(*find_key_position(default, "C"))]
-        v = positions[grid_index(*find_key_position(default, "V"))]
-        assert mark["x"] == (c[0] + v[0] + KW) / 2
-        assert mark["y"] == (c[1] + v[1] + KH) / 2
+        assert len(marks) == 1
+        assert marks[0]["glyph"] == "return"
 
     def test_ret_combo_sits_between_m_and_comma(self) -> None:
         layers, combos = parse_keymap(KEYMAP)
