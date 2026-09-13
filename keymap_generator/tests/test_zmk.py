@@ -63,8 +63,7 @@ class TestZmkKeys:
             map_key_to_zmk(Key("A", "NOPE", None))
 
 
-# Enough distinct one character labels to give all 36 keys their own, so a
-# position can be traced back to exactly one key.
+# 36 distinct labels so a position maps back to exactly one key.
 GRID_LABELS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 
 
@@ -85,7 +84,7 @@ def binding_at(layer: Layer, position: int) -> str:
 
 class TestZmkKeyPositions:
     def test_main_rows_skip_the_padding(self) -> None:
-        # Each row of ten gains a &trans at both ends, so row N starts at 12N+1.
+        # Each row of ten gains &trans at both ends, so row N starts at 12N+1.
         assert zmk_key_position(0, 0) == 1
         assert zmk_key_position(0, 9) == 10
         assert zmk_key_position(1, 0) == 13
@@ -104,7 +103,7 @@ class TestZmkKeyPositions:
 
 
 class TestZmkCombos:
-    # Row 1 of GRID_LABELS is "KLMNOPQRST", so M and N sit in columns 2 and 3.
+    # Row 1 of GRID_LABELS is KLMNOPQRST, so M and N are columns 2 and 3.
     esc_combo = Combo("M", "N", "ESC")
 
     def test_no_combos_renders_nothing(self) -> None:

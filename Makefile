@@ -1,33 +1,29 @@
-# Zephyr 4.1 board targets: the revision picks the nice!nano v1 the halves use
-# (plain nice_nano now means v2), and the zmk variant carries ZMK's board
-# defaults. xiao_ble//zmk is the old seeeduino_xiao_ble.
+# HWMv2: the revision picks the nice!nano v1 (plain nice_nano is now v2);
+# //zmk carries ZMK's board defaults. xiao_ble//zmk was seeeduino_xiao_ble.
 NICE_NANO := nice_nano@1.0.0//zmk
 XIAO_BLE := xiao_ble//zmk
 
-# Isolated west workspace so the cloned Zephyr tree does not collide with
-# zephyr/module.yml at the repo root (same approach as ZMK's CI workflow).
+# Isolated west workspace: a Zephyr tree at zephyr/ would collide with
+# zephyr/module.yml at the repo root. See AGENTS.md.
 ZMK_WS ?= $(abspath .zmk-workspace)
 REPO_ROOT := $(abspath .)
 ZMK_CMAKE=-DZMK_CONFIG="$(ZMK_WS)/config" -DZMK_EXTRA_MODULES="$(REPO_ROOT)"
 
-# The dev container exports ZEPHYR_BASE for whichever tree it finds, and a stale
-# value fails deep inside CMake, so never inherit it: west finds the workspace
-# from the working directory during setup, and builds are pinned to its Zephyr.
+# Never inherit ZEPHYR_BASE: the container exports whichever tree it found,
+# and a stale value fails later inside CMake.
 WEST_SETUP := env -u ZEPHYR_BASE west
 WEST_BUILD := env ZEPHYR_BASE="$(ZMK_WS)/zephyr" west
 
 QMK_KEYMAP := dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c
 GENERATOR := keymap_generator/pyproject.toml keymap_generator/src/keymap_generator/*.py keymap.txt
 
-# The Prospector module's status screens. Which one a dongle build gets is fixed
-# at compile time by a Kconfig choice, so each screen needs its own firmware.
+# One firmware per Prospector status screen: the Kconfig choice is compile-time.
 DONGLE_SCREENS := classic radii field operator
 DONGLE_UF2 := $(DONGLE_SCREENS:%=build/dubu36t_dongle_%.uf2)
 
 all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 $(DONGLE_UF2) build/dubu36e_left.uf2 build/dubu36e_right.uf2
 
-# Everything the golden tests check against keymap.txt. Regenerate all of it
-# after editing keymap.txt, or the tests fail on whatever was left behind.
+# All golden-test outputs. Regenerating only some of them fails the test.
 generated: keymaps diagrams
 
 keymaps: config/shared_keymap.dtsi $(QMK_KEYMAP)
@@ -50,8 +46,7 @@ setup:
 clean:
 	rm -rf build
 
-# Also drops the west workspace, which make setup needs a couple of minutes to
-# clone again.
+# Also drops the west workspace; the next setup re-clones it.
 distclean: clean
 	rm -rf .zmk-workspace
 
@@ -63,7 +58,6 @@ $(QMK_KEYMAP): $(GENERATOR) keymap_generator/qmk_template.c
 	uv run --directory keymap_generator generate-keymap qmk > $@.tmp
 	mv $@.tmp $@
 
-# Sync user config into the west workspace before each build.
 define sync-config
 	mkdir -p "$(ZMK_WS)/config"
 	cp -a config/. "$(ZMK_WS)/config/"

@@ -10,22 +10,16 @@ from keymap_generator.codes import (
 )
 from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer, find_key_position
 
-# The three main rows of the grid, and how wide each becomes once
-# `generate_zmk_layer` has padded it out to the corne's matrix.
+# generate_zmk_layer pads each of the three main rows to the corne matrix.
 MAIN_ROW_SIZES = ROW_SIZES[:3]
 PADDED_ROW_WIDTH = MAIN_ROW_SIZES[0] + 2
 
-# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other,
-# and COMBO_LAYER keeps combos off every layer but the base one.
 COMBO_TIMEOUT_MS = 50
 COMBO_LAYER = 0
 
-# How long the board must have been idle before a combo may fire at all. Zero
-# lets one fire mid-word, which is only safe while the combos here sit on key
-# pairs ordinary typing never rolls across. A combo on the home row would need
-# this raised to stop `st` or `ne` triggering it, and would then pay for it by
-# refusing to fire straight after a burst of typing -- which is exactly when
-# Esc gets pressed. Omitted from the output when zero, as that is ZMK's default.
+# Idle-time guard before a combo may fire. 0 (ZMK's default, omitted from
+# output) is only safe on pairs typing never rolls across. Raise it for a
+# home-row pair; that then refuses to fire right after a burst of typing.
 COMBO_PRIOR_IDLE_MS = 0
 
 
@@ -64,8 +58,7 @@ def map_key_to_zmk(key: Key) -> str:
     if not key.tap:
         return map_key_label_to_zmk(key.hold)
 
-    # All defined in the ZMK template: mt/lt hold a modifier/layer and are named
-    # after their flavor; omt/olt hold it and one-shot it on tap.
+    # Behaviors in the ZMK template: mt/lt by flavor; omt/olt one-shot on tap.
     if key.hold in LAYER_LABELS:
         layer = LAYER_LABELS[key.hold]
         if key.is_oneshot:
@@ -85,12 +78,7 @@ def map_key_to_zmk(key: Key) -> str:
 
 
 def zmk_key_position(row: int, column: int) -> int:
-    """Index of a grid cell in the padded matrix ZMK counts key-positions in.
-
-    `generate_zmk_layer` pads each of the three main rows with a `&trans` on
-    both ends to fill the corne's wider matrix, so a row of ten keys takes up
-    twelve positions and the thumbs only start after all three.
-    """
+    """Grid cell as a ZMK key-position, after `&trans` padding on each main row."""
     if row < len(MAIN_ROW_SIZES):
         return row * PADDED_ROW_WIDTH + 1 + column
     return len(MAIN_ROW_SIZES) * PADDED_ROW_WIDTH + column
@@ -135,7 +123,6 @@ def generate_zmk_combos(combos: list[Combo], default_layer: Layer) -> str:
 def generate_zmk_layer(layer: Layer) -> str:
     rows: list[str] = []
     for row in layer.rows[:3]:
-        # Add padding since this is a 5 row layout with a 6 row corne firmware
         rows.append(
             "&trans " + " ".join(map_key_to_zmk(key) for key in row) + " &trans"
         )

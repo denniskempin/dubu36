@@ -20,7 +20,7 @@ from keymap_generator.parser import (
     unescape,
 )
 
-# Minimal six-layer keymap that satisfies LAYER_LABELS ordering.
+# Six layers in LAYER_LABELS order.
 LAYER_NAMES = ("default", "rse", "lwr", "hyp", "adj", "mou")
 
 
@@ -119,18 +119,10 @@ class TestParseKeymapHappyPath:
         assert [layer.name for layer in layers] == list(LAYER_NAMES)
         default = layers[0]
 
-        # Home-row modifiers come from the overlay.
         assert default.rows[1][0] == Key("A", "HYP", None)
         assert default.rows[1][3] == Key("T", "CMD", None)
-
-        # Explicit hold-tap with hold-preferred flavor.
         assert default.rows[3][0] == Key("ESC", "MOU", "hp")
-
-        # Hold-only shift on the thumb (`_/shft`).
         assert default.rows[3][1] == Key("", "SHFT", None)
-
-        # Overlay-inherited hold is not one-shot; Z/adj is an explicit layer
-        # hold-tap with a different tap label.
         assert default.rows[2][0] == Key("Z", "ADJ", None)
 
         assert combos == [Combo("Q", "W", "ESC")]
@@ -250,7 +242,7 @@ class TestParseErrors:
             parse_source(source)
 
     def test_wrong_layer_order(self) -> None:
-        # Swap rse and lwr so layer 1 is not named rse.
+        # Swap rse and lwr so layer 1 is not rse.
         source = (
             blank_layer("default")
             + blank_layer("lwr")
@@ -290,7 +282,7 @@ class TestFindKeyPosition:
             find_key_position(self.layer, "NOPE")
 
     def test_ambiguous_label(self) -> None:
-        # Blank cells share the empty tap label, so asking for one is a mistake.
+        # A duplicated tap label is a mistake; blank cells share "".
         duplicated = Layer("default", [[Key("Q", "", None), Key("Q", "", None)]])
         with pytest.raises(KeyError, match="in 2 places"):
             find_key_position(duplicated, "Q")

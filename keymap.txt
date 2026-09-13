@@ -1,37 +1,29 @@
-// Dubu36 keymap: the source of truth for the generated ZMK and QMK keymaps.
+// Source of truth for the generated ZMK and QMK keymaps.
 //
-// Every `overlay` and `layer` block is a grid of the 36 keys: three rows of ten
-// keys, then the six thumb keys. Each whitespace separated cell is one key:
+// Each overlay/layer is 36 keys: three rows of 10, then 6 thumbs. Cells:
 //
 //   LABEL             tap only
-//   TAP/HOLD          taps TAP, holds HOLD (a modifier or a layer)
-//   TAP/HOLD:FLAVOR   ... using an explicit hold-tap flavor
-//   LABEL/LABEL       one-shot modifier/layer on tap, momentary on hold
-//   _                 nothing: a blank key, or "no hold" when used as the hold
+//   TAP/HOLD          tap TAP, hold HOLD
+//   TAP/HOLD:FLAVOR   ...with an explicit hold-tap flavor
+//   LABEL/LABEL       one-shot on tap, momentary on hold
+//   _                 blank, or "no hold" on the hold side
 //
-// FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
-// (tap-preferred), which is the default and suits the home-row, or hp
-// (hold-preferred), for keys that should shift as soon as another key
-// goes down. One-shot keys take no flavor.
-// The behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
+// FLAVOR is tp (tap-preferred, default, home-row) or hp (hold-preferred,
+// thumbs). One-shot keys take none. Behaviors live in
+// keymap_generator/zmk_template.dtsi.
 //
-// A layer inherits the holds of every overlay listed after its name, unless the
-// cell defines its own hold. Use `LABEL/_` to drop an inherited hold.
-//
-// Labels that clash with the `/`, `:` or `_` syntax are escaped with a
-// backslash: `\/`, `\:`, `\_`, and `\\` for the backslash key itself.
+// A layer inherits holds from overlays listed after its name. LABEL/_ drops one.
+// Escape /, :, _ and \ in a label with a backslash.
 
-// Modifiers used primarily in shortcuts, mapped to the home-row. The modifiers
-// and layer shifts used in fluent writing live on the thumb keys instead, to
-// reduce issues with hold-tap timing.
+// Shortcut modifiers on the home row. Writing mods and layer shifts sit on
+// the thumbs, where hold-tap timing is less of a fight.
 overlay homerow
   _      _      _      _      _          _      _      _      _      _
   hyp    shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   hyp
   _      _      _      _      _          _      _      _      _      _
                 _      _      _          _      _      _
 
-// Colemak, with special characters remapped to prioritize commonly used
-// characters in day-to-day writing.
+// Colemak, with day-to-day punctuation remapped closer.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
@@ -66,22 +58,16 @@ layer adj
   _         _      _      _      _       _      _      _      _      _
                    _      _      _       _      _      _
 
-// Left hand only keyboard shortcuts, for use with a mouse in the right hand.
+// Left-hand shortcuts, for a mouse in the right hand.
 layer mou
   CMD_Q  CMD_W  _      _      _          _      _      _      _      _
   _      _      CMD_S  CMD_T  _          _      _      _      _      _
   CMD_Z  CMD_X  CMD_C  CMD_V  _          _      _      _      _      _
                 _      _      _          _      _      _
 
-// Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
-// the keys pressed together on the default layer.
-//
-// The pair has to be one that never gets typed back to back, or the chord
-// fires by accident mid-word: `cv` does not occur, where a home-row pair like
-// S+T would have caught every `st`. `m,` is adjacent on the right bottom row
-// and is a letter-then-punctuation pair, not a Colemak letter roll. Esc and
-// Enter also sit on rse (outer and inner left thumbs), so one-shot or held
-// raise plus that key types them without a chord. Esc stays on lwr as well.
+// KEY KEY -> RESULT, named by the labels those keys tap on the default layer.
+// The pair must never be typed back-to-back: `, .` and `X C` are middle/ring
+// pairs, not Colemak rolls. Esc/Enter also sit on rse (and Esc on lwr).
 combos
   , . -> RET
   X C -> ESC

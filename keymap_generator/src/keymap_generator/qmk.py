@@ -5,9 +5,8 @@ from __future__ import annotations
 from keymap_generator.codes import KEY_PRESS_CODES, LAYER_LABELS, SPECIAL_LABELS
 from keymap_generator.parser import Combo, Key, Layer, find_key_position
 
-# QMK sizes its combo table with the compile time COMBO_COUNT, so the generated
-# table always has this many entries and any spare slot is filled with a combo
-# that cannot fire. Must match COMBO_COUNT in dubu36-ergo/qmk/dubu36ergo/config.h.
+# Must match COMBO_COUNT in dubu36-ergo/qmk/dubu36ergo/config.h. Spare slots
+# are filled with a combo that cannot fire.
 COMBO_SLOTS = 5
 
 
@@ -44,8 +43,7 @@ def map_key_to_qmk(key: Key) -> str:
     if not key.tap:
         return map_key_label_to_qmk(key.hold)
 
-    # QMK has no per-key hold-tap flavors, so they are ignored here. OSM/OSL are
-    # one-shot on tap and a plain modifier or layer shift when held.
+    # QMK has no per-key flavors, so they are ignored. OSM/OSL one-shot on tap.
     if key.hold in LAYER_LABELS:
         if key.is_oneshot:
             return f"OSL({LAYER_LABELS[key.hold]})"
@@ -65,11 +63,8 @@ def map_key_to_qmk(key: Key) -> str:
 
 
 def generate_qmk_combo_trigger(combo: Combo | None, default_layer: Layer) -> str:
-    """The keys a combo waits for, as QMK matches them.
-
-    QMK compares a combo against the keycode the keymap holds, not the key press
-    it eventually produces, so a home-row trigger has to be named by its whole
-    mod-tap keycode. Naming it `KC_S` would leave the combo unable to ever fire.
+    """Trigger keycodes as QMK matches them: the `MT(...)` the keymap holds,
+    not the tap it eventually produces.
     """
     if not combo:
         return "KC_NO"
@@ -82,7 +77,7 @@ def generate_qmk_combo_trigger(combo: Combo | None, default_layer: Layer) -> str
 
 
 def generate_qmk_combos(combos: list[Combo], default_layer: Layer) -> str:
-    """Render the combo table, padded out to the slots COMBO_COUNT promises."""
+    """Combo table padded to `COMBO_SLOTS`."""
     slots = [combos[i] if i < len(combos) else None for i in range(COMBO_SLOTS)]
     triggers = "\n".join(
         f"const uint16_t PROGMEM combo{i}[] = "

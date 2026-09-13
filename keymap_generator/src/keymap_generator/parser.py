@@ -8,17 +8,17 @@ from typing import NamedTuple
 
 from keymap_generator.codes import FLAVORS, LAYER_LABELS
 
-# Number of keys in each row of the grid: three rows of ten, then the thumbs.
+# Three rows of ten, then the thumbs.
 ROW_SIZES: tuple[int, ...] = (10, 10, 10, 6)
 
-# Cell that holds no key, and no hold when used on the hold side of a cell.
+# Blank cell, or "no hold" on the hold side of a cell.
 BLANK = "_"
 
 COMMENT = "//"
 
 
 class Combo(NamedTuple):
-    """A chord: press `a` and `b` together to produce `result`."""
+    """Press `a` and `b` together to produce `result`."""
 
     a: str
     b: str
@@ -26,11 +26,10 @@ class Combo(NamedTuple):
 
 
 class Key(NamedTuple):
-    """A single key: what it does when tapped, and what it does when held.
+    """Tap and hold labels.
 
-    `hold` is `None` while a layer cell is still waiting for an overlay to
-    fill it in; after overlays are applied it is always a string (possibly
-    empty).
+    `hold` is `None` until overlays fill it in; afterwards it is always a
+    string, possibly empty.
     """
 
     tap: str
@@ -39,27 +38,19 @@ class Key(NamedTuple):
 
     @property
     def is_oneshot(self) -> bool:
-        """One-shot keys repeat their label, e.g. `shft/shft` or `rse/rse`.
-
-        A tap applies the modifier or layer to the next keypress; a hold is a
-        regular (momentary) modifier or layer shift.
-        """
+        """True when tap and hold repeat the same label (`shft/shft`)."""
         return bool(self.tap) and self.tap == self.hold
 
 
 class Layer(NamedTuple):
-    """A named layer, as rows of keys matching ROW_SIZES."""
+    """A named layer whose rows match `ROW_SIZES`."""
 
     name: str
     rows: list[list[Key]]
 
 
 class Block(NamedTuple):
-    """The header of the block currently being parsed.
-
-    `keyword` is one of `overlay`, `layer` or `combos`; `name` is empty for a
-    `combos` block; `overlays` lists the overlays a `layer` inherits holds from.
-    """
+    """Header of the block being parsed (`overlay`, `layer` or `combos`)."""
 
     keyword: str
     name: str
@@ -67,7 +58,7 @@ class Block(NamedTuple):
 
 
 class ParseError(Exception):
-    """A parse failure with a path and line number."""
+    """Parse failure with a path and line number."""
 
     def __init__(self, path: str | Path, line_number: int, message: str) -> None:
         super().__init__(f"{path}:{line_number}: {message}")
@@ -209,8 +200,7 @@ class KeymapParser:
             keys.append([])
             for x, (tap, hold, flavor) in enumerate(row):
                 if hold is None:
-                    # The cell inherits its hold from the overlays it covers,
-                    # with the last overlay to cover it taking precedence.
+                    # Last overlay to cover the cell wins.
                     for overlay in overlays:
                         _, covered, covered_flavor = self.overlays[overlay][y][x]
                         if covered:
@@ -230,7 +220,6 @@ class KeymapParser:
                 f"expected {ROW_SIZES[row_number]}"
             )
         if keyword == "overlay":
-            # Overlay cells only define the hold of the keys they cover.
             return [Key("", *self.parse_hold(cell)) for cell in cells]
         return [self.parse_key(cell) for cell in cells]
 
@@ -239,14 +228,10 @@ class KeymapParser:
         parts = split_unescaped(cell, "/")
         tap = parts[0]
         if len(parts) == 1:
-            # A cell without a hold of its own inherits the hold of an overlay,
-            # which `apply_overlays` fills in.
             return Key(parse_label(tap), None, None)
         hold = parts[1]
         key = Key(parse_label(tap), *self.parse_hold(hold))
         if key.flavor and (key.is_oneshot or not key.tap):
-            # One-shot keys always use the same tap-preferred hold-tap, and a
-            # hold-only key has no tap to distinguish, so a flavor is a mistake.
             raise self.error(f"{cell!r} is not a hold-tap, so it takes no flavor")
         return key
 
@@ -267,7 +252,7 @@ class KeymapParser:
         return Combo(*(parse_label(cell) for cell in [*cells[:2], cells[3]]))
 
     def check_layers(self) -> None:
-        """Layers are referenced by their position, so the order matters."""
+        """Reject a file whose layers are not in `LAYER_LABELS` order."""
         for name, index in LAYER_LABELS.items():
             if index >= len(self.layers) or self.layers[index].name.upper() != name:
                 raise self.error(

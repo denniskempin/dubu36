@@ -1,46 +1,30 @@
 # Agent Guide
 
-A personal 36-key keyboard layout. `keymap.txt` is the single source of truth; a small Python
-tool (`keymap_generator`) renders it into a ZMK keymap, a QMK keymap and a set of layout
-diagrams, all of which are committed.
+A personal 36-key keyboard layout. `keymap.txt` is the source of truth; `keymap_generator`
+(Python, uv) renders it into a ZMK keymap, a QMK keymap and layout diagrams, all committed. The
+travel board runs ZMK, dubu36-ergo runs wired QMK, which is why there are two keymaps.
 
-## Layout of the repo
+## Writing style
 
-| Path | What it is |
-| --- | --- |
-| `keymap.txt` | The layout: 36 keys per layer. Edit this, never the generated output. |
-| `keymap_generator/` | uv-managed Python package that renders `keymap.txt`. |
-| `config/` | ZMK user config: `west.yml` (tracks ZMK `main`, pins the Prospector module), `*.conf`, `*.keymap`. |
-| `config/shared_keymap.dtsi` | **Generated** ZMK keymap, included by both `.keymap` files. |
-| `dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c` | **Generated** QMK keymap. |
-| `diagrams/` | **Generated** SVG and PNG layout diagrams, embedded in the README. |
-| `boards/shields/dubu36e/` | ZMK shield definition for dubu36-ergo. |
-| `boards/shields/corne_dongle/` | ZMK shield for the Prospector as the dubu36-travel split central. |
-| `dubu36-ergo/qmk/` | QMK keyboard for dubu36-ergo, which currently runs wired QMK. |
-| `build.yaml` | Board/shield matrix for the ZMK GitHub Actions build. |
-| `dubu36-travel/case/`, `*.jpg` | Case models and photos. Binary, leave alone. |
+Keep docs and comments short, and write new ones that way. Document only what the code cannot
+show: constraints, gotchas, and the reason behind a choice that looks arbitrary. Do not restate
+what a file or function plainly does, recount history, or repeat what the config being described
+already says. Prefer a sentence to a paragraph, and deleting to rewording.
 
-`zephyr/`, `zmk/`, `modules/`, `tools/`, `.west/`, `.zmk-workspace/` and `build/` are west
-checkouts and build output, all gitignored. Only `zephyr/module.yml` is tracked, and it is what
-makes the repo root a Zephyr module.
-
-## Generated files must stay in sync
-
-`keymap_generator/tests/test_golden.py` asserts that the committed ZMK keymap, QMK keymap and
-`diagrams/*.svg` byte-match what the generator produces. After changing `keymap.txt`, a template
-or the generator, regenerate all three and commit them:
+## After editing `keymap.txt` or the generator
 
 ```sh
-make generated
+make generated   # == make keymaps + make diagrams
 ```
 
-That is `make keymaps` (both keymaps) plus `make diagrams`. Running only one of them leaves the
-other stale and the golden test red. Diagram PNGs are regenerated too but not compared, since
-their bytes depend on the cairo version.
+`tests/test_golden.py` byte-compares the committed ZMK keymap, QMK keymap and `diagrams/*.svg`
+against fresh output, so regenerating only some of them fails it. PNG bytes depend on the cairo
+version and are not compared.
 
 ## Checks
 
-`.github/workflows/python-ci.yml` runs exactly this, from `keymap_generator/`:
+From `keymap_generator/`, all five, before committing (seconds); the same list as
+`.github/workflows/python-ci.yml`:
 
 ```sh
 uv sync --locked --group diagrams
@@ -50,153 +34,85 @@ uv run ty check
 uv run pytest
 ```
 
-Run all five before committing. They take a couple of seconds. The `diagrams` group is not
-optional for the checks: without it `ty` cannot resolve the `cairosvg` import in `render.py`.
+`--group diagrams` is not optional: without it `ty` cannot resolve `cairosvg` in `render.py`.
+cairosvg also dlopens the system cairo library (`libcairo2` / Homebrew `cairo`), which the
+firmware image does not ship.
+
+Code conventions: Python 3.12, `from __future__ import annotations`, full type annotations,
+module and public-symbol docstrings, ruff (`E,F,I,UP,B,SIM`, 88 columns). Tests are pytest
+classes grouped by behaviour.
+
+## Paths worth knowing
+
+- Generated, never hand-edited: `config/shared_keymap.dtsi`,
+  `dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c`, `diagrams/`.
+- Gitignored west checkouts and output: `zephyr/`, `zmk/`, `modules/`, `tools/`, `.west/`,
+  `.zmk-workspace/`, `build/`. `zephyr/module.yml` is the exception: it is tracked, and it is
+  what makes the repo root a Zephyr module.
+- `dubu36-travel/case/` and `*.jpg` are binary; leave them alone.
+
+## keymap.txt
+
+Its header comment is the syntax reference. Layer order is load-bearing: `LAYER_LABELS` in
+`codes.py` maps names to indices, and `KeymapParser.check_layers` rejects a file whose layers
+are in another order.
+
+## Generator notes
+
+- A new label is usually one entry in `KEY_PRESS_CODES`, which both backends read. `CMD_*` and
+  `HYP_*` are handled structurally in `get_*_key_press_code` and need no entry.
+- Combos reach the two firmwares by different routes: ZMK addresses trigger keys by position, so
+  `zmk_key_position` maps a grid cell through the `&trans` padding; QMK matches on keycode, so a
+  home-row trigger must be named by its whole `MT(...)` keycode.
+- What keeps a combo from firing while typing is the key pair, not timing. `,+.` (Enter) and
+  `X+C` (Esc) are middle/ring pairs that Colemak never rolls, unlike home-row `st` or `ne`.
+  `COMBO_PRIOR_IDLE_MS` in `zmk.py` is 0, and omitted from the output, because requiring idle
+  time would stop Enter firing right after a burst of typing. Raise its value only if a
+  riskier pair is ever added.
+- `COMBO_SLOTS` in `qmk.py` and `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h` are
+  hard-coded and must agree. ZMK emits only the combos that exist.
+- `generate_zmk_layer` pads the three main rows with `&trans` on both ends to map the 36-key grid
+  onto the corne's 42-key matrix.
+- Deliberate gaps: `qmk_template.c` has only `#LAYER_0#`..`#LAYER_2#`, so QMK gets three layers;
+  combos render only on the stacked reference card; `render.py` skips `hyp` and `adj`
+  (`EXCLUDED_LAYERS`); `require-prior-idle-ms` and `quick-tap-ms` are ZMK-only, so a QMK thumb
+  layer is easier to shift by accident.
 
 ## Firmware builds
 
-CI builds firmware via ZMK's reusable `build-user-config.yml` workflow, driven by `build.yaml`.
-Locally, `.cursor/install.sh` already ran `make setup`, so `make all` produces the nine `.uf2`
-files in `build/` (`dubu36t_{left,right,left_peripheral}`,
-`dubu36t_dongle_{classic,radii,field,operator}`, `dubu36e_{left,right}`). A warm tree takes
-under a minute per target. On a fresh checkout `make setup` comes first and needs about a minute and a
-half to clone Zephyr and its modules. A change to `config/west.yml` also needs `make setup`
-re-run; a plain `make all` will not pull a new west project.
-
-`make clean` drops `build/`; `make distclean` also drops `.zmk-workspace/`, which means the next
-`make setup` re-clones.
-
-The toolchain comes from `.devcontainer/Dockerfile`, whose tag has to match the Zephyr version
-ZMK is on: `zmkfirmware/zmk-dev-arm:4.1` ships the Zephyr SDK 0.16.9 that Zephyr 4.1 wants, and
-the older `:3.5` image cannot build it. CI gets the matching image from ZMK's reusable workflow
-instead, so the two are bumped separately. The Dockerfile also installs `libcairo2`: `cairosvg`
-dlopens it when `make diagrams` (and therefore `make all`) writes PNGs, and the firmware image
-does not ship that library.
+`make all` produces nine `.uf2` in `build/`, under a minute per target on a warm tree. `make
+setup` (already run by `.cursor/install.sh`) clones the west workspace in about 90 seconds;
+re-run it after changing `config/west.yml`, as `make all` will not pull a new west project.
+`make distclean` also drops `.zmk-workspace/`, so the next `setup` re-clones.
 
 `make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2` are
-not part of `all`. Flash them on every device before switching the travel board between
-standalone and dongle firmware.
+outside `all`. Flash them on every device before switching the travel board between standalone
+and dongle firmware.
 
-`config/west.yml` pins the Prospector module (`carrefinho/prospector-zmk-module`) to commit
-`ed98221`, the tip of its `feat/new-status-screens` branch. That branch is the only one built
-against Zephyr 4.1; the module's `main` still targets ZMK v0.3. It also replaces the single
-status screen with four and sets the display thread's stack size itself, so this repo no longer
-has to. The dongle build is `xiao_ble//zmk` with shields `corne_dongle prospector_adapter`. The
-shield name `corne_dongle` is load-bearing: ZMK's config lookup strips `_dongle` and then picks
-up `config/corne.keymap` and `config/corne.conf`. `config/corne_dongle.conf` is merged after
-those and overrides `CONFIG_ZMK_SLEEP` for the USB-powered dongle.
-
-`PROSPECTOR_STATUS_SCREEN_LAYOUT` is a Kconfig choice, so a dongle can only show the one screen
-it was flashed with. All four are therefore built, by passing
-`-DCONFIG_PROSPECTOR_STATUS_SCREEN_<SCREEN>=y` per target: `DONGLE_SCREENS` in the Makefile
-drives a pattern rule, and `build.yaml` has one entry per screen. Nothing selects a screen in
-`config/corne_dongle.conf`; a value there would apply to every build and defeat this.
-
-### Board targets
-
-ZMK `main` runs Zephyr 4.1, whose HWMv2 board names carry qualifiers, so every build target
-gained a suffix and `nice_nano` alone now means the v2:
-
-| Was | Is |
-| --- | --- |
-| `nice_nano` | `nice_nano@1.0.0//zmk` |
-| `seeeduino_xiao_ble` | `xiao_ble//zmk` |
-
-The Makefile keeps these in `NICE_NANO` and `XIAO_BLE`. `build.yaml` spells them out and then
-sets `artifact-name` on every entry, because the default name is derived from the board target
-and would otherwise carry the qualifiers into each firmware file name. ZMK's reusable workflow
-fails the build outright if a board that has a `zmk` variant is requested without it.
-
-Shields need no HWMv2 changes, which is why `boards/shields/` came through the migration
-untouched.
+- Board targets carry Zephyr HWMv2 qualifiers: `nice_nano@1.0.0//zmk` (plain `nice_nano` now
+  means v2) and `xiao_ble//zmk`. ZMK's reusable workflow fails outright if a board with a `zmk`
+  variant is requested without it. `build.yaml` sets `artifact-name` per entry, because the
+  default is derived from the board target and would put the qualifiers in firmware file names.
+- `.devcontainer/Dockerfile`'s tag must match the Zephyr version ZMK is on (`zmk-dev-arm:4.1`
+  ships the SDK Zephyr 4.1 wants). CI takes its image from ZMK's workflow, so the two are bumped
+  separately. The image also installs `libcairo2`; see Checks.
+- `config/west.yml` pins the Prospector module to `ed98221` on `feat/new-status-screens`, the
+  only branch built against Zephyr 4.1. That branch also sets the display thread's stack size,
+  so this repo does not.
+- `boards/shields/corne_dongle/` is the Prospector acting as the dubu36-travel split central.
+  The name is load-bearing: ZMK's config lookup strips `_dongle` and picks up
+  `config/corne.keymap` and `config/corne.conf`; `config/corne_dongle.conf` merges after them
+  and overrides `CONFIG_ZMK_SLEEP` for the USB-powered dongle.
+- `PROSPECTOR_STATUS_SCREEN_LAYOUT` is a Kconfig choice, fixed at flash time, so all four screens
+  get their own firmware (`DONGLE_SCREENS` drives a Makefile pattern rule, `build.yaml` has one
+  entry each). Never select a screen in `config/corne_dongle.conf`; it would apply to every build.
 
 ### Why the west workspace is off to the side
 
-`make setup` builds the workspace in `.zmk-workspace/` rather than initializing west at the repo
-root, and this is load-bearing. The repo root is passed as `ZMK_EXTRA_MODULES` so ZMK picks up
-`boards/shields/dubu36e/` and `boards/shields/corne_dongle/`, which works because
-`zephyr/module.yml` makes the root a Zephyr module with `board_root: .`. If a real Zephyr tree
-is *also* checked out at `zephyr/`, Zephyr resolves that module's Kconfig to the tree's own
-`Kconfig` and the build dies with `recursive 'source' of 'Kconfig.zephyr' detected`.
-
-Two guards exist because of this, and both are deliberate:
-
-- `make setup` refuses to run when `.west/` exists at the repo root, and prints the commands to
-  clear it. An earlier `.cursor/install.sh` created one, so old VM snapshots may still have it;
-  the current bootstrap clears it for you.
-- The Makefile never inherits `ZEPHYR_BASE`. `make setup` unsets it and lets west find the
-  workspace from the working directory; the build recipes pin it to `$(ZMK_WS)/zephyr`. A stale
-  value fails much later, inside CMake, as `include could not find requested file: zephyr_default`.
-
-## Editing `keymap.txt`
-
-The header comment in `keymap.txt` is the reference; the short version:
-
-- Four rows per block: 10, 10, 10, 6 (thumbs). Whitespace-separated cells, `_` for nothing.
-- A cell is `TAP`, `TAP/HOLD`, or `TAP/HOLD:FLAVOR`. `LABEL/LABEL` is one-shot on tap and momentary on hold.
-- `FLAVOR` is `tp` (tap-preferred, default, home-row) or `hp` (hold-preferred, thumbs).
-- `overlay` blocks supply holds; a `layer` lists the overlays it inherits after a `:`.
-- Escape `/`, `:`, `_`, `\` in labels with a backslash.
-
-Layer order is load-bearing: `LAYER_LABELS` in `codes.py` maps names to indices, and
-`KeymapParser.check_layers` rejects a `keymap.txt` whose layers are not in that order.
-
-Editing this file changes all three generated artifacts, so follow it with `make generated`.
-
-## Working on the generator
-
-`keymap_generator/src/keymap_generator/`:
-
-- `parser.py` — `keymap.txt` -> `Layer`/`Key`/`Combo`. Raises `ParseError` with path and line.
-- `codes.py` — the label vocabulary: `KEY_PRESS_CODES` (a label's ZMK and QMK key code),
-  `SPECIAL_LABELS` (non-keypress bindings such as Bluetooth), `LAYER_LABELS`, `FLAVORS`.
-- `zmk.py` / `qmk.py` — `Key` -> a binding string for one firmware.
-- `generate.py` — substitutes `#LAYER_N#` and the single `#COMBOS#` block in a template. The
-  combo generator is handed the default layer, since a combo names its trigger keys by the
-  label they tap there.
-- `render.py` — the SVG diagram renderer, plus `render_png` which lazily imports `cairosvg` from
-  the `diagrams` group. Legend positions and glyphs are documented in the README. Combos appear
-  only on the stacked reference card, as a rounded box on the seam between the two trigger keys.
-- `cli.py` — `generate-keymap {zmk,qmk,diagrams}`. The keymaps print to stdout; `diagrams` writes
-  files to `--out-dir`. Defaults resolve `keymap.txt` and the templates relative to the package,
-  so it works from any cwd.
-
-Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends read it. The
-`CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
-`CMD_<anything mappable>` works without a table entry.
-
-Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
-`zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
-against the keycode the keymap holds, so a trigger on the home row has to be named by its whole
-`MT(...)` keycode rather than the plain key press it produces.
-
-What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
-pair the typist never rolls across cannot be triggered by accident. `M+,` (Enter) was picked
-over the more comfortable home-row pairs for that reason, since Colemak puts its most
-frequent rolls there and `st` or `ne` would fire a combo constantly. `M+,` is adjacent on
-the right bottom row and is letter-then-punctuation, not a letter roll. Esc and Enter also
-sit on the raise layer at the outer and inner left thumbs, so a one-shot or held `rse`
-reaches them without a chord. Esc stays on lwr as well.
-`COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed; it is 0
-here, and left out of the generated keymap, because requiring idle time would stop Enter
-firing right after a burst of typing.
-
-Known gaps, deliberate:
-
-- `qmk_template.c` only has `#LAYER_0#`..`#LAYER_2#`, so QMK gets the first three layers.
-- Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
-  `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
-  emits the combos that exist.
-- Combos render on the stacked reference card only, as a rounded box on the seam between the
-  two trigger keys. Per-layer boards omit them.
-- The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
-  QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
-  so a thumb layer is easier to shift by accident there.
-- `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
-  36-key grid onto the corne's 42-key matrix.
-- `render.py` skips the `hyp` and `adj` layers (`EXCLUDED_LAYERS`), so `diagrams/` has no board
-  for them.
-
-Code conventions: Python 3.12, `from __future__ import annotations`, full type annotations,
-module and public-symbol docstrings, ruff (`E,F,I,UP,B,SIM`, 88 columns) as the formatter and
-linter. Tests are plain pytest classes grouped by behaviour under `keymap_generator/tests/`.
+`make setup` builds it in `.zmk-workspace/` rather than at the repo root, because the root is
+passed as `ZMK_EXTRA_MODULES` so ZMK finds `boards/shields/`. If a real Zephyr tree is also
+checked out at `zephyr/`, Zephyr resolves the root module's Kconfig to that tree's own and the
+build dies with `recursive 'source' of 'Kconfig.zephyr' detected`. Two guards follow from this:
+`make setup` refuses to run while `.west/` exists at the root, and the Makefile never inherits
+`ZEPHYR_BASE` (a stale value fails much later, inside CMake, as `include could not find
+requested file: zephyr_default`).

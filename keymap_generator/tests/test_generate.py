@@ -29,5 +29,5 @@ def test_generate_keymap_substitutes_placeholders(tmp_path: Path) -> None:
     assert result.startswith(HEADER)
     assert "L0=DEFAULT" in result
     assert "L1=RSE" in result
-    # The combo generator is handed the default layer to resolve labels against.
+    # Combos resolve trigger labels against the default layer.
     assert "C=default:Q+W=ESC" in result
