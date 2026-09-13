@@ -138,8 +138,14 @@
         compatible = "zmk,combos";
         combo_0 {
             timeout-ms = <50>;
-            key-positions = <31 32>;
+            key-positions = <32 33>;
             bindings = <&kp RET>;
+            layers = <0>;
+        };
+        combo_1 {
+            timeout-ms = <50>;
+            key-positions = <26 27>;
+            bindings = <&kp ESC>;
             layers = <0>;
         };
     };

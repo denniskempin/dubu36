@@ -83,4 +83,5 @@ layer mou
 // Enter also sit on rse (outer and inner left thumbs), so one-shot or held
 // raise plus that key types them without a chord. Esc stays on lwr as well.
 combos
-  M  , -> RET
+  , . -> RET
+  X C -> ESC
