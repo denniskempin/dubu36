@@ -23,15 +23,15 @@ KC_NO, KC_NO, KC_NO, S(KC_TAB), KC_TAB, KC_NO
 };
 
 
-const uint16_t PROGMEM combo0[] = {KC_M, KC_COMMA, COMBO_END};
-const uint16_t PROGMEM combo1[] = {KC_NO, COMBO_END};
+const uint16_t PROGMEM combo0[] = {KC_COMMA, KC_DOT, COMBO_END};
+const uint16_t PROGMEM combo1[] = {KC_X, KC_C, COMBO_END};
 const uint16_t PROGMEM combo2[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo3[] = {KC_NO, COMBO_END};
 const uint16_t PROGMEM combo4[] = {KC_NO, COMBO_END};
 
 combo_t key_combos[COMBO_COUNT] = {
 	COMBO(combo0, KC_ENT),
-	COMBO(combo1, KC_NO),
+	COMBO(combo1, KC_ESC),
 	COMBO(combo2, KC_NO),
 	COMBO(combo3, KC_NO),
 	COMBO(combo4, KC_NO)

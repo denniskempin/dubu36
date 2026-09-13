@@ -66,7 +66,8 @@ layer mou
                 _      _      _          _      _      _
 
 // KEY KEY -> RESULT, named by the labels those keys tap on the default layer.
-// The pair must never be typed back-to-back: M+, is letter-then-punctuation
-// and not a Colemak roll. Esc/Enter also sit on rse (and Esc on lwr).
+// The pair must never be typed back-to-back: `, .` and `X C` are middle/ring
+// pairs, not Colemak rolls. Esc/Enter also sit on rse (and Esc on lwr).
 combos
-  M  , -> RET
+  , . -> RET
+  X C -> ESC

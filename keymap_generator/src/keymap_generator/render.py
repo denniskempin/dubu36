@@ -822,6 +822,11 @@ def render_png(svg_path: Path) -> Path:
         raise RuntimeError(
             "cairosvg is required to render PNGs (uv sync --group diagrams)"
         ) from exc
+    except OSError as exc:
+        raise RuntimeError(
+            "cairosvg needs the system cairo library "
+            "(apt install libcairo2 / brew install cairo)"
+        ) from exc
 
     png_path = svg_path.with_suffix(".png")
     cairosvg.svg2png(url=str(svg_path), write_to=str(png_path), scale=PNG_SCALE)

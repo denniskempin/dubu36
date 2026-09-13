@@ -17,4 +17,10 @@ unset ZEPHYR_BASE
 make setup
 
 # diagrams group: make diagrams (via make all) and ty's cairosvg import.
+# cairosvg also dlopens libcairo, which the firmware image does not ship.
+if ! ldconfig -p 2>/dev/null | grep -q 'libcairo.so.2'; then
+  apt-get update
+  apt-get install -y --no-install-recommends libcairo2
+  rm -rf /var/lib/apt/lists/*
+fi
 uv sync --directory keymap_generator --locked --group diagrams

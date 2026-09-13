@@ -35,6 +35,8 @@ uv run pytest
 ```
 
 `--group diagrams` is not optional: without it `ty` cannot resolve `cairosvg` in `render.py`.
+cairosvg also dlopens the system cairo library (`libcairo2` / Homebrew `cairo`), which the
+firmware image does not ship.
 
 Code conventions: Python 3.12, `from __future__ import annotations`, full type annotations,
 module and public-symbol docstrings, ruff (`E,F,I,UP,B,SIM`, 88 columns). Tests are pytest
@@ -62,11 +64,11 @@ are in another order.
 - Combos reach the two firmwares by different routes: ZMK addresses trigger keys by position, so
   `zmk_key_position` maps a grid cell through the `&trans` padding; QMK matches on keycode, so a
   home-row trigger must be named by its whole `MT(...)` keycode.
-- What keeps a combo from firing while typing is the key pair, not timing. `M+,` (Enter) is
-  adjacent, letter-then-punctuation, and never rolled in Colemak, unlike home-row pairs such as
-  `st` or `ne`. `COMBO_PRIOR_IDLE_MS` in `zmk.py` is 0, and omitted from the output, because
-  requiring idle time would stop Enter firing right after a burst of typing. Raise its value
-  only if a riskier pair is ever added.
+- What keeps a combo from firing while typing is the key pair, not timing. `,+.` (Enter) and
+  `X+C` (Esc) are middle/ring pairs that Colemak never rolls, unlike home-row `st` or `ne`.
+  `COMBO_PRIOR_IDLE_MS` in `zmk.py` is 0, and omitted from the output, because requiring idle
+  time would stop Enter firing right after a burst of typing. Raise its value only if a
+  riskier pair is ever added.
 - `COMBO_SLOTS` in `qmk.py` and `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h` are
   hard-coded and must agree. ZMK emits only the combos that exist.
 - `generate_zmk_layer` pads the three main rows with `&trans` on both ends to map the 36-key grid
@@ -93,7 +95,7 @@ and dongle firmware.
   default is derived from the board target and would put the qualifiers in firmware file names.
 - `.devcontainer/Dockerfile`'s tag must match the Zephyr version ZMK is on (`zmk-dev-arm:4.1`
   ships the SDK Zephyr 4.1 wants). CI takes its image from ZMK's workflow, so the two are bumped
-  separately.
+  separately. The image also installs `libcairo2`; see Checks.
 - `config/west.yml` pins the Prospector module to `ed98221` on `feat/new-status-screens`, the
   only branch built against Zephyr 4.1. That branch also sets the display thread's stack size,
   so this repo does not.

@@ -219,24 +219,35 @@ class TestComboMarks:
         assert grid_index(3, 0) == 30
         assert grid_index(3, 5) == 35
 
-    def test_keymap_has_only_the_enter_combo(self) -> None:
+    def test_keymap_has_enter_and_esc_combos(self) -> None:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
         marks = combo_specs(combos, default)
-        assert len(marks) == 1
-        assert marks[0]["glyph"] == "return"
+        assert {m["glyph"] for m in marks} == {"return", "escape"}
 
-    def test_ret_combo_sits_between_m_and_comma(self) -> None:
+    def test_ret_combo_sits_between_comma_and_dot(self) -> None:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
         marks = combo_specs(combos, default)
         mark = next(m for m in marks if m["glyph"] == "return")
         assert mark["text"] == ""
         positions = ortho_positions()
-        m = positions[grid_index(*find_key_position(default, "M"))]
         comma = positions[grid_index(*find_key_position(default, ","))]
-        assert mark["x"] == (m[0] + comma[0] + KW) / 2
-        assert mark["y"] == (m[1] + comma[1] + KH) / 2
+        dot = positions[grid_index(*find_key_position(default, "."))]
+        assert mark["x"] == (comma[0] + dot[0] + KW) / 2
+        assert mark["y"] == (comma[1] + dot[1] + KH) / 2
+
+    def test_esc_combo_sits_between_x_and_c(self) -> None:
+        layers, combos = parse_keymap(KEYMAP)
+        default = next(layer for layer in layers if layer.name == "default")
+        marks = combo_specs(combos, default)
+        mark = next(m for m in marks if m["glyph"] == "escape")
+        assert mark["text"] == ""
+        positions = ortho_positions()
+        x = positions[grid_index(*find_key_position(default, "X"))]
+        c = positions[grid_index(*find_key_position(default, "C"))]
+        assert mark["x"] == (x[0] + c[0] + KW) / 2
+        assert mark["y"] == (x[1] + c[1] + KH) / 2
 
     def test_plain_label_combo_uses_text(self) -> None:
         layers, _ = parse_keymap(KEYMAP)

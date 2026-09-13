@@ -19,5 +19,7 @@ uv run ty check
 ```
 
 `--group diagrams` is required: cairosvg for PNG export, and `ty` to resolve
-that import. After editing the layout, regenerate all outputs together with
-`make generated` from the repo root; `tests/test_golden.py` compares them.
+that import. cairosvg also needs the system cairo library (`libcairo2` on
+Debian/Ubuntu, `cairo` on Homebrew). After editing the layout, regenerate all
+outputs together with `make generated` from the repo root;
+`tests/test_golden.py` compares them.
