@@ -1,44 +1,15 @@
 """Render keymap.txt to Selenium-style SVG (and PNG) diagrams.
 
-Per-key legend layout (Selenium-style corners, raise on top / lower below):
-  Top-left     base layer tap (grey)
-  Bottom-left  hold binding (grey by default, boxed)
-  Top-right    number/nav layer (rse) — orange
-  Bottom-right symbol layer (lwr) — purple
+Per-key corners: TL base (grey), BL hold (boxed), TR rse/nav (orange),
+BR lwr/symbols (purple). Hold boxes: tp outline, hp solid, one-shot a
+left-half bar. Layer holds (lwr/rse) take that layer's color; everything
+else stays grey. hyp and adj get no board. Combos appear only on the
+stacked reference, as a badge on the seam of the two trigger keys.
 
-Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
-  tp (tap-preferred)  — outline box in the bottom-left quadrant
-  hp (hold-preferred) — solid box in the bottom-left quadrant
-  oneshot             — solid bar covering the full left half (TL+BL):
-                        one-shot modifier/layer on tap, momentary on hold
-
-Hold labels/boxes are grey by default. A hold binding that itself switches
-to the symbol (lwr) or number/nav (rse) layer is colored like that layer
-instead, so layer-change labels always read as purple/orange. Layer
-holds use Unicode ⇊ / ⇈; modifiers use ⇧ ⌘ ⌥ ⌃; hyper is ✦ (U+2726).
-Adjust is a Bluetooth rune path — Unicode has no Bluetooth character.
-
-The hyp and adj layers are excluded from diagram generation (their
-mod-tap holds still render elsewhere, just in the default grey).
-
-Combos render on the stacked reference card only: a small rounded box
-sits on the seam between the two trigger keys and shows the result,
-using the same glyphs as taps. Per-layer boards omit them.
-
-Well-known taps render as icons instead of text — see TAP_GLYPHS /
-GLYPH_PATHS. Holds use a Unicode character when one exists
-(HOLD_DISPLAY) and a stroke path only when it does not (Bluetooth).
-`render_legend` draws those icons, the corner and hold-flavor keycaps,
-and a combo badge into diagrams/legend.svg.
-
-Icon vocabulary (one motif per action, so arrows are not reused):
-  Cursor LEFT/RIGHT/UP/DOWN  — single shafted arrow
-  TAB / SHFT_TAB             — stacked double arrows to a bar (↹-style Tab)
-  HOME / END                 — text lines with a bar at the start vs end
-  WORD_L / WORD_R            — cursor arrow skipping a word-box
-  TAB_L / TAB_R              — folder-tab, ear on the selected end
-  FWD / BCK                  — circular history arrow
-  RET, BKSP, ESC, SPC        — standard keycap pictograms
+Unicode for holds when one exists (`HOLD_DISPLAY`); a stroke path only
+for Bluetooth. `TAP_GLYPHS` / `GLYPH_PATHS` replace well-known taps with
+icons — one motif per action, so arrows are not reused. `render_legend`
+draws the corners, flavors, combo badge and icon set.
 """
 
 from __future__ import annotations
@@ -58,19 +29,15 @@ from keymap_generator.parser import (
 DEFAULT_KEYMAP = Path("keymap.txt")
 DEFAULT_OUT = Path("diagrams")
 
-# PNG raster scale relative to the SVG's native (CSS-pixel) size — 3x gives
-# crisp previews on retina displays without huge file sizes.
 PNG_SCALE = 3.0
 
-# Physical key size (Selenium uses 60×56.67).
+# Selenium key size.
 KW = 60.0
 KH = 56.67
 PAD = 1.0
 RADIUS = 4.0
 SPLIT_GAP = 30.0
 
-# Combo marks sit on the seam between the two trigger keys. The box is
-# a compact keycap (same corner radius) so it reads as part of the board.
 COMBO_W = 20.0
 COMBO_H = 19.0
 
@@ -78,13 +45,10 @@ STACK_BASE = "default"
 STACK_SYM = "lwr"
 STACK_NUM = "rse"
 
-# Layers excluded from diagram generation (still usable as hold targets
-# elsewhere, but they don't get their own reference/layer boards).
+# No board of their own; their holds still render on other layers.
 EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
 
-# Hold labels shown in the bottom-left quadrant. Prefer a Unicode
-# character when one exists; HOLD_GLYPHS is only for marks with no
-# character (today: Bluetooth).
+# Unicode hold marks. HOLD_GLYPHS is only for marks with no character.
 HOLD_DISPLAY = {
     "SHFT": "⇧",  # U+21E7 UPWARDS WHITE ARROW
     "CMD": "⌘",  # U+2318 PLACE OF INTEREST SIGN
@@ -96,19 +60,13 @@ HOLD_DISPLAY = {
     "MOU": "mou",
 }
 
-# Hold-box / hold-label accent. Only holds that themselves switch to the
-# symbol (lwr) or number/nav (rse) layer borrow that layer's color, so the
-# diagram legend stays visually tied to the two colored quadrants. Every
-# other hold (plain modifiers, hyp, adj, mou, …) falls back to the neutral
-# grey used for the base layer legend.
+# Only lwr/rse holds take a layer color; every other hold stays grey.
 HOLD_ACCENT = {
     "LWR": "sym",
     "RSE": "nav",
 }
 DEFAULT_HOLD_ACCENT = "mod"
 
-# Tap labels that get replaced with an icon (see GLYPH_PATHS) instead of
-# text, wherever they appear (base/sym/num quadrants, any layer board).
 TAP_GLYPHS = {
     "TAB": "tab",
     "SHFT_TAB": "btab",
@@ -131,22 +89,17 @@ TAP_GLYPHS = {
     "TAB_R": "app-tab-next",
 }
 
-# Stroke-path holds: only when Unicode has no character for the mark.
 HOLD_GLYPHS = {
     "ADJ": "bluetooth",
 }
 
-# A few labels that read better as glyphs/symbols than as their raw codes.
 TAP_DISPLAY = {
     "PIPE": "|",
     "UML": "uml",
     **{name: char for name, char in HOLD_DISPLAY.items() if name != "MOU"},
 }
 
-# Icon-legend entries: one or more glyphs sharing a label, in display
-# order. Directional pairs (and the four arrows) share a label. Every
-# GLYPH_PATHS key must appear here so a new icon cannot silently skip the
-# README legend.
+# Every GLYPH_PATHS key must appear here so a new icon cannot skip the legend.
 GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("escape",), "escape"),
     (("tab", "btab"), "tab"),
@@ -162,7 +115,6 @@ GLYPH_LEGEND: tuple[tuple[tuple[str, ...], str], ...] = (
     (("bluetooth",), "bluetooth"),
 )
 
-# Unicode hold symbols drawn as text in the icon legend.
 TEXT_LEGEND: tuple[tuple[str, str], ...] = (
     ("⇧", "shift"),
     ("⌃", "control"),
@@ -173,12 +125,10 @@ TEXT_LEGEND: tuple[tuple[str, str], ...] = (
     ("⇈", "raise"),
 )
 
-# Inter has ⇧ ⌘ ⌥ ⌃ but not these. cairosvg selects only the first
-# font-family, so they must set .dejavu; browsers still walk the stack.
+# Inter lacks these. cairosvg uses only the first font-family, so they
+# must set .dejavu; browsers still walk the stack.
 DEJAVU_FALLBACK_CHARS = frozenset("✦⇊⇈")
 
-# Text sizes (px) used both as CSS font-size and to scale stroke glyphs
-# so a 48-unit drawing's 0.75em inset matches Inter's cap-height.
 FONT_SIZE_BASE = 16.0
 FONT_SIZE_HOLD_SYMBOL = 14.0
 FONT_SIZE_ONESHOT_SYMBOL = 16.0
@@ -186,59 +136,44 @@ FONT_SIZE_SYM = 13.0
 FONT_SIZE_NUM = 13.0
 FONT_SIZE_COMBO = 9.0
 
-# Design space for GLYPH_PATHS. Centre is (24, 24); drawings inset by 6
-# units (0.75em) so they sit on Inter's cap-height at FONT_SIZE_BASE.
+# GLYPH_PATHS design space: centre (24, 24), inset 6 units (0.75em).
 GLYPH_EM = 48.0
 GLYPH_SCALE = FONT_SIZE_BASE / GLYPH_EM
 
-# Legend layout. Width matches the reference board. Icons sit on a
-# column grid so rows share x origins instead of packing to ragged
-# label widths.
 LEGEND_WIDTH = 650.0
 LEGEND_ICON_COLS = 4
 LEGEND_GLYPH_STEP = 22.0
 LEGEND_ICON_ROW_H = 44.0
 
-# Paths are drawn in a 48×48 em square centred on (24, 24). glyph_defs
-# scales that em to FONT_SIZE_BASE and recentres on the origin; other
-# slots scale from there so overlay/hold/combo icons match their text.
-# Stroke-only: closed shapes read as outlines.
+# 48×48 em, centre (24, 24). Stroke-only so closed shapes read as outlines.
 GLYPH_PATHS = {
     "backspace": "M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z",
-    # The backspace box's own point already reads as one chevron; add a
-    # second, matching chevron just outside it to turn that into a double
-    # chevron (delete "further back") while keeping the X for "delete".
+    # Extra chevron outside the backspace box: "delete further back".
     "delete-word": ("M22,19l10,10 M22,29l10-10 M6,24l10,13h26v-26h-26z M6,17l-6,7,6,7"),
     "return": "M42,13V27H6 m8-8l-8,8l8,8",
     "space": "M42,24V32H6V24",
     "escape": "M24,24l-18-18 m0,10v-10h10 M24,6A18,18,0,1,1,6,24",
-    # Single shafted arrows: the only "move one unit" cursor keys.
+    # Only these four are "move one unit" arrows.
     "up": "M24,42v-36 m-8,6l8-8l8,8",
     "down": "M24,6v36 m-8,-6l8,8l8-8",
     "left": "M42,24h-36 m6-8l-8,8l8,8",
     "right": "M6,24h36 m-6-8l8,8l-8,8",
-    # Keyboard Tab: stacked double arrows into a stop, the ↹ pictogram
-    # split by direction so TAB and SHFT_TAB stay distinguishable.
+    # ↹ split by direction so TAB and SHFT_TAB stay distinct.
     "tab": "M6,12H32m-5-6l7,6l-7,6 M6,36H32m-5-6l7,6l-7,6 M42,8v32",
     "btab": "M42,12H16m5-6l-7,6l7,6 M42,36H16m5-6l-7,6l7,6 M6,8v32",
-    # Start vs end of a line: a full-height bar on that edge, plus two
-    # text lines. The bar side is obvious at diagram size; two lines stop
-    # this from reading as an arrow-to-bar.
+    # Bar on that edge plus two text lines, not an arrow-to-bar.
     "home": "M8,10v28 M8,16h32 M8,32h20",
     "end": "M40,10v28 M8,16h32 M20,32h20",
-    # Skip a word: the cursor arrow plus a word-box, so it is "move, but
-    # by a word" rather than another arrow family.
+    # Cursor plus a word-box, not another arrow family.
     "word-left": "M22,24h-16m6-8l-8,8l8,8 M26,17h16v14h-16z",
     "word-right": "M6,17h16v14h-16z M26,24h16m-6-8l8,8l-8,8",
-    # 3/4 circular arrow: browser/editor history. Distinct from Return's
-    # inverted-L and from the straight cursor arrows.
+    # 3/4 circular: history, distinct from Return and the cursor arrows.
     "hist-back": "M36,32A14,14 0 1 0 24,12m8-8l-8,8l8,8",
     "hist-fwd": "M12,32A14,14 0 1 1 24,12m-8-8l8,8l-8,8",
-    # Folder-tab silhouette; the ear sits on the selected end so previous
-    # vs next app-tab cannot be read as a signal-strength meter.
+    # Folder-tab; ear on the selected end so it is not a signal-strength meter.
     "app-tab-prev": "M6,10h18v10h18v20H6z",
     "app-tab-next": "M6,20h18v-10h18v30H6z",
-    # Bluetooth rune (Hagall + Bjarkan). Unicode has no Bluetooth character.
+    # Hagall + Bjarkan; Unicode has no Bluetooth character.
     "bluetooth": "M12,16 L36,32 L24,40 L24,8 L36,16 L12,32",
 }
 
@@ -262,11 +197,7 @@ def use_glyph(
     *,
     font_size: float = FONT_SIZE_BASE,
 ) -> str:
-    """Place a stroke glyph, scaled to the matching text size.
-
-    Path defs are already sized to FONT_SIZE_BASE. Smaller slots wrap the
-    <use> in a scale group so the icon's em matches that slot's font-size.
-    """
+    """Place a stroke glyph. Smaller slots wrap `<use>` in a scale group."""
     href = f'href="#glyph_{name}"'
     cls = f'class="glyph {class_name}"'
     if font_size == FONT_SIZE_BASE:
@@ -279,18 +210,14 @@ def use_glyph(
 
 
 def tap_display(label: str) -> tuple[str, str | None]:
-    """Return (text, glyph): glyph is set (and text cleared) for known icons."""
+    """`(text, glyph)`; glyph is set (and text cleared) for known icons."""
     if label in TAP_GLYPHS:
         return "", TAP_GLYPHS[label]
     return TAP_DISPLAY.get(label, label), None
 
 
 def hold_display(label: str) -> tuple[str, str | None]:
-    """Return (text, glyph) for a hold label.
-
-    Uses a Unicode character when one exists (HOLD_DISPLAY) and a stroke
-    path only when it does not (HOLD_GLYPHS, today Bluetooth).
-    """
+    """`(text, glyph)` for a hold: Unicode if one exists, else a stroke path."""
     if not label:
         return "", None
     if label in HOLD_GLYPHS:
@@ -307,7 +234,6 @@ def hold_flavor(key: Key) -> str | None:
         return "oneshot"
     if key.flavor == "hp":
         return "hold-preferred"
-    # Explicit tp, or an inherited/default hold with no flavor → outline box.
     return "tap-preferred"
 
 
@@ -349,13 +275,7 @@ def board_size(columns: int = 5, thumbs: int = 3) -> tuple[float, float]:
 
 
 def hold_box_rect() -> tuple[float, float, float, float]:
-    """Return (x, y, w, h) for the bottom-left hold badge.
-
-    The box stays flush with the keycap's bottom-left padding. Top and
-    right are pulled in so the hold mark at the BL legend anchor
-    (KW*0.25, KH*0.80) is the centre, instead of sitting low in a
-    full-quadrant box.
-    """
+    """`(x, y, w, h)` for the BL hold badge, centred on `(KW*0.25, KH*0.80)`."""
     ikh = KH - 2 * PAD
     cx = KW * 0.25
     cy = KH * 0.80
@@ -367,11 +287,7 @@ def hold_box_rect() -> tuple[float, float, float, float]:
 
 
 def build_stacked_specs(layers: list[Layer]) -> list[dict]:
-    """Project semantic layers into per-key visual specs for the reference card.
-
-    Every key uses the same corners:
-      TL base (default), BL hold, TR numbers/nav (rse), BR symbols (lwr).
-    """
+    """Per-key specs for the stacked reference: TL base, BL hold, TR rse, BR lwr."""
     by_name = layers_by_name(layers)
     base = flatten_layer(by_name[STACK_BASE])
     sym = flatten_layer(by_name[STACK_SYM]) if STACK_SYM in by_name else []
@@ -408,11 +324,7 @@ def combo_specs(
     columns: int = 5,
     thumbs: int = 3,
 ) -> list[dict]:
-    """Place each combo at the midpoint of its two trigger keys.
-
-    Combos name those keys by the label they tap on the default layer, the
-    same way the firmware generators resolve them.
-    """
+    """Place each combo at the midpoint of its two trigger keys."""
     positions = ortho_positions(columns, thumbs)
     marks: list[dict] = []
     for combo in combos:
@@ -431,7 +343,7 @@ def combo_specs(
 
 
 def layer_specs(layer: Layer) -> list[dict]:
-    """Per-layer view: that layer's tap at TL, hold at BL (same anchors)."""
+    """Per-layer view: tap at TL, hold at BL."""
     specs: list[dict] = []
     for key in flatten_layer(layer):
         hold = key.hold or ""
@@ -455,8 +367,7 @@ def layer_specs(layer: Layer) -> list[dict]:
 
 def svg_style(*, combos: bool = False) -> str:
     style = """
-    /* Inter for letters. cairosvg uses only the first family, so marks
-       Inter lacks (✦ ⇊ ⇈) set .dejavu; browsers still walk the stack. */
+    /* cairosvg uses only the first family; ✦ ⇊ ⇈ set .dejavu. */
     svg.keymap { background: #1e1e2e;
                  font-family: Inter, "DejaVu Sans", "Segoe UI Symbol",
                               "Apple Symbols", sans-serif; }
@@ -562,13 +473,7 @@ def glyph_defs() -> str:
 
 
 def draw_key(x: float, y: float, spec: dict) -> str:
-    """Draw one key with fixed legend anchors on every key.
-
-    Top-left      base
-    Bottom-left   hold (outline / solid / one-shot left bar)
-    Top-right     number / nav (rse)
-    Bottom-right  symbol (lwr)
-    """
+    """One key: TL base, BL hold, TR rse, BR lwr."""
     ikw = KW - 2 * PAD
     ikh = KH - 2 * PAD
     parts = [f'<g transform="translate({x:.2f},{y:.2f})">']
@@ -600,8 +505,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
     y_top = KH * 0.32
     y_bot = KH * 0.80
 
-    # One-shot keys use the left-bar label alone: tap and hold are the same
-    # label, so drawing base as well would duplicate it.
+    # One-shot: left-bar label only; tap and hold are the same mark.
     if flavor != "oneshot":
         base = spec.get("base") or ""
         if base:
@@ -624,7 +528,6 @@ def draw_key(x: float, y: float, spec: dict) -> str:
                 )
             )
         elif len(hold_label) <= 1:
-            # A single Unicode symbol sits upright in the left bar.
             parts.append(
                 f'<text class="oneshot symbol {accent}{dejavu_class(hold_label)}" '
                 f'x="{PAD + ikw / 4}" y="{KH / 2}">'
@@ -674,7 +577,6 @@ def draw_key(x: float, y: float, spec: dict) -> str:
                 f"{esc(hold_label)}</text>"
             )
 
-    # Raise (rse / numbers) sits top-right; lower (lwr / symbols) bottom-right.
     num = spec.get("num") or ""
     if num:
         parts.append(
@@ -756,7 +658,7 @@ def render_legend() -> str:
     key_y = 28.0
     caption_y = key_y + KH + 14.0
     caption_sub_y = key_y + KH + 26.0
-    # Left pane holds the annotated corner key; right pane the three flavors.
+    # Left: annotated corner key. Right: the three flavors.
     corner_x = 92.0
     flavor_start = 318.0
     flavor_end = 548.0
@@ -836,7 +738,7 @@ def render_legend() -> str:
             f"{esc(subtitle)}</text>"
         )
 
-    # Same placement as combo_specs: badge sits on the seam of two adjacent keys.
+    # Badge on the seam of two adjacent keys, same as combo_specs.
     parts.append(f'<text class="section" x="0" y="{combo_title_y:.1f}">Combos</text>')
     parts.append(draw_key(combo_x, combo_key_y, key_spec(base="C")))
     parts.append(draw_key(combo_x + KW, combo_key_y, key_spec(base="V")))
@@ -882,7 +784,7 @@ def render_legend() -> str:
             f"{esc(label)}</text>"
         )
 
-    # Unicode hold marks continue on the same column grid.
+    # Unicode hold marks continue on the same grid.
     glyph_count = len(GLYPH_LEGEND)
     for i, (char, label) in enumerate(TEXT_LEGEND):
         col = (glyph_count + i) % LEGEND_ICON_COLS
@@ -899,7 +801,7 @@ def render_legend() -> str:
             f"{esc(label)}</text>"
         )
 
-    # viewBox origin is ( -10, -24 ); height includes that top inset.
+    # viewBox origin is (-10, -24); height includes that top inset.
     height = round(icon_y + n_icon_rows * LEGEND_ICON_ROW_H + 16.0 + 24.0, 2)
     header = [
         f'<svg xmlns="http://www.w3.org/2000/svg" class="keymap" '

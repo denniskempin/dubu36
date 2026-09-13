@@ -12,7 +12,6 @@ class FirmwareCodes(NamedTuple):
     qmk: str
 
 
-# Maps labels from the keymap grid to the key press code in each firmware.
 KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     # Special Keys
     "ESC": FirmwareCodes("ESC", "KC_ESC"),
@@ -83,8 +82,7 @@ KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     "ALT": FirmwareCodes("LALT", "KC_LALT"),
 }
 
-# Maps labels from the keymap grid to a ready-made binding in each firmware,
-# used for keys that are not a simple key press (e.g. Bluetooth controls).
+# Bindings that are not a simple key press (Bluetooth, etc.).
 SPECIAL_LABELS: dict[str, FirmwareCodes] = {
     # Bluetooth
     "BT_CLR": FirmwareCodes("&bt BT_CLR", "KC_NO"),
@@ -94,7 +92,6 @@ SPECIAL_LABELS: dict[str, FirmwareCodes] = {
     "BT_3": FirmwareCodes("&bt BT_SEL 3", "KC_NO"),
 }
 
-# Maps labels from the keymap grid to layer numbers.
 LAYER_LABELS: dict[str, int] = {
     "RSE": 1,
     "LWR": 2,
@@ -103,9 +100,7 @@ LAYER_LABELS: dict[str, int] = {
     "MOU": 5,
 }
 
-# Hold-tap flavors a key may ask for, matching the suffix of the behaviors in
-# `zmk_template.dtsi`. Keys default to 'tap preferred', which suits the
-# home-row; the thumb keys ask for 'hold preferred'. One-shot keys have a
-# single behavior and take no flavor.
+# Suffixes of the hold-tap behaviors in zmk_template.dtsi. Default is tp
+# (home-row); thumbs ask for hp. One-shot keys take no flavor.
 FLAVORS: tuple[str, ...] = ("tp", "hp")
 DEFAULT_FLAVOR: str = "tp"

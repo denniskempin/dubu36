@@ -26,8 +26,7 @@ def _generate(
     template: Path, layer_fn: LayerGenerator, combos_fn: CombosGenerator
 ) -> str:
     layers, combos = parse_keymap(REPO_ROOT / "keymap.txt")
-    # The CLI prints the result, which appends a trailing newline matching
-    # the committed keymap files produced by the Makefile.
+    # CLI print() adds the trailing newline the Makefile-committed files have.
     return generate_keymap(layers, combos, template, layer_fn, combos_fn) + "\n"
 
 
@@ -48,8 +47,7 @@ def test_qmk_output_matches_committed_keymap() -> None:
 
 
 def test_diagram_svgs_match_committed_diagrams(tmp_path: Path) -> None:
-    # Only the SVGs are compared: PNG bytes depend on the cairo version, so
-    # they would make this test fail for reasons unrelated to the keymap.
+    # PNG bytes depend on the cairo version and are not compared.
     written = render_diagrams(REPO_ROOT / "keymap.txt", tmp_path, no_png=True)
     assert written, "the renderer wrote no diagrams"
     for generated in written:

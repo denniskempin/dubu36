@@ -1,6 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" class="keymap" width="650" height="507" viewBox="-10 -24 650.0 507.34">
-<style>/* Inter for letters. cairosvg uses only the first family, so marks
-       Inter lacks (✦ ⇊ ⇈) set .dejavu; browsers still walk the stack. */
+<style>/* cairosvg uses only the first family; ✦ ⇊ ⇈ set .dejavu. */
     svg.keymap { background: #1e1e2e;
                  font-family: Inter, "DejaVu Sans", "Segoe UI Symbol",
                               "Apple Symbols", sans-serif; }

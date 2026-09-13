@@ -77,8 +77,7 @@ class TestQmkCombos:
         assert "COMBO(combo0, KC_ESC)" in rendered
 
     def test_home_row_trigger_keeps_the_mod_tap(self) -> None:
-        # QMK matches the keycode the keymap holds, so a bare KC_S would never
-        # match the MT() the home row actually contains.
+        # QMK matches the keycode the keymap holds, not the tap it produces.
         rendered = generate_qmk_combos([Combo("S", "T", "ESC")], combo_layer())
         assert (
             "combo0[] = {MT(MOD_LALT,KC_S), MT(MOD_LGUI,KC_T), COMBO_END};" in rendered

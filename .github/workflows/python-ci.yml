@@ -6,8 +6,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-# A branch with an open PR would otherwise get a push run and a pull_request run
-# of every workflow for each commit.
+# Without this, a branch with an open PR runs the workflow twice per commit.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -25,8 +24,7 @@ jobs:
 
       - name: Sync dependencies
         working-directory: keymap_generator
-        # The diagrams group is needed for `ty` to resolve the cairosvg import
-        # in render.py, not just for rendering PNGs.
+        # diagrams group: ty cannot resolve cairosvg without it.
         run: uv sync --locked --group diagrams
 
       - name: Ruff check

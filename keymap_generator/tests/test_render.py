@@ -135,20 +135,18 @@ class TestSpecsFromKeymap:
     def test_layer_change_holds_use_layer_accent(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Left inner thumb lwr/lwr and right inner thumb rse/rse (both one-shot).
+        # Inner thumbs: lwr/lwr and rse/rse (one-shot). Space has no hold.
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
         assert specs[32]["flavor"] == "oneshot"
         assert specs[33]["hold"] == "RSE"
         assert specs[33]["accent"] == "nav"
         assert specs[33]["flavor"] == "oneshot"
-        # Space carries no hold at all, so nothing can shift under it.
         assert not specs[34]["hold"]
 
     def test_plain_modifier_hold_stays_grey(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Home-row R/shft.
         assert specs[11]["hold"] == "SHFT"
         assert specs[11]["accent"] == "mod"
         assert specs[11]["flavor"] == "tap-preferred"
@@ -156,12 +154,10 @@ class TestSpecsFromKeymap:
     def test_symbol_overlay_includes_tab_glyphs(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         specs = build_stacked_specs(layers)
-        # Right thumbs: rse/rse with SHFT_TAB on lwr, SPC with TAB on lwr.
+        # Right thumbs: SHFT_TAB / TAB on lwr. Outer-left BKSP: Esc / Enter on rse.
         assert specs[33]["base_glyph"] is None
         assert specs[33]["sym_glyph"] == "btab"
         assert specs[34]["sym_glyph"] == "tab"
-        # BKSP sits on the outer left thumb. Raise puts Esc there and Enter
-        # on the inner left thumb.
         assert specs[30]["base_glyph"] == "backspace"
         assert specs[30]["num_glyph"] == "escape"
         assert specs[32]["num_glyph"] == "return"
@@ -169,7 +165,7 @@ class TestSpecsFromKeymap:
     def test_stacked_board_puts_raise_above_lower(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
         svg = render_board(build_stacked_specs(layers), "stacked")
-        # W: rse 7 top-right (num), lwr ^ bottom-right (sym).
+        # W: rse 7 (TR), lwr ^ (BR).
         w_key = svg.split('<g transform="translate(60.00,0.00)">', 1)[1]
         w_key = w_key.split("</g>", 1)[0]
         assert 'class="num" x="45.0" y="18.1344">7</text>' in w_key
@@ -199,20 +195,17 @@ class TestSpecsFromKeymap:
         layers, _ = parse_keymap(KEYMAP)
         rse = next(layer for layer in layers if layer.name == "rse")
         specs = layer_specs(rse)
-        # Right half top row: HOME WORD_L UP WORD_R END
         assert specs[5]["base_glyph"] == "home"
         assert specs[6]["base_glyph"] == "word-left"
         assert specs[7]["base_glyph"] == "up"
         assert specs[8]["base_glyph"] == "word-right"
         assert specs[9]["base_glyph"] == "end"
-        # Middle row nav: FWD LEFT DOWN RIGHT BCK
         assert specs[15]["base_glyph"] == "hist-fwd"
         assert specs[16]["base_glyph"] == "left"
         assert specs[19]["base_glyph"] == "hist-back"
-        # Bottom row: previous/next app tab, not the Tab-key arrows.
+        # TAB_L / TAB_R, not the Tab-key arrows.
         assert specs[25]["base_glyph"] == "app-tab-prev"
         assert specs[29]["base_glyph"] == "app-tab-next"
-        # Left thumbs: Esc on the outer, Enter on the inner.
         assert specs[30]["base_glyph"] == "escape"
         assert specs[32]["base_glyph"] == "return"
 
@@ -275,7 +268,7 @@ class TestRenderOutput:
         assert 'class="hold-box tap-preferred mod"' in svg
         assert 'class="hold-box hold-preferred mod"' in svg
         assert 'class="hold-box oneshot nav"' in svg
-        # One-shot keys draw only the left-bar label, not a duplicate base.
+        # One-shot: left-bar label only, no duplicate base.
         assert svg.count(">RSE<") == 0
         assert 'class="oneshot symbol nav dejavu"' in svg
         assert ">⇈</text>" in svg
@@ -290,7 +283,7 @@ class TestRenderOutput:
         assert hy + hh / 2 == KH * 0.80
         ikh = KH - 2 * PAD
         assert hy + hh == PAD + ikh
-        # Smaller than the full bottom-left quadrant on the top and right.
+        # Inset on the top and right of the BL quadrant.
         assert hw < (KW - 2 * PAD) / 2
         assert hh < ikh / 2
         svg = render_legend()
@@ -352,7 +345,7 @@ class TestRenderOutput:
             "legend.svg",
             "reference.svg",
         ]
-        # Excluded layers must not appear as diagram files.
+        # hyp and adj get no board.
         assert frozenset({"hyp", "adj"}) == EXCLUDED_LAYERS
         assert not (tmp_path / "layer-hyp.svg").exists()
         assert not (tmp_path / "layer-adj.svg").exists()
@@ -374,7 +367,7 @@ class TestRenderLegend:
         assert names == set(GLYPH_PATHS)
         assert set(TAP_GLYPHS.values()) <= set(GLYPH_PATHS)
         assert set(HOLD_GLYPHS.values()) <= set(GLYPH_PATHS)
-        # Unicode marks stay text; do not grow a custom path for them.
+        # Unicode marks stay text.
         assert not {
             "cmd",
             "lwr",
@@ -394,7 +387,7 @@ class TestRenderLegend:
         assert ">hold</text>" in svg
         assert ">numbers / nav (rse)</text>" in svg
         assert ">symbols (lwr)</text>" in svg
-        # Raise sits top-right, lower bottom-right.
+        # Raise above lower.
         rse_at = svg.index(">numbers / nav (rse)</text>")
         lwr_at = svg.index(">symbols (lwr)</text>")
         assert 'y="46.1">numbers / nav (rse)</text>' in svg
@@ -412,7 +405,7 @@ class TestRenderLegend:
             for name in names:
                 assert f'href="#glyph_{name}"' in svg
             assert f">{label}</text>" in svg
-        # Directional pairs share a label instead of listing each way.
+        # Directional pairs share a label.
         assert ">arrows</text>" in svg
         assert ">home / end</text>" in svg
         assert ">word</text>" in svg

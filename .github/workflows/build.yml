@@ -4,8 +4,7 @@ on:
   pull_request:
   workflow_dispatch:
 
-# A branch with an open PR would otherwise get a push run and a pull_request run
-# of every workflow for each commit.
+# Without this, a branch with an open PR runs the workflow twice per commit.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
