@@ -20,5 +20,11 @@ unset ZEPHYR_BASE
 make setup
 
 # The diagrams group is needed by `make diagrams`, which `make all` depends on,
-# and by `ty` to resolve the cairosvg import in render.py.
+# and by `ty` to resolve the cairosvg import in render.py. cairosvg also needs
+# the system cairo library, which the firmware image does not ship.
+if ! ldconfig -p 2>/dev/null | grep -q 'libcairo.so.2'; then
+  apt-get update
+  apt-get install -y --no-install-recommends libcairo2
+  rm -rf /var/lib/apt/lists/*
+fi
 uv sync --directory keymap_generator --locked --group diagrams

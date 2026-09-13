@@ -69,7 +69,9 @@ re-run; a plain `make all` will not pull a new west project.
 The toolchain comes from `.devcontainer/Dockerfile`, whose tag has to match the Zephyr version
 ZMK is on: `zmkfirmware/zmk-dev-arm:4.1` ships the Zephyr SDK 0.16.9 that Zephyr 4.1 wants, and
 the older `:3.5` image cannot build it. CI gets the matching image from ZMK's reusable workflow
-instead, so the two are bumped separately.
+instead, so the two are bumped separately. The Dockerfile also installs `libcairo2`: `cairosvg`
+dlopens it when `make diagrams` (and therefore `make all`) writes PNGs, and the firmware image
+does not ship that library.
 
 `make build/settings_reset_nice_nano.uf2` and `make build/settings_reset_xiao_ble.uf2` are
 not part of `all`. Flash them on every device before switching the travel board between

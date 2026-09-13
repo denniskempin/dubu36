@@ -20,7 +20,8 @@ uv run ty check                  # type check
 ```
 
 The `diagrams` group provides cairosvg, which the renderer needs for PNG export
-and `ty` needs to resolve the import.
+and `ty` needs to resolve the import. cairosvg also needs the system cairo
+library (`libcairo2` on Debian/Ubuntu, `cairo` on Homebrew).
 
 `tests/test_golden.py` compares the committed keymaps and diagram SVGs against a
 fresh render, so regenerate all of them together with `make generated` from the
