@@ -226,24 +226,28 @@ class TestComboMarks:
         assert grid_index(3, 0) == 30
         assert grid_index(3, 5) == 35
 
-    def test_keymap_has_only_the_enter_combo(self) -> None:
+    def test_keymap_combos_are_enter_and_escape(self) -> None:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
         marks = combo_specs(combos, default)
-        assert len(marks) == 1
-        assert marks[0]["glyph"] == "return"
+        assert [mark["glyph"] for mark in marks] == ["return", "escape"]
+        assert all(mark["text"] == "" for mark in marks)
 
-    def test_ret_combo_sits_between_m_and_comma(self) -> None:
+    def test_ret_combo_sits_between_comma_and_period(self) -> None:
+        self._assert_combo_midpoint("return", ",", ".")
+
+    def test_esc_combo_sits_between_x_and_c(self) -> None:
+        self._assert_combo_midpoint("escape", "X", "C")
+
+    def _assert_combo_midpoint(self, glyph: str, label_a: str, label_b: str) -> None:
         layers, combos = parse_keymap(KEYMAP)
         default = next(layer for layer in layers if layer.name == "default")
-        marks = combo_specs(combos, default)
-        mark = next(m for m in marks if m["glyph"] == "return")
-        assert mark["text"] == ""
+        mark = next(m for m in combo_specs(combos, default) if m["glyph"] == glyph)
         positions = ortho_positions()
-        m = positions[grid_index(*find_key_position(default, "M"))]
-        comma = positions[grid_index(*find_key_position(default, ","))]
-        assert mark["x"] == (m[0] + comma[0] + KW) / 2
-        assert mark["y"] == (m[1] + comma[1] + KH) / 2
+        a = positions[grid_index(*find_key_position(default, label_a))]
+        b = positions[grid_index(*find_key_position(default, label_b))]
+        assert mark["x"] == (a[0] + b[0] + KW) / 2
+        assert mark["y"] == (a[1] + b[1] + KH) / 2
 
     def test_plain_label_combo_uses_text(self) -> None:
         layers, _ = parse_keymap(KEYMAP)
