@@ -21,10 +21,12 @@ GENERATOR := keymap_generator/pyproject.toml keymap_generator/src/keymap_generat
 
 # The Prospector module's status screens. Which one a dongle build gets is fixed
 # at compile time by a Kconfig choice, so each screen needs its own firmware.
+# Both keyboards share one dongle; each gets its own four images.
 DONGLE_SCREENS := classic radii field operator
-DONGLE_UF2 := $(DONGLE_SCREENS:%=build/dubu36t_dongle_%.uf2)
+TRAVEL_DONGLE_UF2 := $(DONGLE_SCREENS:%=build/dubu36t_dongle_%.uf2)
+ERGO_DONGLE_UF2 := $(DONGLE_SCREENS:%=build/dubu36e_dongle_%.uf2)
 
-all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 $(DONGLE_UF2) build/dubu36e_left.uf2 build/dubu36e_right.uf2
+all: keymaps diagrams build/dubu36t_left.uf2 build/dubu36t_right.uf2 build/dubu36t_left_peripheral.uf2 $(TRAVEL_DONGLE_UF2) build/dubu36e_left.uf2 build/dubu36e_right.uf2 build/dubu36e_left_peripheral.uf2 $(ERGO_DONGLE_UF2)
 
 # Everything the golden tests check against keymap.txt. Regenerate all of it
 # after editing keymap.txt, or the tests fail on whatever was left behind.
@@ -96,6 +98,12 @@ build/dubu36t_dongle_%.uf2: boards/shields/corne_dongle/* config/* config/shared
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
+build/dubu36e_dongle_%.uf2: boards/shields/dubu36e/* config/* config/shared_keymap.dtsi
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(XIAO_BLE) -- -DSHIELD="dubu36e_dongle prospector_adapter" -DCONFIG_PROSPECTOR_STATUS_SCREEN_$$(echo $* | tr 'a-z' 'A-Z')=y $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
 build/settings_reset_nice_nano.uf2:
 	$(sync-config)
 	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(NICE_NANO) -- -DSHIELD=settings_reset $(ZMK_CMAKE) || exit
@@ -117,6 +125,12 @@ build/dubu36e_left.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi confi
 build/dubu36e_right.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi config/dubu36e.keymap config/dubu36e.conf
 	$(sync-config)
 	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(NICE_NANO) -- -DSHIELD=dubu36e_right $(ZMK_CMAKE) || exit
+	mkdir -p build
+	cp $(basename $@)/zephyr/zmk.uf2 $@
+
+build/dubu36e_left_peripheral.uf2: boards/shields/dubu36e/* config/shared_keymap.dtsi config/dubu36e.keymap config/dubu36e.conf
+	$(sync-config)
+	cd "$(ZMK_WS)" && $(WEST_BUILD) build -d "$(REPO_ROOT)/$(basename $@)" -s zmk/app -b $(NICE_NANO) -- -DSHIELD=dubu36e_left -DCONFIG_ZMK_SPLIT=y -DCONFIG_ZMK_SPLIT_ROLE_CENTRAL=n $(ZMK_CMAKE) || exit
 	mkdir -p build
 	cp $(basename $@)/zephyr/zmk.uf2 $@
 
