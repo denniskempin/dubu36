@@ -1,0 +1,21 @@
+/*
+ * Copyright (c) 2026 Dennis Kempin
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "dubu36e-layouts.dtsi"
+
+/ {
+    chosen {
+        zmk,kscan = &mock_kscan;
+        zmk,physical-layout = &dubu36e_layout;
+    };
+
+    mock_kscan: mock_kscan_0 {
+        compatible = "zmk,kscan-mock";
+        columns = <0>;
+        rows = <0>;
+        events = <0>;
+    };
+};

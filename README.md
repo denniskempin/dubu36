@@ -113,3 +113,9 @@ Specs:
 - Wired using Bastardkb's [flexible PCB](https://bastardkb.com/product/flexible-pcb/)
 - Zeal [Zilent V2](https://zealpc.net/products/zilent?variant=5894832324646) switches
 - [YMDK DSA Profile 9009](https://kbdfans.com/products/dsa-9009-keycaps-set) Keycaps
+
+The wireless build uses the same Prospector dongle as the travel board. Standalone firmware is
+`build/dubu36e_{left,right}.uf2`, with the left half as the split central. For the dongle, flash
+`build/dubu36e_left_peripheral.uf2` on the left half (the right half stays
+`build/dubu36e_right.uf2`) and one of `build/dubu36e_dongle_{classic,radii,field,operator}.uf2`
+on the dongle. The screens, pairing order, and settings reset are the same as for the travel board.
