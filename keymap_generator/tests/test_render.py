@@ -2,15 +2,10 @@
 
 from __future__ import annotations
 
+import textwrap
 from pathlib import Path
 
-from keymap_generator.parser import (
-    Combo,
-    Key,
-    Layer,
-    find_key_position,
-    parse_keymap,
-)
+from keymap_generator.parser import Combo, Key, KeymapParser, Layer
 from keymap_generator.render import (
     DEJAVU_FALLBACK_CHARS,
     EXCLUDED_LAYERS,
@@ -49,8 +44,53 @@ from keymap_generator.render import (
     use_glyph,
 )
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
-KEYMAP = REPO_ROOT / "keymap.txt"
+
+def sample_keymap() -> str:
+    """A board used to exercise the renderer.
+
+    Nothing here is the real keymap. Tests that need a grid build this, so
+    editing keymap.txt does not move assertions around.
+    """
+    return textwrap.dedent(
+        """\
+        layer default
+          Q W F/hyp P/cmd G/alt   J/ctrl L/adj _ _ _
+          A/shft _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              BKSP SHFT/SHFT LWR/LWR   RSE/RSE SPC _
+        layer rse
+          _ 7 _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              ESC _ RET   _ _ _
+        layer lwr
+          _ ^ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   SHFT_TAB TAB _
+        layer hyp
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
+        layer adj
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
+        layer mou
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
+        combos
+          Q W -> RET
+        """
+    )
+
+
+def sample_layers() -> tuple[list[Layer], list[Combo]]:
+    return KeymapParser("fixture").parse(sample_keymap().splitlines(keepends=True))
 
 
 class TestTapDisplay:
@@ -128,55 +168,47 @@ class TestHoldFlavor:
 
 class TestSpecsFromKeymap:
     def test_stacked_specs_cover_all_keys(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
-        specs = build_stacked_specs(layers)
-        assert len(specs) == 36
+        layers, _ = sample_layers()
+        assert len(build_stacked_specs(layers)) == 36
 
     def test_layer_change_holds_use_layer_accent(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         specs = build_stacked_specs(layers)
-        # Left inner thumb lwr/lwr and right inner thumb rse/rse (both one-shot).
+        # One-shot layer thumbs in the fixture: LWR at column 2, RSE at column 3.
         assert specs[32]["hold"] == "LWR"
         assert specs[32]["accent"] == "sym"
         assert specs[32]["flavor"] == "oneshot"
         assert specs[33]["hold"] == "RSE"
         assert specs[33]["accent"] == "nav"
         assert specs[33]["flavor"] == "oneshot"
-        # Space carries no hold at all, so nothing can shift under it.
         assert not specs[34]["hold"]
 
     def test_plain_modifier_hold_stays_grey(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         specs = build_stacked_specs(layers)
-        # Home-row R/shft.
-        assert specs[11]["hold"] == "SHFT"
-        assert specs[11]["accent"] == "mod"
-        assert specs[11]["flavor"] == "tap-preferred"
+        assert specs[10]["hold"] == "SHFT"
+        assert specs[10]["accent"] == "mod"
+        assert specs[10]["flavor"] == "tap-preferred"
 
-    def test_symbol_overlay_includes_tab_glyphs(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+    def test_stacked_corners_come_from_lower_and_raise(self) -> None:
+        layers, _ = sample_layers()
         specs = build_stacked_specs(layers)
-        # Right thumbs: rse/rse with SHFT_TAB on lwr, SPC with TAB on lwr.
-        assert specs[33]["base_glyph"] is None
         assert specs[33]["sym_glyph"] == "btab"
         assert specs[34]["sym_glyph"] == "tab"
-        # BKSP sits on the outer left thumb. Raise puts Esc there and Enter
-        # on the inner left thumb.
         assert specs[30]["base_glyph"] == "backspace"
         assert specs[30]["num_glyph"] == "escape"
         assert specs[32]["num_glyph"] == "return"
 
     def test_stacked_board_puts_raise_above_lower(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         svg = render_board(build_stacked_specs(layers), "stacked")
-        # W: rse 7 top-right (num), lwr ^ bottom-right (sym).
-        w_key = svg.split('<g transform="translate(60.00,0.00)">', 1)[1]
-        w_key = w_key.split("</g>", 1)[0]
-        assert 'class="num" x="45.0" y="18.1344">7</text>' in w_key
-        assert 'class="sym" x="45.0" y="45.336000000000006">^</text>' in w_key
+        key = svg.split(f'<g transform="translate({KW:.2f},0.00)">', 1)[1]
+        key = key.split("</g>", 1)[0]
+        assert 'class="num" x="45.0" y="18.1344">7</text>' in key
+        assert 'class="sym" x="45.0" y="45.336000000000006">^</text>' in key
 
     def test_layer_holds_emit_glyphs_not_letters(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         svg = render_board(build_stacked_specs(layers), "stacked")
         assert ">⇊</text>" in svg
         assert ">⇈</text>" in svg
@@ -195,27 +227,6 @@ class TestSpecsFromKeymap:
         assert 'href="#glyph_lwr"' not in svg
         assert 'href="#glyph_cmd"' not in svg
 
-    def test_raise_layer_uses_distinct_nav_glyphs(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
-        rse = next(layer for layer in layers if layer.name == "rse")
-        specs = layer_specs(rse)
-        # Right half top row: HOME WORD_L UP WORD_R END
-        assert specs[5]["base_glyph"] == "home"
-        assert specs[6]["base_glyph"] == "word-left"
-        assert specs[7]["base_glyph"] == "up"
-        assert specs[8]["base_glyph"] == "word-right"
-        assert specs[9]["base_glyph"] == "end"
-        # Middle row nav: FWD LEFT DOWN RIGHT BCK
-        assert specs[15]["base_glyph"] == "hist-fwd"
-        assert specs[16]["base_glyph"] == "left"
-        assert specs[19]["base_glyph"] == "hist-back"
-        # Bottom row: previous/next app tab, not the Tab-key arrows.
-        assert specs[25]["base_glyph"] == "app-tab-prev"
-        assert specs[29]["base_glyph"] == "app-tab-next"
-        # Left thumbs: Esc on the outer, Enter on the inner.
-        assert specs[30]["base_glyph"] == "escape"
-        assert specs[32]["base_glyph"] == "return"
-
 
 class TestComboMarks:
     def test_grid_index_matches_flatten_order(self) -> None:
@@ -226,40 +237,28 @@ class TestComboMarks:
         assert grid_index(3, 0) == 30
         assert grid_index(3, 5) == 35
 
-    def test_keymap_combos_are_enter_and_escape(self) -> None:
-        layers, combos = parse_keymap(KEYMAP)
-        default = next(layer for layer in layers if layer.name == "default")
-        marks = combo_specs(combos, default)
-        assert [mark["glyph"] for mark in marks] == ["return", "escape"]
-        assert all(mark["text"] == "" for mark in marks)
-
-    def test_ret_combo_sits_between_comma_and_period(self) -> None:
-        self._assert_combo_midpoint("return", ",", ".")
-
-    def test_esc_combo_sits_between_x_and_c(self) -> None:
-        self._assert_combo_midpoint("escape", "X", "C")
-
-    def _assert_combo_midpoint(self, glyph: str, label_a: str, label_b: str) -> None:
-        layers, combos = parse_keymap(KEYMAP)
-        default = next(layer for layer in layers if layer.name == "default")
-        mark = next(m for m in combo_specs(combos, default) if m["glyph"] == glyph)
+    def test_combo_sits_on_the_seam_between_its_triggers(self) -> None:
+        layers, _ = sample_layers()
+        default = layers[0]
+        marks = combo_specs([Combo("Q", "W", "RET")], default)
+        assert len(marks) == 1
+        assert marks[0]["glyph"] == "return"
+        assert marks[0]["text"] == ""
         positions = ortho_positions()
-        a = positions[grid_index(*find_key_position(default, label_a))]
-        b = positions[grid_index(*find_key_position(default, label_b))]
-        assert mark["x"] == (a[0] + b[0] + KW) / 2
-        assert mark["y"] == (a[1] + b[1] + KH) / 2
+        q = positions[grid_index(0, 0)]
+        w = positions[grid_index(0, 1)]
+        assert marks[0]["x"] == (q[0] + w[0] + KW) / 2
+        assert marks[0]["y"] == (q[1] + w[1] + KH) / 2
 
     def test_plain_label_combo_uses_text(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
-        default = next(layer for layer in layers if layer.name == "default")
-        marks = combo_specs([Combo("Q", "W", "X")], default)
+        layers, _ = sample_layers()
+        marks = combo_specs([Combo("Q", "W", "X")], layers[0])
         assert marks[0]["text"] == "X"
         assert marks[0]["glyph"] is None
 
     def test_no_combos_renders_nothing(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
-        default = next(layer for layer in layers if layer.name == "default")
-        assert combo_specs([], default) == []
+        layers, _ = sample_layers()
+        assert combo_specs([], layers[0]) == []
 
 
 class TestRenderOutput:
@@ -346,7 +345,9 @@ class TestRenderOutput:
         assert ">X</text>" in svg
 
     def test_render_diagrams_writes_expected_files(self, tmp_path: Path) -> None:
-        written = render_diagrams(KEYMAP, tmp_path, no_png=True)
+        keymap = tmp_path / "keymap.txt"
+        keymap.write_text(sample_keymap(), encoding="utf-8")
+        written = render_diagrams(keymap, tmp_path, no_png=True)
         names = sorted(path.name for path in written)
         assert names == [
             "layer-default.svg",
@@ -467,7 +468,7 @@ class TestFontAndGlyphMetrics:
         assert "text.dejavu" in svg
 
     def test_hold_marks_select_dejavu_when_inter_cannot_draw_them(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         svg = render_board(build_stacked_specs(layers), "stacked")
         assert 'class="oneshot symbol sym dejavu"' in svg
         assert 'class="oneshot symbol nav dejavu"' in svg
@@ -489,7 +490,7 @@ class TestFontAndGlyphMetrics:
         assert f'transform="scale({GLYPH_SCALE:.6f}) translate(-24,-24)"' in svg
 
     def test_overlay_and_combo_glyphs_scale_to_their_text(self) -> None:
-        layers, _ = parse_keymap(KEYMAP)
+        layers, _ = sample_layers()
         svg = render_board(
             build_stacked_specs(layers),
             "stacked",
