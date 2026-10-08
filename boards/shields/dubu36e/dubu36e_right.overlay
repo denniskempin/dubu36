@@ -5,7 +5,7 @@
  */
 
 #include "dubu36e.dtsi"
-j
+
 &default_transform {
     col-offset = <6>;
 };
