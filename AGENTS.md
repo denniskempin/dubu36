@@ -176,12 +176,10 @@ against the keycode the keymap holds, so a trigger on the home row has to be nam
 `MT(...)` keycode rather than the plain key press it produces.
 
 What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
-pair the typist never rolls across cannot be triggered by accident. `M+,` (Enter) was picked
-over the more comfortable home-row pairs for that reason, since Colemak puts its most
-frequent rolls there and `st` or `ne` would fire a combo constantly. `M+,` is adjacent on
-the right bottom row and is letter-then-punctuation, not a letter roll. Esc and Enter also
-sit on the raise layer at the outer and inner left thumbs, so a one-shot or held `rse`
-reaches them without a chord. Esc stays on lwr as well.
+pair the typist never rolls across cannot be triggered by accident. `, .` (Enter) and `X C`
+(Esc) are middle/ring pairs. Colemak's frequent rolls such as `st` or `ne` would fire a home-row
+combo constantly. Esc and Enter also sit on the raise layer at the outer and inner left thumbs,
+so a one-shot or held `rse` reaches them without a chord. Esc stays on lwr as well.
 `COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed; it is 0
 here, and left out of the generated keymap, because requiring idle time would stop Enter
 firing right after a burst of typing.

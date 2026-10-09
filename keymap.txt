@@ -77,11 +77,10 @@ layer mou
 // the keys pressed together on the default layer.
 //
 // The pair has to be one that never gets typed back to back, or the chord
-// fires by accident mid-word: `cv` does not occur, where a home-row pair like
-// S+T would have caught every `st`. `m,` is adjacent on the right bottom row
-// and is a letter-then-punctuation pair, not a Colemak letter roll. Esc and
-// Enter also sit on rse (outer and inner left thumbs), so one-shot or held
-// raise plus that key types them without a chord. Esc stays on lwr as well.
+// fires by accident mid-word. A home-row pair like S+T would catch every `st`.
+// `, .` (Enter) and `X C` (Esc) are middle/ring pairs Colemak does not roll.
+// Esc and Enter also sit on rse (outer and inner left thumbs), so one-shot or
+// held raise plus that key types them without a chord. Esc stays on lwr as well.
 combos
   , . -> RET
   X C -> ESC
