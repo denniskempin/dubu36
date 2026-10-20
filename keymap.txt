@@ -10,9 +10,14 @@
 //   _                 nothing: a blank key, or "no hold" when used as the hold
 //
 // FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
-// (tap-preferred), which is the default and suits the home-row, or hp
+// (tap-preferred), which is the default and suits the home-row, hp
 // (hold-preferred), for keys that should shift as soon as another key
-// goes down. One-shot keys take no flavor.
+// goes down, or ih (instant hold). Instant hold sends the hold key down
+// at the same moment as the physical key, so a following key or click
+// sees it with no waiting. Releasing inside the tapping term (200ms,
+// QMK's TAPPING_TERM) releases that hold and then taps the key; holding
+// longer leaves the hold down until the key comes up. One-shot keys take
+// no flavor.
 // The behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
@@ -26,7 +31,7 @@
 // reduce issues with hold-tap timing.
 overlay homerow
   _      _      _      _      _          _      _      _      _      _
-  hyp    shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   hyp
+  _      shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   _
   _      _      _      _      _          _      _      _      _      _
                 _      _      _          _      _      _
 
@@ -34,8 +39,8 @@ overlay homerow
 // characters in day-to-day writing.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
-  A      R      S      T      D          H      N      E      I      O
-  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+  A/F18:ih R    S      T      D          H      N      E      I      O/F18:ih
+  Z/F19:ih X    C      V      B          K      M      ,      .      '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.
@@ -49,15 +54,8 @@ layer rse: homerow
 layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   ESC    <      [      (      {          -      \_     \:     ;      #
-  _      >      ]      )      }          +      =      ?      !      "
+  _      >      ]      )      }          +      =      ?      !      "/F19:ih
                 _      _      _          SHFT_TAB  TAB     _
-
-// Window management and other Hyper key shortcuts.
-layer hyp
-  HYP_Q  HYP_W  HYP_F  HYP_P  HYP_G      HYP_1    HYP_2     HYP_3     HYP_4      HYP_5
-  HYP_A  HYP_R  HYP_S  HYP_T  HYP_D      _        HYP_LEFT  HYP_UP    HYP_RIGHT  _
-  HYP_Z  HYP_X  HYP_C  HYP_V  HYP_B      _        HYP_;     HYP_DOWN  HYP_'      _
-                HYP_ESC  _  HYP_TAB      HYP_RET  HYP_SPC   HYP_BKSP
 
 // Bluetooth.
 layer adj

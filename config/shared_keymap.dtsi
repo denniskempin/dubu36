@@ -12,7 +12,9 @@
     // mt_ and lt_ come in the flavors the keymap can pick between: tp
     // (tap-preferred, the default, used on the home-row) and hp
     // (hold-preferred, used on the thumb keys). One-shot keys are always
-    // tap-preferred, so that a quick tap always one-shots.
+    // tap-preferred, so that a quick tap always one-shots. ih is the
+    // instant-hold behavior below, used where the hold key must be down
+    // before anything else (F18 and F19).
     //
     // hold-preferred takes the hold as soon as any other key goes down, which
     // is what makes a thumb layer engage without waiting, and also what made it
@@ -69,6 +71,20 @@
             tapping-term-ms = <200>;
             bindings = <&mo>, <&sl>;
         };
+
+        // Instant hold. The hold key goes down on press, before any
+        // decision, so a following key or a mouse click sees it with no
+        // delay. A release inside tapping-term-ms (the same 200ms as
+        // QMK's TAPPING_TERM) releases the hold and then taps the key.
+        // Holding longer leaves the hold down until release. Other keys
+        // are not queued: this is not a stock hold-tap, which would hold
+        // the next key back until it decided.
+        ih: instant_hold {
+            compatible = "zmk,behavior-instant-hold";
+            #binding-cells = <2>;
+            tapping-term-ms = <200>;
+            bindings = <&kp>, <&kp>;
+        };
     };
 
     keymap {
@@ -78,8 +94,8 @@
                     display-name = "Base";
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
-&trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
-&trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
+&trans &ih F18 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &ih F18 O &trans
+&trans &ih F19 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 3 SQT &trans
 &kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &olt_ 1 1 &kp SPC &trans
                     >;
             };
@@ -88,7 +104,7 @@
                     display-name = "Nav/Num";
                     bindings = <
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
-&trans &mo 3 &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &lt_tp 3 LG(RBKT) &trans
+&trans &trans &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &kp LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
 &kp ESC &trans &kp RET &trans &trans &trans
                     >;
@@ -98,19 +114,9 @@
                     display-name = "Symbols";
                     bindings = <
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
-&trans &lt_tp 3 ESC &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &lt_tp 3 LS(N3) &trans
-&trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
+&trans &kp ESC &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &kp LS(N3) &trans
+&trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &ih F19 LS(SQT) &trans
 &trans &trans &trans &kp LS(TAB) &kp TAB &trans
-                    >;
-            };
-
-            hyper_layer {
-                    display-name = "Hyper";
-                    bindings = <
-&trans &kp LA(LS(LC(LG(Q)))) &kp LA(LS(LC(LG(W)))) &kp LA(LS(LC(LG(F)))) &kp LA(LS(LC(LG(P)))) &kp LA(LS(LC(LG(G)))) &kp LA(LS(LC(LG(N1)))) &kp LA(LS(LC(LG(N2)))) &kp LA(LS(LC(LG(N3)))) &kp LA(LS(LC(LG(N4)))) &kp LA(LS(LC(LG(N5)))) &trans
-&trans &kp LA(LS(LC(LG(A)))) &kp LA(LS(LC(LG(R)))) &kp LA(LS(LC(LG(S)))) &kp LA(LS(LC(LG(T)))) &kp LA(LS(LC(LG(D)))) &trans &kp LA(LS(LC(LG(LEFT)))) &kp LA(LS(LC(LG(UP)))) &kp LA(LS(LC(LG(RIGHT)))) &trans &trans
-&trans &kp LA(LS(LC(LG(Z)))) &kp LA(LS(LC(LG(X)))) &kp LA(LS(LC(LG(C)))) &kp LA(LS(LC(LG(V)))) &kp LA(LS(LC(LG(B)))) &trans &kp LA(LS(LC(LG(SEMI)))) &kp LA(LS(LC(LG(DOWN)))) &kp LA(LS(LC(LG(SQT)))) &trans &trans
-&kp LA(LS(LC(LG(ESC)))) &trans &kp LA(LS(LC(LG(TAB)))) &kp LA(LS(LC(LG(RET)))) &kp LA(LS(LC(LG(SPC)))) &kp LA(LS(LC(LG(BKSP))))
                     >;
             };
 

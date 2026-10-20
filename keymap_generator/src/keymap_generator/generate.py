@@ -16,6 +16,10 @@ LayerGenerator = Callable[[Layer], str]
 # the generator is handed that layer to resolve them against.
 CombosGenerator = Callable[[list[Combo], Layer], str]
 
+# Fills `#INSTANT_HOLDS#` from every layer, for the QMK handler that stock
+# mod-tap cannot express. Templates without the placeholder ignore it.
+InstantHoldGenerator = Callable[[list[Layer]], str]
+
 
 def generate_keymap(
     layers: list[Layer],
@@ -23,9 +27,16 @@ def generate_keymap(
     template_path: str | Path,
     generate_layer_fn: LayerGenerator,
     generate_combos_fn: CombosGenerator,
+    generate_instant_holds_fn: InstantHoldGenerator | None = None,
 ) -> str:
-    """Substitute layer and combo placeholders in a firmware template."""
+    """Substitute layer, combo, and instant-hold placeholders in a template."""
     template = Path(template_path).read_text(encoding="utf-8")
     for i, layer in enumerate(layers):
         template = template.replace(f"#LAYER_{i}#", generate_layer_fn(layer))
-    return HEADER + template.replace("#COMBOS#", generate_combos_fn(combos, layers[0]))
+    template = template.replace("#COMBOS#", generate_combos_fn(combos, layers[0]))
+    if "#INSTANT_HOLDS#" in template:
+        if generate_instant_holds_fn is None:
+            raise ValueError("template has #INSTANT_HOLDS# but no generator was given")
+        replacement = generate_instant_holds_fn(layers)
+        template = template.replace("#INSTANT_HOLDS#", replacement)
+    return HEADER + template

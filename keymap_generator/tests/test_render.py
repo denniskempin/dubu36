@@ -68,11 +68,6 @@ def sample_keymap() -> str:
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
               _ _ _   SHFT_TAB TAB _
-        layer hyp
-          _ _ _ _ _   _ _ _ _ _
-          _ _ _ _ _   _ _ _ _ _
-          _ _ _ _ _   _ _ _ _ _
-              _ _ _   _ _ _
         layer adj
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
@@ -160,6 +155,25 @@ class TestHoldFlavor:
     def test_tap_preferred_explicit_and_default(self) -> None:
         assert hold_flavor(Key("A", "HYP", "tp")) == "tap-preferred"
         assert hold_flavor(Key("A", "HYP", None)) == "tap-preferred"
+
+    def test_instant_hold(self) -> None:
+        assert hold_flavor(Key("A", "F18", "ih")) == "instant"
+        assert hold_display("F18") == ("F18", None)
+        assert hold_display("F19") == ("F19", None)
+
+    def test_instant_hold_draws_a_bright_box(self) -> None:
+        layer = Layer(
+            "demo",
+            [
+                [Key("A", "F18", "ih")] + [Key("Q", "", None)] * 9,
+                [Key("Q", "", None)] * 10,
+                [Key("Q", "", None)] * 10,
+                [Key("SPC", "", None)] * 6,
+            ],
+        )
+        svg = render_board(layer_specs(layer), "demo")
+        assert 'class="hold-box instant mod"' in svg
+        assert ">F18</text>" in svg
 
     def test_no_hold(self) -> None:
         assert hold_flavor(Key("Q", "", None)) is None
@@ -358,7 +372,7 @@ class TestRenderOutput:
             "reference.svg",
         ]
         # Excluded layers must not appear as diagram files.
-        assert frozenset({"hyp", "adj"}) == EXCLUDED_LAYERS
+        assert frozenset({"adj"}) == EXCLUDED_LAYERS
         assert not (tmp_path / "layer-hyp.svg").exists()
         assert not (tmp_path / "layer-adj.svg").exists()
         reference = (tmp_path / "reference.svg").read_text(encoding="utf-8")

@@ -156,9 +156,9 @@ Editing this file changes all three generated artifacts, so follow it with `make
 - `codes.py` — the label vocabulary: `KEY_PRESS_CODES` (a label's ZMK and QMK key code),
   `SPECIAL_LABELS` (non-keypress bindings such as Bluetooth), `LAYER_LABELS`, `FLAVORS`.
 - `zmk.py` / `qmk.py` — `Key` -> a binding string for one firmware.
-- `generate.py` — substitutes `#LAYER_N#` and the single `#COMBOS#` block in a template. The
-  combo generator is handed the default layer, since a combo names its trigger keys by the
-  label they tap there.
+- `generate.py` — substitutes `#LAYER_N#`, the single `#COMBOS#` block, and `#INSTANT_HOLDS#`
+  (QMK only) in a template. The combo generator is handed the default layer, since a combo
+  names its trigger keys by the label they tap there.
 - `render.py` — the SVG diagram renderer, plus `render_png` which lazily imports `cairosvg` from
   the `diagrams` group. Legend positions and glyphs are documented in the README. Combos appear
   only on the stacked reference card, as a rounded box on the seam between the two trigger keys.
@@ -195,10 +195,16 @@ Known gaps, deliberate:
 - The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
   QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
   so a thumb layer is easier to shift by accident there.
+- Flavor `ih` is instant hold, used for F18 (A, O) and F19 (Z, `"`). The hold key goes down on
+  press. A release inside the tapping term (200ms, `TAPPING_TERM` / `ih`'s `tapping-term-ms`)
+  releases it and then taps the key; a longer press leaves it down. ZMK implements this as
+  `src/behaviors/behavior_instant_hold.c` (`&ih`), not stock hold-tap, because stock hold-tap
+  queues the next key until it decides. QMK's `MT()` cannot express it either, so the generator
+  emits a `process_record_user` for those keys. Two keys that share a hold code keep it down
+  while either is held; a quick tap lifts it only for the tap.
 - `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
   36-key grid onto the corne's 42-key matrix.
-- `render.py` skips the `hyp` and `adj` layers (`EXCLUDED_LAYERS`), so `diagrams/` has no board
-  for them.
+- `render.py` skips the `adj` layer (`EXCLUDED_LAYERS`), so `diagrams/` has no board for it.
 
 Code conventions: Python 3.12, `from __future__ import annotations`, full type annotations,
 module and public-symbol docstrings, ruff (`E,F,I,UP,B,SIM`, 88 columns) as the formatter and

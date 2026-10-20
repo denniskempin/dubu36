@@ -8,7 +8,11 @@ from pathlib import Path
 
 from keymap_generator.generate import generate_keymap
 from keymap_generator.parser import parse_keymap
-from keymap_generator.qmk import generate_qmk_combos, generate_qmk_layer
+from keymap_generator.qmk import (
+    generate_qmk_combos,
+    generate_qmk_instant_holds,
+    generate_qmk_layer,
+)
 from keymap_generator.render import render_diagrams
 from keymap_generator.zmk import generate_zmk_combos, generate_zmk_layer
 
@@ -89,7 +93,8 @@ def main(argv: list[str] | None = None) -> int:
             generate_qmk_layer,
             generate_qmk_combos,
         )
-    print(generate_keymap(layers, combos, template, layer_fn, combos_fn))
+    extra = generate_qmk_instant_holds if args.command == "qmk" else None
+    print(generate_keymap(layers, combos, template, layer_fn, combos_fn, extra))
     return 0
 
 

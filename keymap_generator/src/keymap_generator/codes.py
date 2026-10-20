@@ -81,6 +81,9 @@ KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     "SHFT": FirmwareCodes("LSHFT", "KC_LSFT"),
     "CTRL": FirmwareCodes("LCTRL", "KC_LCTL"),
     "ALT": FirmwareCodes("LALT", "KC_LALT"),
+    # Function keys used as OS and app shortcut modifiers.
+    "F18": FirmwareCodes("F18", "KC_F18"),
+    "F19": FirmwareCodes("F19", "KC_F19"),
 }
 
 # Maps labels from the keymap grid to a ready-made binding in each firmware,
@@ -98,14 +101,15 @@ SPECIAL_LABELS: dict[str, FirmwareCodes] = {
 LAYER_LABELS: dict[str, int] = {
     "RSE": 1,
     "LWR": 2,
-    "HYP": 3,
-    "ADJ": 4,
-    "MOU": 5,
+    "ADJ": 3,
+    "MOU": 4,
 }
 
 # Hold-tap flavors a key may ask for, matching the suffix of the behaviors in
 # `zmk_template.dtsi`. Keys default to 'tap preferred', which suits the
-# home-row; the thumb keys ask for 'hold preferred'. One-shot keys have a
-# single behavior and take no flavor.
-FLAVORS: tuple[str, ...] = ("tp", "hp")
+# home-row; the thumb keys ask for 'hold preferred'. `ih` is instant hold:
+# the hold key goes down on press, and a release inside the tapping term
+# undoes it and then taps. One-shot keys have a single behavior and take
+# no flavor.
+FLAVORS: tuple[str, ...] = ("tp", "hp", "ih")
 DEFAULT_FLAVOR: str = "tp"
