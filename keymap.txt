@@ -10,14 +10,9 @@
 //   _                 nothing: a blank key, or "no hold" when used as the hold
 //
 // FLAVOR decides how a hold-tap tells a tap from a hold. It is tp
-// (tap-preferred), which is the default and suits the home-row, hp
+// (tap-preferred), which is the default and suits the home-row, or hp
 // (hold-preferred), for keys that should shift as soon as another key
-// goes down, or ih (instant hold). Instant hold sends the hold key down
-// at the same moment as the physical key, so a following key or click
-// sees it with no waiting. Releasing inside the tapping term (200ms,
-// QMK's TAPPING_TERM) releases that hold and then taps the key; holding
-// longer leaves the hold down until the key comes up. One-shot keys take
-// no flavor.
+// goes down. One-shot keys take no flavor.
 // The behaviors these map to are defined in keymap_generator/zmk_template.dtsi.
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
@@ -39,8 +34,8 @@ overlay homerow
 // characters in day-to-day writing.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
-  A/F18:ih R    S      T      D          H      N      E      I      O/F18:ih
-  Z/F19:ih X    C      V      B          K      M      ,      .      '/adj
+  A/F18  R      S      T      D          H      N      E      I      O/F18
+  Z/F19  X      C      V      B          K      M      ,      .      '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.
@@ -54,7 +49,7 @@ layer rse: homerow
 layer lwr: homerow
   ~      ^      @      $      %          &      \/     \\     PIPE   `
   ESC    <      [      (      {          -      \_     \:     ;      #
-  _      >      ]      )      }          +      =      ?      !      "/F19:ih
+  _      >      ]      )      }          +      =      ?      !      "/F19
                 _      _      _          SHFT_TAB  TAB     _
 
 // Bluetooth.

@@ -24,16 +24,10 @@
     use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
     use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
     use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
-    use.glyph.hold.instant.mod { stroke: #f2f2f2; }
-    use.glyph.hold.instant.sym { stroke: #c8c8ff; }
-    use.glyph.hold.instant.nav { stroke: #ffbb77; }
     rect.hold-box { stroke-width: 1.2px; }
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.instant.mod { fill: none; stroke: #f2f2f2; stroke-width: 1.6px; }
-    rect.hold-box.instant.sym { fill: none; stroke: #c8c8ff; stroke-width: 1.6px; }
-    rect.hold-box.instant.nav { fill: none; stroke: #ffbb77; stroke-width: 1.6px; }
     rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
@@ -44,7 +38,6 @@
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #8a8a8a; }
-    text.hold.instant { fill: #f2f2f2; font-weight: 700; }
     text.hold.symbol { font-size: 14px; }
     text.oneshot.symbol { font-size: 16px; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }

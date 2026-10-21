@@ -4,11 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer
+from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
     COMBO_SLOTS,
     generate_qmk_combos,
-    generate_qmk_instant_holds,
     generate_qmk_layer,
     get_qmk_key_press_code,
     map_key_label_to_qmk,
@@ -49,15 +48,13 @@ class TestQmkKeys:
     def test_layer_tap(self) -> None:
         assert map_key_to_qmk(Key("ESC", "MOU", "hp")) == "LT(4,KC_ESC)"
 
-    def test_instant_hold_names(self) -> None:
-        assert map_key_to_qmk(Key("A", "F18", "ih")) == "IH_A_F18"
-        assert map_key_to_qmk(Key("O", "F18", "ih")) == "IH_O_F18"
-        assert map_key_to_qmk(Key("Z", "F19", "ih")) == "IH_Z_F19"
-        assert map_key_to_qmk(Key('"', "F19", "ih")) == "IH_DOUBLE_QUOTE_F19"
-
-    def test_instant_hold_needs_key_presses(self) -> None:
-        with pytest.raises(KeyError, match="instant-hold"):
-            map_key_to_qmk(Key("A", "NOPE", "ih"))
+    def test_function_key_hold(self) -> None:
+        # F18 and F19 are not modifiers, so they stay keycodes. QMK's MT()
+        # still only stores a modifier mask and will not actually hold them.
+        assert map_key_to_qmk(Key("A", "F18", None)) == "MT(KC_F18,KC_A)"
+        assert map_key_to_qmk(Key("O", "F18", None)) == "MT(KC_F18,KC_O)"
+        assert map_key_to_qmk(Key("Z", "F19", None)) == "MT(KC_F19,KC_Z)"
+        assert map_key_to_qmk(Key('"', "F19", None)) == "MT(KC_F19,KC_DOUBLE_QUOTE)"
 
     def test_oneshot_mod(self) -> None:
         assert map_key_to_qmk(Key("SHFT", "SHFT", None)) == "OSM(MOD_LSFT)"
@@ -107,42 +104,6 @@ class TestQmkCombos:
     def test_unknown_trigger_label(self) -> None:
         with pytest.raises(KeyError, match="taps NOPE"):
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
-
-
-class TestQmkInstantHolds:
-    def test_handler_releases_the_hold_before_the_tap(self) -> None:
-        layer = Layer(
-            "default",
-            [
-                [Key("A", "F18", "ih"), Key("O", "F18", "ih")],
-                [Key('"', "F19", "ih")],
-            ],
-        )
-        rendered = generate_qmk_instant_holds([layer])
-        assert "IH_A_F18 = SAFE_RANGE" in rendered
-        assert "IH_O_F18," in rendered
-        assert "IH_DOUBLE_QUOTE_F19," in rendered
-        assert "{KC_F18, KC_A, 0, false}" in rendered
-        assert "{KC_F19, KC_DOUBLE_QUOTE, 0, false}" in rendered
-        # A quick release lifts the function key, taps, then restores the
-        # function key if another key is still holding it.
-        release = rendered.index("unregister_code16(slot->hold);")
-        tap = rendered.index("tap_code16(slot->tap);")
-        restore = rendered.index("register_code16(slot->hold);", tap)
-        assert release < tap < restore
-        assert "timer_elapsed(slot->pressed_at) < TAPPING_TERM" in rendered
-
-    def test_no_instant_holds_emits_nothing(self) -> None:
-        layer = Layer("default", [[Key("A", "", None) for _ in range(ROW_SIZES[0])]])
-        assert generate_qmk_instant_holds([layer]) == ""
-
-    def test_duplicate_pair_is_rejected(self) -> None:
-        layer = Layer(
-            "default",
-            [[Key("A", "F18", "ih"), Key("A", "F18", "ih")]],
-        )
-        with pytest.raises(KeyError, match="used twice"):
-            generate_qmk_instant_holds([layer])
 
 
 class TestQmkGeneration:

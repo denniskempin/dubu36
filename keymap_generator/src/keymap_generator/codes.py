@@ -107,9 +107,7 @@ LAYER_LABELS: dict[str, int] = {
 
 # Hold-tap flavors a key may ask for, matching the suffix of the behaviors in
 # `zmk_template.dtsi`. Keys default to 'tap preferred', which suits the
-# home-row; the thumb keys ask for 'hold preferred'. `ih` is instant hold:
-# the hold key goes down on press, and a release inside the tapping term
-# undoes it and then taps. One-shot keys have a single behavior and take
-# no flavor.
-FLAVORS: tuple[str, ...] = ("tp", "hp", "ih")
+# home-row; the thumb keys ask for 'hold preferred'. One-shot keys have a
+# single behavior and take no flavor.
+FLAVORS: tuple[str, ...] = ("tp", "hp")
 DEFAULT_FLAVOR: str = "tp"

@@ -35,8 +35,8 @@ keys, then the six thumb keys. Every whitespace separated cell is one key:
 ```
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
-  A/F18:ih R    S      T      D          H      N      E      I      O/F18:ih
-  Z/F19:ih X    C      V      B          K      M      ,      .      '/adj
+  A/F18  R      S      T      D          H      N      E      I      O/F18
+  Z/F19  X      C      V      B          K      M      ,      .      '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 ```
 
@@ -47,7 +47,6 @@ that does nothing, and a `:FLAVOR` suffix chooses how a key tells a tap from a h
 ```
   T/cmd        tap-preferred, the default, which suits the home-row
   TAB/lwr:hp   hold-preferred, which the thumb keys use
-  A/F18:ih     instant hold: F18 goes down on press, a short release types A
   shft/shft    one-shot shift when tapped, a plain shift when held
   rse/rse      one-shot raise when tapped, a regular layer shift when held
 ```
@@ -60,10 +59,11 @@ inherited one, or use `/_` to drop it.
 The default layer is Colemak, with special characters remapped to prioritize commonly used
 characters in day-to-day writing. Holding a key on the home-row gives the modifiers used in
 shortcuts; the modifiers and layer shifts used in fluent writing sit on the thumbs instead, to
-reduce issues with hold-tap timing. A and O hold F18, and Z and `"` hold F19, for OS and app
-shortcuts: the function key goes down the moment the key does, and a release inside the tapping
-term types the character instead. The remaining layers cover navigation and numbers, symbols,
-bluetooth, and left hand only shortcuts for when the right hand is on the mouse.
+reduce issues with hold-tap timing. A and O hold F18, and Z and `"` hold F19, as ordinary
+tap-preferred hold-taps for OS and app shortcuts: a quick release types the character, and
+holding past the tapping term holds the function key. The remaining layers cover navigation
+and numbers, symbols, bluetooth, and left hand only shortcuts for when the right hand is on
+the mouse.
 
 ## Keyboards
 

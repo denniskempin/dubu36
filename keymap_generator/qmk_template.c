@@ -1,6 +1,5 @@
 #include QMK_KEYBOARD_H
 
-#INSTANT_HOLDS#
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT(
 #LAYER_0#

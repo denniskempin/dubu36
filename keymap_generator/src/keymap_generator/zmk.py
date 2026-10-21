@@ -64,15 +64,6 @@ def map_key_to_zmk(key: Key) -> str:
     if not key.tap:
         return map_key_label_to_zmk(key.hold)
 
-    # Instant hold is its own behavior: the hold key is down from the press,
-    # and a release inside the tapping term undoes it before the tap.
-    if key.flavor == "ih":
-        hold_code = get_zmk_key_press_code(key.hold)
-        tap_code = get_zmk_key_press_code(key.tap)
-        if hold_code and tap_code:
-            return f"&ih {hold_code} {tap_code}"
-        raise KeyError(f"Cannot map instant-hold key ({key.tap}, {key.hold}) to zmk.")
-
     # All defined in the ZMK template: mt/lt hold a modifier/layer and are named
     # after their flavor; omt/olt hold it and one-shot it on tap.
     if key.hold in LAYER_LABELS:

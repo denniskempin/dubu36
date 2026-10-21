@@ -156,23 +156,23 @@ class TestHoldFlavor:
         assert hold_flavor(Key("A", "HYP", "tp")) == "tap-preferred"
         assert hold_flavor(Key("A", "HYP", None)) == "tap-preferred"
 
-    def test_instant_hold(self) -> None:
-        assert hold_flavor(Key("A", "F18", "ih")) == "instant"
+    def test_function_key_hold_is_tap_preferred(self) -> None:
+        assert hold_flavor(Key("A", "F18", None)) == "tap-preferred"
         assert hold_display("F18") == ("F18", None)
         assert hold_display("F19") == ("F19", None)
 
-    def test_instant_hold_draws_a_bright_box(self) -> None:
+    def test_function_key_hold_draws_an_outline_box(self) -> None:
         layer = Layer(
             "demo",
             [
-                [Key("A", "F18", "ih")] + [Key("Q", "", None)] * 9,
+                [Key("A", "F18", None)] + [Key("Q", "", None)] * 9,
                 [Key("Q", "", None)] * 10,
                 [Key("Q", "", None)] * 10,
                 [Key("SPC", "", None)] * 6,
             ],
         )
         svg = render_board(layer_specs(layer), "demo")
-        assert 'class="hold-box instant mod"' in svg
+        assert 'class="hold-box tap-preferred mod"' in svg
         assert ">F18</text>" in svg
 
     def test_no_hold(self) -> None:

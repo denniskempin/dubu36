@@ -4,18 +4,9 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from keymap_generator.generate import (
-    CombosGenerator,
-    InstantHoldGenerator,
-    LayerGenerator,
-    generate_keymap,
-)
+from keymap_generator.generate import CombosGenerator, LayerGenerator, generate_keymap
 from keymap_generator.parser import parse_keymap
-from keymap_generator.qmk import (
-    generate_qmk_combos,
-    generate_qmk_instant_holds,
-    generate_qmk_layer,
-)
+from keymap_generator.qmk import generate_qmk_combos, generate_qmk_layer
 from keymap_generator.render import render_diagrams
 from keymap_generator.zmk import generate_zmk_combos, generate_zmk_layer
 
@@ -31,15 +22,11 @@ def _generate(
     template: Path,
     layer_fn: LayerGenerator,
     combos_fn: CombosGenerator,
-    instant_fn: InstantHoldGenerator | None = None,
 ) -> str:
     layers, combos = parse_keymap(REPO_ROOT / "keymap.txt")
     # The CLI prints the result, which appends a trailing newline matching
     # the committed keymap files produced by the Makefile.
-    return (
-        generate_keymap(layers, combos, template, layer_fn, combos_fn, instant_fn)
-        + "\n"
-    )
+    return generate_keymap(layers, combos, template, layer_fn, combos_fn) + "\n"
 
 
 def test_zmk_output_matches_committed_shared_keymap() -> None:
@@ -53,10 +40,7 @@ def test_zmk_output_matches_committed_shared_keymap() -> None:
 def test_qmk_output_matches_committed_keymap() -> None:
     expected = QMK_KEYMAP.read_text(encoding="utf-8")
     generated = _generate(
-        PROJECT_ROOT / "qmk_template.c",
-        generate_qmk_layer,
-        generate_qmk_combos,
-        generate_qmk_instant_holds,
+        PROJECT_ROOT / "qmk_template.c", generate_qmk_layer, generate_qmk_combos
     )
     assert generated == expected
 

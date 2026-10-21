@@ -9,7 +9,6 @@ Per-key legend layout (Selenium-style corners, raise on top / lower below):
 Hold box flavors (from the keymap's hold-tap flavor / one-shot form):
   tp (tap-preferred)  — outline box in the bottom-left quadrant
   hp (hold-preferred) — solid box in the bottom-left quadrant
-  ih (instant)        — bright outline: the hold key goes down on press
   oneshot             — solid bar covering the full left half (TL+BL):
                         one-shot modifier/layer on tap, momentary on hold
 
@@ -310,8 +309,6 @@ def hold_flavor(key: Key) -> str | None:
         return "oneshot"
     if key.flavor == "hp":
         return "hold-preferred"
-    if key.flavor == "ih":
-        return "instant"
     # Explicit tp, or an inherited/default hold with no flavor → outline box.
     return "tap-preferred"
 
@@ -485,16 +482,10 @@ def svg_style(*, combos: bool = False) -> str:
     use.glyph.hold.hold-preferred.nav, use.glyph.oneshot.nav { stroke: #1a1a1a; }
     use.glyph.hold.tap-preferred.sym { stroke: #9999ff; }
     use.glyph.hold.tap-preferred.nav { stroke: #ee9944; }
-    use.glyph.hold.instant.mod { stroke: #f2f2f2; }
-    use.glyph.hold.instant.sym { stroke: #c8c8ff; }
-    use.glyph.hold.instant.nav { stroke: #ffbb77; }
     rect.hold-box { stroke-width: 1.2px; }
     rect.hold-box.tap-preferred.mod { fill: none; stroke: #8a8a8a; }
     rect.hold-box.tap-preferred.sym { fill: none; stroke: #9999ff; }
     rect.hold-box.tap-preferred.nav { fill: none; stroke: #ee9944; }
-    rect.hold-box.instant.mod { fill: none; stroke: #f2f2f2; stroke-width: 1.6px; }
-    rect.hold-box.instant.sym { fill: none; stroke: #c8c8ff; stroke-width: 1.6px; }
-    rect.hold-box.instant.nav { fill: none; stroke: #ffbb77; stroke-width: 1.6px; }
     rect.hold-box.hold-preferred.mod { fill: #4a4a4a; stroke: #4a4a4a; }
     rect.hold-box.hold-preferred.sym { fill: #6666bb; stroke: #6666bb; }
     rect.hold-box.hold-preferred.nav { fill: #aa7755; stroke: #aa7755; }
@@ -505,7 +496,6 @@ def svg_style(*, combos: bool = False) -> str:
     text.hold.hold-preferred.sym, text.oneshot.sym,
     text.hold.hold-preferred.nav, text.oneshot.nav { fill: #1a1a1a; font-weight: 700; }
     text.hold.tap-preferred { fill: #8a8a8a; }
-    text.hold.instant { fill: #f2f2f2; font-weight: 700; }
     text.hold.symbol { font-size: 14px; }
     text.oneshot.symbol { font-size: 16px; }
     text.title { font-size: 14px; fill: #888888; text-anchor: start; }
@@ -599,7 +589,7 @@ def draw_key(x: float, y: float, spec: dict) -> str:
             f'<rect class="hold-box oneshot {accent}" x="{PAD}" y="{PAD}" '
             f'width="{ikw / 2}" height="{ikh}" rx="{RADIUS}" ry="{RADIUS}"/>'
         )
-    elif hold and flavor in ("tap-preferred", "hold-preferred", "instant"):
+    elif hold and flavor in ("tap-preferred", "hold-preferred"):
         hx, hy, hw, hh = hold_box_rect()
         parts.append(
             f'<rect class="hold-box {flavor} {accent}" x="{hx}" '

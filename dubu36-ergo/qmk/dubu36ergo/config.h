@@ -32,8 +32,6 @@
 /*
  * Tap-Hold configuration.
  * Strongly biased to prefer tap over hold to make home-row mods usable.
- * Instant holds (F18/F19) use this same term: a release before it undoes
- * the function key and types the letter.
  */
 #define TAPPING_TERM 200
 #define IGNORE_MOD_TAP_INTERRUPT

@@ -219,19 +219,19 @@ class TestParseErrors:
         with pytest.raises(ParseError, match="unknown flavor"):
             parse_source(source)
 
-    def test_instant_hold_flavor(self) -> None:
+    def test_function_key_hold_uses_the_default_flavor(self) -> None:
         source = textwrap.dedent(
             """\
             layer default
               Q W F P G   J L U Y *
-              A/F18:ih R S T D   H N E I O
+              A/F18 R S T D   H N E I O
               Z X C V B   K M , . '
                   _ _ _   _ _ _
 
             """
         ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
         layers, _ = parse_source(source)
-        assert layers[0].rows[1][0] == Key("A", "F18", "ih")
+        assert layers[0].rows[1][0] == Key("A", "F18", None)
 
     def test_flavor_on_oneshot_key(self) -> None:
         source = textwrap.dedent(
