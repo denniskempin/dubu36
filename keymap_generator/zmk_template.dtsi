@@ -94,24 +94,17 @@
                     >;
             };
 
-            hyper_layer {
-                    display-name = "Hyper";
-                    bindings = <
-#LAYER_3#
-                    >;
-            };
-
             adjust_layer {
                     display-name = "Adj";
                     bindings = <
-#LAYER_4#
+#LAYER_3#
                     >;
             };
 
             mouse_layer {
                     display-name = "Mou";
                     bindings = <
-#LAYER_5#
+#LAYER_4#
                     >;
             };
         };

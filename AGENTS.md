@@ -195,10 +195,12 @@ Known gaps, deliberate:
 - The guards on the `hp` hold-taps, `require-prior-idle-ms` and `quick-tap-ms`, are ZMK only.
   QMK has `TAPPING_TERM` and `IGNORE_MOD_TAP_INTERRUPT` in its config and nothing per-behavior,
   so a thumb layer is easier to shift by accident there.
+- A and O hold F18, and Z and `"` hold F19, as ordinary tap-preferred hold-taps (`&mt_tp` on
+  ZMK). QMK emits `MT(KC_F18, …)` and `MT(KC_F19, …)`, but `MT()` only stores a modifier mask,
+  so that keymap does not actually hold the function key.
 - `generate_zmk_layer` pads each of the three main rows with `&trans` on both ends, mapping the
   36-key grid onto the corne's 42-key matrix.
-- `render.py` skips the `hyp` and `adj` layers (`EXCLUDED_LAYERS`), so `diagrams/` has no board
-  for them.
+- `render.py` skips the `adj` layer (`EXCLUDED_LAYERS`), so `diagrams/` has no board for it.
 
 Code conventions: Python 3.12, `from __future__ import annotations`, full type annotations,
 module and public-symbol docstrings, ruff (`E,F,I,UP,B,SIM`, 88 columns) as the formatter and

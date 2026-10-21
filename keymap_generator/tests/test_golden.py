@@ -4,11 +4,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from keymap_generator.generate import (
-    CombosGenerator,
-    LayerGenerator,
-    generate_keymap,
-)
+from keymap_generator.generate import CombosGenerator, LayerGenerator, generate_keymap
 from keymap_generator.parser import parse_keymap
 from keymap_generator.qmk import generate_qmk_combos, generate_qmk_layer
 from keymap_generator.render import render_diagrams
@@ -23,7 +19,9 @@ DIAGRAMS = REPO_ROOT / "diagrams"
 
 
 def _generate(
-    template: Path, layer_fn: LayerGenerator, combos_fn: CombosGenerator
+    template: Path,
+    layer_fn: LayerGenerator,
+    combos_fn: CombosGenerator,
 ) -> str:
     layers, combos = parse_keymap(REPO_ROOT / "keymap.txt")
     # The CLI prints the result, which appends a trailing newline matching

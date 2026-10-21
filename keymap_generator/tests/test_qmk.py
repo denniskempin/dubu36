@@ -46,7 +46,15 @@ class TestQmkKeys:
         assert map_key_to_qmk(Key("A", "CMD", None)) == "MT(MOD_LGUI,KC_A)"
 
     def test_layer_tap(self) -> None:
-        assert map_key_to_qmk(Key("ESC", "MOU", "hp")) == "LT(5,KC_ESC)"
+        assert map_key_to_qmk(Key("ESC", "MOU", "hp")) == "LT(4,KC_ESC)"
+
+    def test_function_key_hold(self) -> None:
+        # F18 and F19 are not modifiers, so they stay keycodes. QMK's MT()
+        # still only stores a modifier mask and will not actually hold them.
+        assert map_key_to_qmk(Key("A", "F18", None)) == "MT(KC_F18,KC_A)"
+        assert map_key_to_qmk(Key("O", "F18", None)) == "MT(KC_F18,KC_O)"
+        assert map_key_to_qmk(Key("Z", "F19", None)) == "MT(KC_F19,KC_Z)"
+        assert map_key_to_qmk(Key('"', "F19", None)) == "MT(KC_F19,KC_DOUBLE_QUOTE)"
 
     def test_oneshot_mod(self) -> None:
         assert map_key_to_qmk(Key("SHFT", "SHFT", None)) == "OSM(MOD_LSFT)"

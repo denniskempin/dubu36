@@ -18,8 +18,8 @@ instead, so layer-change labels always read as purple/orange. Layer
 holds use Unicode ⇊ / ⇈; modifiers use ⇧ ⌘ ⌥ ⌃; hyper is ✦ (U+2726).
 Adjust is a Bluetooth rune path — Unicode has no Bluetooth character.
 
-The hyp and adj layers are excluded from diagram generation (their
-mod-tap holds still render elsewhere, just in the default grey).
+The adj layer is excluded from diagram generation (its hold still
+renders elsewhere, as the Bluetooth glyph).
 
 Combos render on the stacked reference card only: a small rounded box
 sits on the seam between the two trigger keys and shows the result,
@@ -80,7 +80,7 @@ STACK_NUM = "rse"
 
 # Layers excluded from diagram generation (still usable as hold targets
 # elsewhere, but they don't get their own reference/layer boards).
-EXCLUDED_LAYERS = frozenset({"hyp", "adj"})
+EXCLUDED_LAYERS = frozenset({"adj"})
 
 # Hold labels shown in the bottom-left quadrant. Prefer a Unicode
 # character when one exists; HOLD_GLYPHS is only for marks with no
@@ -91,6 +91,8 @@ HOLD_DISPLAY = {
     "ALT": "⌥",  # U+2325 OPTION KEY
     "CTRL": "⌃",  # U+2303 UP ARROWHEAD
     "HYP": "✦",  # U+2726 BLACK FOUR POINTED STAR
+    "F18": "F18",
+    "F19": "F19",
     "LWR": "⇊",  # U+21CA DOWNWARDS PAIRED ARROWS
     "RSE": "⇈",  # U+21C8 UPWARDS PAIRED ARROWS
     "MOU": "mou",

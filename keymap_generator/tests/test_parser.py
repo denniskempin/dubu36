@@ -20,8 +20,8 @@ from keymap_generator.parser import (
     unescape,
 )
 
-# Minimal six-layer keymap that satisfies LAYER_LABELS ordering.
-LAYER_NAMES = ("default", "rse", "lwr", "hyp", "adj", "mou")
+# Minimal keymap that satisfies LAYER_LABELS ordering.
+LAYER_NAMES = ("default", "rse", "lwr", "adj", "mou")
 
 
 def blank_layer(name: str, overlays: str = "") -> str:
@@ -38,7 +38,7 @@ def blank_layer(name: str, overlays: str = "") -> str:
 
 
 def full_keymap(*extra_blocks: str) -> str:
-    """A keymap with the required six layers, plus any extra blocks first."""
+    """A keymap with the required layers, plus any extra blocks first."""
     layers = "".join(blank_layer(name) for name in LAYER_NAMES)
     return "\n".join([*extra_blocks, layers])
 
@@ -87,12 +87,6 @@ class TestParseKeymapHappyPath:
                   _ _ _   _ _ _
 
             layer lwr: homerow
-              _ _ _ _ _   _ _ _ _ _
-              _ _ _ _ _   _ _ _ _ _
-              _ _ _ _ _   _ _ _ _ _
-                  _ _ _   _ _ _
-
-            layer hyp
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
               _ _ _ _ _   _ _ _ _ _
@@ -174,7 +168,7 @@ class TestParseKeymapHappyPath:
         path = tmp_path / "keymap.txt"
         path.write_text(full_keymap())
         layers, combos = parse_keymap(path)
-        assert len(layers) == 6
+        assert len(layers) == 5
         assert combos == []
 
 
@@ -225,6 +219,20 @@ class TestParseErrors:
         with pytest.raises(ParseError, match="unknown flavor"):
             parse_source(source)
 
+    def test_function_key_hold_uses_the_default_flavor(self) -> None:
+        source = textwrap.dedent(
+            """\
+            layer default
+              Q W F P G   J L U Y *
+              A/F18 R S T D   H N E I O
+              Z X C V B   K M , . '
+                  _ _ _   _ _ _
+
+            """
+        ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
+        layers, _ = parse_source(source)
+        assert layers[0].rows[1][0] == Key("A", "F18", None)
+
     def test_flavor_on_oneshot_key(self) -> None:
         source = textwrap.dedent(
             """\
@@ -255,7 +263,6 @@ class TestParseErrors:
             blank_layer("default")
             + blank_layer("lwr")
             + blank_layer("rse")
-            + blank_layer("hyp")
             + blank_layer("adj")
             + blank_layer("mou")
         )

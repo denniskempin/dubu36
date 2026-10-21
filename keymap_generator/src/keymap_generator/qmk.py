@@ -38,6 +38,29 @@ def map_key_label_to_qmk(label: str) -> str:
     raise KeyError(f"Cannot map label {label} to qmk.")
 
 
+# QMK's MT()/OSM() take a modifier mask. These are the keycodes that have one.
+_QMK_MOD_MASK = {
+    "KC_LGUI": "MOD_LGUI",
+    "KC_RGUI": "MOD_RGUI",
+    "KC_LSFT": "MOD_LSFT",
+    "KC_RSFT": "MOD_RSFT",
+    "KC_LCTL": "MOD_LCTL",
+    "KC_RCTL": "MOD_RCTL",
+    "KC_LALT": "MOD_LALT",
+    "KC_RALT": "MOD_RALT",
+}
+
+
+def qmk_hold_argument(code: str) -> str:
+    """What MT() and OSM() are given for a hold keycode.
+
+    Real modifiers become their mask (`KC_LGUI` is `MOD_LGUI`). Any other
+    key, such as F18, stays a keycode: QMK's mod-tap still only stores a
+    modifier mask, so it cannot hold that key.
+    """
+    return _QMK_MOD_MASK.get(code, code)
+
+
 def map_key_to_qmk(key: Key) -> str:
     if not key.hold:
         return map_key_label_to_qmk(key.tap)
@@ -55,7 +78,7 @@ def map_key_to_qmk(key: Key) -> str:
     else:
         hold_code = get_qmk_key_press_code(key.hold)
         if hold_code:
-            hold_code = hold_code.replace("KC_", "MOD_")
+            hold_code = qmk_hold_argument(hold_code)
             if key.is_oneshot:
                 return f"OSM({hold_code})"
             tap_code = get_qmk_key_press_code(key.tap)

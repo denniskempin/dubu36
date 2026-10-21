@@ -28,4 +28,5 @@ def generate_keymap(
     template = Path(template_path).read_text(encoding="utf-8")
     for i, layer in enumerate(layers):
         template = template.replace(f"#LAYER_{i}#", generate_layer_fn(layer))
-    return HEADER + template.replace("#COMBOS#", generate_combos_fn(combos, layers[0]))
+    template = template.replace("#COMBOS#", generate_combos_fn(combos, layers[0]))
+    return HEADER + template

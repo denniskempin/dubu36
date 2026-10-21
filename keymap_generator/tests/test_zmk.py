@@ -50,7 +50,13 @@ class TestZmkKeys:
         assert map_key_to_zmk(Key("A", "CMD", None)) == "&mt_tp LGUI A"
 
     def test_layer_tap_hold_preferred(self) -> None:
-        assert map_key_to_zmk(Key("ESC", "MOU", "hp")) == "&lt_hp 5 ESC"
+        assert map_key_to_zmk(Key("ESC", "MOU", "hp")) == "&lt_hp 4 ESC"
+
+    def test_function_key_hold_is_tap_preferred(self) -> None:
+        assert map_key_to_zmk(Key("A", "F18", None)) == "&mt_tp F18 A"
+        assert map_key_to_zmk(Key("O", "F18", "tp")) == "&mt_tp F18 O"
+        assert map_key_to_zmk(Key("Z", "F19", None)) == "&mt_tp F19 Z"
+        assert map_key_to_zmk(Key('"', "F19", None)) == "&mt_tp F19 LS(SQT)"
 
     def test_oneshot_mod(self) -> None:
         assert map_key_to_zmk(Key("SHFT", "SHFT", None)) == "&omt_ LSHFT LSHFT"
