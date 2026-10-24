@@ -73,27 +73,6 @@ static void fn_chord(uint16_t fn, uint16_t kc, keyrecord_t *record) {
     }
 }
 
-// LT(0, kc) is reserved for the F17 hold: QMK's MT() only holds modifiers.
-// Tap sends kc. Hold registers F17 and leaves the rest of the board alone,
-// which is what makes other keys chord with F17.
-static bool process_f17_hold(uint16_t keycode, keyrecord_t *record) {
-    if ((keycode & 0xF000) != QK_LAYER_TAP || ((keycode >> 8) & 0x0F) != 0) {
-        return true;
-    }
-    uint8_t tap = keycode & 0xFF;
-    if (tap == KC_NO) {
-        return true;
-    }
-    if (record->tap.count && record->event.pressed) {
-        tap_code16(tap);
-    } else if (record->event.pressed) {
-        register_code(KC_F17);
-    } else if (!record->tap.count) {
-        unregister_code(KC_F17);
-    }
-    return false;
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
     case FN_F18_SQT: fn_chord(KC_F18, KC_QUOTE, record); return false;
@@ -155,14 +134,14 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     default:
         break;
     }
-    return process_f17_hold(keycode, record);
+    return true;
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
 	[0] = LAYOUT(
 KC_Q, KC_W, KC_F, KC_P, KC_G, KC_J, KC_L, KC_U, KC_Y, KC_ASTERISK,
 MT(MOD_LSFT,KC_A), MT(MOD_LCTL,KC_R), MT(MOD_LALT,KC_S), MT(MOD_LGUI,KC_T), KC_D, KC_H, MT(MOD_LGUI,KC_N), MT(MOD_LALT,KC_E), MT(MOD_LCTL,KC_I), MT(MOD_LSFT,KC_O),
-LT(4,KC_Z), LT(0,KC_X), LT(6,KC_C), LT(7,KC_V), KC_B, KC_K, LT(7,KC_M), LT(6,KC_COMMA), LT(0,KC_DOT), LT(4,KC_QUOTE),
+LT(4,KC_Z), MT(MOD_RALT,KC_X), LT(6,KC_C), LT(7,KC_V), KC_B, KC_K, LT(7,KC_M), LT(6,KC_COMMA), MT(MOD_RALT,KC_DOT), LT(4,KC_QUOTE),
 KC_BSPC, OSM(MOD_LSFT), OSL(2), OSL(1), KC_SPC, KC_NO
 	),
 	[1] = LAYOUT(

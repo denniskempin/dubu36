@@ -4,7 +4,7 @@
 
 / {
     // The hold-tap behaviors the keymap may use:
-    // - mt_  holds a key (a modifier, or a plain key such as F17), taps a key
+    // - mt_  holds a modifier, taps a key
     // - lt_  holds a layer, taps a key
     // - omt_ holds a modifier, one-shots it on tap
     // - olt_ holds a layer, one-shots it on tap

@@ -34,7 +34,7 @@ class TestZmkLabels:
         assert map_key_label_to_zmk("F19_LEFT") == "&fn_key F19 LEFT"
         assert map_key_label_to_zmk("F18_*") == "&fn_key F18 LS(N8)"
         assert map_key_label_to_zmk("F18_CMD_Q") == "&fn_key F18 LG(Q)"
-        assert map_key_to_zmk(Key("X", "F17", None)) == "&mt_tp F17 X"
+        assert map_key_to_zmk(Key("X", "RALT", None)) == "&mt_tp RALT X"
         assert map_key_to_zmk(Key("C", "APP", None)) == "&lt_tp 6 C"
         assert map_key_to_zmk(Key("V", "OS", None)) == "&lt_tp 7 V"
 

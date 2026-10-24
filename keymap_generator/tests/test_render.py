@@ -161,7 +161,7 @@ class TestHoldDisplay:
 
     def test_other_holds_stay_text(self) -> None:
         assert hold_display("MOU") == ("mou", None)
-        assert hold_display("F17") == ("f17", None)
+        assert hold_display("RALT") == ("R⌥", None)
         assert hold_display("APP") == ("app", None)
         assert hold_display("OS") == ("os", None)
 

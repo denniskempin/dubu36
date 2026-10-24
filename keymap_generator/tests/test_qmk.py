@@ -35,8 +35,8 @@ class TestQmkLabels:
         assert fn_enum_name("F19_*") == "FN_F19_STAR"
         assert map_key_label_to_qmk("F18_Q") == "FN_F18_Q"
         assert map_key_label_to_qmk("F19_,") == "FN_F19_COMMA"
-        assert map_key_to_qmk(Key("X", "F17", None)) == "LT(0,KC_X)"
-        assert map_key_to_qmk(Key(".", "F17", None)) == "LT(0,KC_DOT)"
+        assert map_key_to_qmk(Key("X", "RALT", None)) == "MT(MOD_RALT,KC_X)"
+        assert map_key_to_qmk(Key(".", "RALT", None)) == "MT(MOD_RALT,KC_DOT)"
         assert map_key_to_qmk(Key("C", "APP", None)) == "LT(6,KC_C)"
         assert map_key_to_qmk(Key("V", "OS", None)) == "LT(7,KC_V)"
 

@@ -17,34 +17,13 @@ static void fn_chord(uint16_t fn, uint16_t kc, keyrecord_t *record) {
     }
 }
 
-// LT(0, kc) is reserved for the F17 hold: QMK's MT() only holds modifiers.
-// Tap sends kc. Hold registers F17 and leaves the rest of the board alone,
-// which is what makes other keys chord with F17.
-static bool process_f17_hold(uint16_t keycode, keyrecord_t *record) {
-    if ((keycode & 0xF000) != QK_LAYER_TAP || ((keycode >> 8) & 0x0F) != 0) {
-        return true;
-    }
-    uint8_t tap = keycode & 0xFF;
-    if (tap == KC_NO) {
-        return true;
-    }
-    if (record->tap.count && record->event.pressed) {
-        tap_code16(tap);
-    } else if (record->event.pressed) {
-        register_code(KC_F17);
-    } else if (!record->tap.count) {
-        unregister_code(KC_F17);
-    }
-    return false;
-}
-
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
     switch (keycode) {
 #FN_CASES#
     default:
         break;
     }
-    return process_f17_hold(keycode, record);
+    return true;
 }
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {

@@ -170,9 +170,7 @@ Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
 `CMD_<anything mappable>` works without a table entry. `F18_` and `F19_` are chords, not
 modified keycodes: ZMK emits `&fn_key F18 <inner>` (the macro in `zmk_template.dtsi`) and QMK
-emits a custom keycode that `process_record_user` sends as the pair. F17 is a plain hold.
-ZMK uses `&mt_tp F17 <tap>` because that behavior's bindings are both `&kp`. QMK's `MT()`
-only holds modifiers, so the template treats `LT(0, kc)` as "tap kc, hold F17".
+emits a custom keycode that `process_record_user` sends as the pair.
 
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
