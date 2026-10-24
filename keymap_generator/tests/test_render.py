@@ -132,12 +132,6 @@ class TestTapDisplay:
         assert tap_display("Q") == ("Q", None)
         assert tap_display("HYP_[") == ("HYP_[", None)
 
-    def test_function_key_chord_draws_the_inner_key(self) -> None:
-        assert tap_display("F18_Q") == ("Q", None)
-        assert tap_display("F18_*") == ("*", None)
-        assert tap_display("F19_LEFT") == ("", "left")
-        assert tap_display("F18_RET") == ("", "return")
-
 
 class TestHoldDisplay:
     def test_layer_holds_use_unicode(self) -> None:
@@ -162,8 +156,8 @@ class TestHoldDisplay:
     def test_other_holds_stay_text(self) -> None:
         assert hold_display("MOU") == ("mou", None)
         assert hold_display("FN") == ("fn", None)
-        assert hold_display("APP") == ("app", None)
-        assert hold_display("OS") == ("os", None)
+        assert hold_display("APP") == ("R⌘", None)
+        assert hold_display("OS") == ("R⌥", None)
 
     def test_empty_hold(self) -> None:
         assert hold_display("") == ("", None)

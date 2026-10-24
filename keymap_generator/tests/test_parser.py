@@ -256,6 +256,28 @@ class TestParseErrors:
         with pytest.raises(ParseError, match="take no name"):
             parse_source(source)
 
+    def test_layer_modifier(self) -> None:
+        chunks = []
+        for name in LAYER_NAMES:
+            block = blank_layer(name)
+            if name == "app":
+                block = block.replace("layer app\n", "layer app + rgui\n", 1)
+            chunks.append(block)
+        layers, _ = parse_source("".join(chunks))
+        assert layers[6].modifier == "RGUI"
+        assert layers[0].modifier == ""
+
+    def test_unknown_modifier(self) -> None:
+        source = blank_layer("default").replace(
+            "layer default\n", "layer default + nope\n", 1
+        ) + "".join(blank_layer(name) for name in LAYER_NAMES[1:])
+        with pytest.raises(ParseError, match="unknown modifier"):
+            parse_source(source)
+
+    def test_overlay_cannot_hold_a_modifier(self) -> None:
+        with pytest.raises(ParseError, match="cannot hold a modifier"):
+            parse_source("overlay homerow + shft\n")
+
     def test_layer_needs_name(self) -> None:
         source = "layer\n  _\n"
         with pytest.raises(ParseError, match="need a name"):
@@ -318,17 +340,19 @@ class TestShippedKeymap:
 
         app = layers[6]
         assert app.name == "app"
+        assert app.modifier == "RGUI"
+        assert app.rows[0][0].tap == "Q"
         assert app.rows[0][7].tap == "UP"
         assert [key.tap for key in app.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
-        assert app.rows[0][0].tap == "F18_Q"
-        assert app.rows[0][9].tap == "F18_*"
-        assert app.rows[2][7].tap == "F18_,"
-        assert app.rows[3][0].tap == "F18_BKSP"
-        assert app.rows[3][4].tap == "F18_SPC"
+        assert app.rows[0][9].tap == "*"
+        assert app.rows[2][7].tap == ","
+        assert app.rows[3][0].tap == "BKSP"
+        assert app.rows[3][4].tap == "SPC"
 
         os_layer = layers[7]
         assert os_layer.name == "os"
-        assert os_layer.rows[0][0].tap == "F19_Q"
+        assert os_layer.modifier == "RALT"
+        assert os_layer.rows[0][0].tap == "Q"
         assert os_layer.rows[0][7].tap == "UP"
         assert [key.tap for key in os_layer.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
 

@@ -7,8 +7,7 @@ import pytest
 from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
     COMBO_SLOTS,
-    apply_fn_chords,
-    fn_enum_name,
+    apply_layer_mods,
     generate_qmk_combos,
     generate_qmk_layer,
     get_qmk_key_press_code,
@@ -27,14 +26,7 @@ class TestQmkLabels:
         assert get_qmk_key_press_code("CMD_Q") == "G(KC_Q)"
         assert get_qmk_key_press_code("HYP_LEFT") == "G(S(A(C(KC_LEFT))))"
 
-    def test_function_key_chords(self) -> None:
-        assert fn_enum_name("F18_Q") == "FN_F18_Q"
-        assert fn_enum_name("F18_,") == "FN_F18_COMMA"
-        assert fn_enum_name("F18_.") == "FN_F18_DOT"
-        assert fn_enum_name("F18_'") == "FN_F18_SQT"
-        assert fn_enum_name("F19_*") == "FN_F19_STAR"
-        assert map_key_label_to_qmk("F18_Q") == "FN_F18_Q"
-        assert map_key_label_to_qmk("F19_,") == "FN_F19_COMMA"
+    def test_function_and_layer_holds(self) -> None:
         assert map_key_label_to_qmk("FN") == "APPLE_FN"
         assert map_key_to_qmk(Key("X", "FN", None)) == "LT(0,KC_X)"
         assert map_key_to_qmk(Key(".", "FN", None)) == "LT(0,KC_DOT)"
@@ -114,22 +106,19 @@ class TestQmkCombos:
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
 
 
-class TestFnChords:
-    def test_enum_and_cases_follow_the_labels(self) -> None:
+class TestLayerMods:
+    def test_hold_registers_the_layers_modifier(self) -> None:
         layers = [
-            Layer(
-                "app",
-                [[Key("F18_Q", "", None), Key("F19_,", "", None)]],
-            )
+            Layer("default", []),
+            Layer("app", [], "RGUI"),
+            Layer("os", [], "RALT"),
         ]
-        text = apply_fn_chords("#FN_ENUM#\n#FN_CASES#\n", layers)
-        assert "FN_F18_Q," in text
-        assert "FN_F19_COMMA," in text
-        assert "case FN_F18_Q: fn_chord(KC_F18, KC_Q, record); return false;" in text
-        assert (
-            "case FN_F19_COMMA: fn_chord(KC_F19, KC_COMMA, record); return false;"
-            in text
-        )
+        text = apply_layer_mods("#LAYER_MODS#", layers)
+        assert "static uint8_t holds_rgui;" in text
+        assert "static uint8_t holds_ralt;" in text
+        assert "case 1:" in text
+        assert "counted_mod(&holds_rgui, MOD_RGUI, record->event.pressed);" in text
+        assert "counted_mod(&holds_ralt, MOD_RALT, record->event.pressed);" in text
 
 
 class TestQmkGeneration:

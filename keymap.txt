@@ -17,6 +17,9 @@
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
 // cell defines its own hold. Use `LABEL/_` to drop an inherited hold.
+// `layer name + MOD` holds MOD the whole time that layer is held. The
+// modifier goes down when the hold is decided and stays down until the
+// hold key is released, so every key on the layer is sent with it.
 //
 // Labels that clash with the `/`, `:` or `_` syntax are escaped with a
 // backslash: `\/`, `\:`, `\_`, and `\\` for the backslash key itself.
@@ -36,7 +39,7 @@ overlay homerow
 // characters in day-to-day writing.
 // X holds Fn (tap-preferred, same as the home row). C holds the app
 // layer and V the OS layer; the right hand mirrors those holds onto
-// . , and M.
+// . , and M. App holds right command and OS holds right option.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
@@ -79,21 +82,22 @@ layer mou
   CMD_Z  CMD_X  CMD_C  CMD_V  _          _      _      _      _      _
                 _      _      _          _      _      _
 
-// App shortcuts, held from C and from comma. Every key sends F18 plus itself.
-// N E I U are plain arrows, the same inverted-T as raise: U up, N left,
-// E down, I right. They do not send F18.
-layer app
-  F18_Q  F18_W  F18_F  F18_P  F18_G      F18_J  F18_L  UP     F18_Y  F18_*
-  F18_A  F18_R  F18_S  F18_T  F18_D      F18_H  LEFT   DOWN   RIGHT  F18_O
-  F18_Z  F18_X  F18_C  F18_V  F18_B      F18_K  F18_M  F18_,  F18_.  F18_'
-                F18_BKSP _     _         _      F18_SPC _
+// App shortcuts, held from C and from comma. Right command is down for
+// the whole hold, so every key here is sent with it, arrows included.
+// U N E I are the same inverted-T as raise: U up, N left, E down, I right.
+layer app + rgui
+  Q      W      F      P      G          J      L      UP     Y      *
+  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  Z      X      C      V      B          K      M      ,      .      '
+                BKSP   _      _          _      SPC    _
 
-// OS shortcuts, held from V and from M. Same map as app, with F19.
-layer os
-  F19_Q  F19_W  F19_F  F19_P  F19_G      F19_J  F19_L  UP     F19_Y  F19_*
-  F19_A  F19_R  F19_S  F19_T  F19_D      F19_H  LEFT   DOWN   RIGHT  F19_O
-  F19_Z  F19_X  F19_C  F19_V  F19_B      F19_K  F19_M  F19_,  F19_.  F19_'
-                F19_BKSP _     _         _      F19_SPC _
+// OS shortcuts, held from V and from M. Same keys as app, with right
+// option held instead of right command.
+layer os + ralt
+  Q      W      F      P      G          J      L      UP     Y      *
+  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  Z      X      C      V      B          K      M      ,      .      '
+                BKSP   _      _          _      SPC    _
 
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
 // the keys pressed together on the default layer.

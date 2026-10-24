@@ -6,11 +6,10 @@ import argparse
 import sys
 from pathlib import Path
 
-from keymap_generator.generate import generate_keymap
 from keymap_generator.parser import parse_keymap
 from keymap_generator.qmk import generate_qmk_keymap
 from keymap_generator.render import render_diagrams
-from keymap_generator.zmk import generate_zmk_combos, generate_zmk_layer
+from keymap_generator.zmk import generate_zmk_keymap
 
 # cli.py -> keymap_generator -> src -> keymap_generator/ (project root)
 _PROJECT_ROOT = Path(__file__).resolve().parents[2]
@@ -78,15 +77,7 @@ def main(argv: list[str] | None = None) -> int:
 
     layers, combos = parse_keymap(args.keymap)
     if args.command == "zmk":
-        print(
-            generate_keymap(
-                layers,
-                combos,
-                args.zmk_template,
-                generate_zmk_layer,
-                generate_zmk_combos,
-            )
-        )
+        print(generate_zmk_keymap(layers, combos, args.zmk_template))
     else:
         print(generate_qmk_keymap(layers, combos, args.qmk_template))
     return 0

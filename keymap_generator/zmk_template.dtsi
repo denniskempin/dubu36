@@ -68,32 +68,16 @@
             tapping-term-ms = <200>;
             bindings = <&mo>, <&sl>;
         };
+
+        // One hold-tap per `layer name + MOD`. Its hold side is the macro
+        // below: press the layer and the modifier together, and release the
+        // modifier before the layer. A hold-tap can pass the hold behavior
+        // only one parameter, so the modifier is fixed in the macro and the
+        // parameter is the layer number.
+#LAYER_MOD_HOLDS#
     };
 
-    // App and OS layer keys send F18 or F19 together with another key. Neither
-    // function key is a modifier, so this holds both until the key is released
-    // and then lets the key up before the function key. A second chord of the
-    // same function key started before the first is released can drop it early;
-    // the layers are used one key at a time.
-    macros {
-        fn_key: fn_key {
-            compatible = "zmk,behavior-macro-two-param";
-            #binding-cells = <2>;
-            wait-ms = <15>;
-            tap-ms = <0>;
-            bindings
-                = <&macro_param_1to1>
-                , <&macro_press &kp MACRO_PLACEHOLDER>
-                , <&macro_param_2to1>
-                , <&macro_press &kp MACRO_PLACEHOLDER>
-                , <&macro_pause_for_release>
-                , <&macro_param_2to1>
-                , <&macro_release &kp MACRO_PLACEHOLDER>
-                , <&macro_param_1to1>
-                , <&macro_release &kp MACRO_PLACEHOLDER>
-                ;
-        };
-    };
+#LAYER_MOD_MACROS#
 
     keymap {
             compatible = "zmk,keymap";

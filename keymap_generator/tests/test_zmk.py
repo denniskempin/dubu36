@@ -10,6 +10,7 @@ from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer
 from keymap_generator.zmk import (
     COMBO_PRIOR_IDLE_MS,
     COMBO_TIMEOUT_MS,
+    generate_layer_mod_macros,
     generate_zmk_combos,
     generate_zmk_layer,
     get_zmk_key_press_code,
@@ -29,14 +30,13 @@ class TestZmkLabels:
         assert get_zmk_key_press_code("CMD_Q") == "LG(Q)"
         assert get_zmk_key_press_code("HYP_LEFT") == "LA(LS(LC(LG(LEFT))))"
 
-    def test_function_key_chords(self) -> None:
-        assert map_key_label_to_zmk("F18_Q") == "&fn_key F18 Q"
-        assert map_key_label_to_zmk("F19_LEFT") == "&fn_key F19 LEFT"
-        assert map_key_label_to_zmk("F18_*") == "&fn_key F18 LS(N8)"
-        assert map_key_label_to_zmk("F18_CMD_Q") == "&fn_key F18 LG(Q)"
+    def test_layer_modifier_hold(self) -> None:
+        mods = {"APP": "RGUI", "OS": "RALT"}
         assert map_key_to_zmk(Key("X", "FN", None)) == "&mt_tp GLOBE X"
         assert map_key_to_zmk(Key("C", "APP", None)) == "&lt_tp 6 C"
-        assert map_key_to_zmk(Key("V", "OS", None)) == "&lt_tp 7 V"
+        assert map_key_to_zmk(Key("C", "APP", None), mods) == "&lt_app 6 C"
+        assert map_key_to_zmk(Key("V", "OS", None), mods) == "&lt_os 7 V"
+        assert map_key_to_zmk(Key(",", "APP", None), mods) == "&lt_app 6 COMMA"
 
     def test_special_and_blank(self) -> None:
         assert map_key_label_to_zmk("BT_0") == "&bt BT_SEL 0"
@@ -167,3 +167,17 @@ class TestZmkGeneration:
         assert lines[0].startswith("&trans &kp Q")
         assert lines[0].endswith("&kp Q &trans")
         assert lines[3] == " ".join(["&kp ESC"] * 6)
+
+    def test_layer_mod_macro_presses_modifier_with_the_layer(self) -> None:
+        layer = Layer("app", [], "RGUI")
+        rendered = generate_layer_mod_macros([layer])
+        assert "app_lm: app_lm" in rendered
+        assert "&macro_press &kp RGUI" in rendered
+        assert "&macro_release &kp RGUI" in rendered
+        assert rendered.index("&macro_release &kp RGUI") < rendered.index(
+            "&macro_release &mo"
+        )
+
+    def test_layer_mod_hold_is_tap_preferred_only(self) -> None:
+        with pytest.raises(KeyError, match="tap-preferred only"):
+            map_key_to_zmk(Key("C", "APP", "hp"), {"APP": "RGUI"})

@@ -27,11 +27,11 @@ keymaps using the [`keymap_generator`](keymap_generator/) tool.
 
 ![mou layer](diagrams/layer-mou.svg)
 
-### app (F18)
+### app (right command)
 
 ![app layer](diagrams/layer-app.svg)
 
-### os (F19)
+### os (right option)
 
 ![os layer](diagrams/layer-os.svg)
 
@@ -69,8 +69,10 @@ characters in day-to-day writing. The home row, pinky to index, is Shift, Contro
 Command (`A R S T`), mirrored on the right. The inner index (`D` and `H`) is a plain tap.
 Modifiers and layer shifts used in fluent writing sit on the thumbs instead, to reduce issues
 with hold-tap timing. `X` holds Fn, `C` holds the app layer and `V` the OS layer, mirrored
-onto `.`, `,` and `M`. Those two layers send F18 or F19 with the key, except `N E I U`, which
-are arrows in the same inverted-T as raise. Esc is the `W F` chord and Enter is `U Y`. The
+onto `.`, `,` and `M`. Holding app presses right command, and holding OS presses right
+option, from the moment the hold is decided until the hold key is released. Every key on
+those layers, including the `N E I U` arrows, is sent with that modifier. Esc is the `W F`
+chord and Enter is `U Y`. The
 remaining layers cover navigation and numbers, symbols, window management, bluetooth, and left
 hand only shortcuts for when the right hand is on the mouse.
 

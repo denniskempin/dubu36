@@ -28,82 +28,77 @@ def get_qmk_key_press_code(label: str) -> str | None:
     return None
 
 
-# Characters that cannot sit in a C identifier, spelled out so F18_, becomes
-# FN_F18_COMMA. Anything else in an F18_/F19_ label is a generator bug.
-_FN_SLUG = {
-    ",": "COMMA",
-    ".": "DOT",
-    "'": "SQT",
-    "*": "STAR",
-    "/": "SLASH",
-    "\\": "BSLH",
-    ";": "SEMI",
-    "-": "MINUS",
-    "=": "EQUAL",
-    "[": "LBKT",
-    "]": "RBKT",
-    "`": "GRAVE",
-}
-
-# F18_ and F19_ chord a function key with another key. QMK has no keycode for
-# that, so each label becomes a custom keycode the template's
-# process_record_user sends as the pair.
-_FN_KEYS = (("F18_", "KC_F18"), ("F19_", "KC_F19"))
+def qmk_mod_code(label: str) -> str:
+    """`MOD_RGUI` for a modifier label such as `RGUI`."""
+    code = get_qmk_key_press_code(label)
+    if not code or not code.startswith("KC_"):
+        raise KeyError(f"Cannot hold {label} as a QMK modifier.")
+    return code.replace("KC_", "MOD_", 1)
 
 
-def fn_enum_name(label: str) -> str:
-    """C identifier for an F18_/F19_ chord label, such as `FN_F18_Q`."""
-    parts: list[str] = []
-    for char in label:
-        if char.isalnum() or char == "_":
-            parts.append(char)
-        elif char in _FN_SLUG:
-            parts.append(_FN_SLUG[char])
-        else:
-            raise KeyError(f"Cannot name a QMK chord for {label!r}.")
-    return "FN_" + "".join(parts)
+def apply_layer_mods(text: str, layers: list[Layer]) -> str:
+    """Fill `#LAYER_MODS#` so a layer hold also holds its declared modifier.
 
-
-def fn_chord(label: str) -> tuple[str, str, str] | None:
-    """`(enum name, function key, inner key)` for an F18_/F19_ label."""
-    for prefix, function_key in _FN_KEYS:
-        if not label.startswith(prefix):
+    QMK's `LT(layer, kc)` activates the layer and cannot hold a modifier at
+    the same time. The generated function registers the modifier when that
+    layer-tap is a hold, and counts overlapping holds of the same modifier.
+    """
+    counters: dict[str, str] = {}
+    cases: list[str] = []
+    for index, layer in enumerate(layers):
+        if not layer.modifier:
             continue
-        inner = get_qmk_key_press_code(label.removeprefix(prefix))
-        if inner is None:
-            return None
-        return fn_enum_name(label), function_key, inner
-    return None
-
-
-def fn_labels(layers: list[Layer]) -> list[str]:
-    """Every F18_/F19_ label used in `layers`, in a stable order."""
-    found: set[str] = set()
-    for layer in layers:
-        for row in layer.rows:
-            for key in row:
-                for label in (key.tap, key.hold or ""):
-                    if fn_chord(label):
-                        found.add(label)
-    return sorted(found)
-
-
-def apply_fn_chords(text: str, layers: list[Layer]) -> str:
-    """Fill `#FN_ENUM#` and `#FN_CASES#` from the chords `layers` use."""
-    enum_lines: list[str] = []
-    case_lines: list[str] = []
-    for label in fn_labels(layers):
-        chord = fn_chord(label)
-        if chord is None:
-            continue
-        name, function_key, inner = chord
-        enum_lines.append(f"    {name},")
-        case_lines.append(
-            f"    case {name}: fn_chord({function_key}, {inner}, record); return false;"
+        mod = qmk_mod_code(layer.modifier)
+        counter = "holds_" + mod.removeprefix("MOD_").lower()
+        counters[mod] = counter
+        cases.append(
+            "\n".join(
+                [
+                    f"    case {index}:",
+                    f"        counted_mod(&{counter}, {mod}, record->event.pressed);",
+                    "        break;",
+                ]
+            )
         )
-    return text.replace("#FN_ENUM#", "\n".join(enum_lines)).replace(
-        "#FN_CASES#", "\n".join(case_lines)
+    if not cases:
+        body = "\n".join(
+            [
+                "static void process_layer_mod("
+                "uint16_t keycode, keyrecord_t *record) {",
+                "    (void)keycode;",
+                "    (void)record;",
+                "}",
+            ]
+        )
+        return text.replace("#LAYER_MODS#", body)
+    declarations = "\n".join(f"static uint8_t {name};" for name in counters.values())
+    body = "\n".join(
+        [
+            declarations,
+            "",
+            "static void counted_mod(uint8_t *holds, uint8_t mod, bool pressed) {",
+            "    if (pressed) {",
+            "        if ((*holds)++ == 0) {",
+            "            register_mods(mod);",
+            "        }",
+            "    } else if (*holds > 0 && --(*holds) == 0) {",
+            "        unregister_mods(mod);",
+            "    }",
+            "}",
+            "",
+            "static void process_layer_mod(uint16_t keycode, keyrecord_t *record) {",
+            "    if ((keycode & 0xF000) != QK_LAYER_TAP || record->tap.count) {",
+            "        return;",
+            "    }",
+            "    switch ((keycode >> 8) & 0x0F) {",
+            *cases,
+            "    default:",
+            "        break;",
+            "    }",
+            "}",
+        ]
     )
+    return text.replace("#LAYER_MODS#", body)
 
 
 def generate_qmk_keymap(
@@ -111,7 +106,7 @@ def generate_qmk_keymap(
     combos: list[Combo],
     template_path: str | Path,
 ) -> str:
-    """Fill the QMK template, including the function-key chord table."""
+    """Fill the QMK template, including layer-modifier holds."""
     text = generate_keymap(
         layers,
         combos,
@@ -119,13 +114,10 @@ def generate_qmk_keymap(
         generate_qmk_layer,
         generate_qmk_combos,
     )
-    return apply_fn_chords(text, layers)
+    return apply_layer_mods(text, layers)
 
 
 def map_key_label_to_qmk(label: str) -> str:
-    chord = fn_chord(label)
-    if chord:
-        return chord[0]
     code = get_qmk_key_press_code(label)
     if code:
         return code

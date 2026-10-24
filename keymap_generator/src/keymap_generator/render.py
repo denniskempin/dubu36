@@ -90,13 +90,13 @@ HOLD_DISPLAY = {
     "CMD": "⌘",  # U+2318 PLACE OF INTEREST SIGN
     "ALT": "⌥",  # U+2325 OPTION KEY
     "CTRL": "⌃",  # U+2303 UP ARROWHEAD
-    "FN": "fn",
     "HYP": "✦",  # U+2726 BLACK FOUR POINTED STAR
     "LWR": "⇊",  # U+21CA DOWNWARDS PAIRED ARROWS
     "RSE": "⇈",  # U+21C8 UPWARDS PAIRED ARROWS
     "MOU": "mou",
-    "APP": "app",
-    "OS": "os",
+    "APP": "R⌘",
+    "OS": "R⌥",
+    "FN": "fn",
 }
 
 # Hold-box / hold-label accent. Only holds that themselves switch to the
@@ -282,14 +282,7 @@ def use_glyph(
 
 
 def tap_display(label: str) -> tuple[str, str | None]:
-    """Return (text, glyph): glyph is set (and text cleared) for known icons.
-
-    F18_ and F19_ chords draw as the key they send. The layer board's name
-    says which function key is held with it.
-    """
-    for prefix in ("F18_", "F19_"):
-        if label.startswith(prefix):
-            return tap_display(label.removeprefix(prefix))
+    """Return (text, glyph): glyph is set (and text cleared) for known icons."""
     if label in TAP_GLYPHS:
         return "", TAP_GLYPHS[label]
     return TAP_DISPLAY.get(label, label), None

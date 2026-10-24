@@ -4,15 +4,10 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from keymap_generator.generate import (
-    CombosGenerator,
-    LayerGenerator,
-    generate_keymap,
-)
 from keymap_generator.parser import parse_keymap
 from keymap_generator.qmk import generate_qmk_keymap
 from keymap_generator.render import render_diagrams
-from keymap_generator.zmk import generate_zmk_combos, generate_zmk_layer
+from keymap_generator.zmk import generate_zmk_keymap
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 REPO_ROOT = PROJECT_ROOT.parent
@@ -22,19 +17,13 @@ QMK_KEYMAP = REPO_ROOT / "dubu36-ergo/qmk/dubu36ergo/keymaps/default/keymap.c"
 DIAGRAMS = REPO_ROOT / "diagrams"
 
 
-def _generate(
-    template: Path, layer_fn: LayerGenerator, combos_fn: CombosGenerator
-) -> str:
+def test_zmk_output_matches_committed_shared_keymap() -> None:
+    expected = ZMK_KEYMAP.read_text(encoding="utf-8")
     layers, combos = parse_keymap(REPO_ROOT / "keymap.txt")
     # The CLI prints the result, which appends a trailing newline matching
     # the committed keymap files produced by the Makefile.
-    return generate_keymap(layers, combos, template, layer_fn, combos_fn) + "\n"
-
-
-def test_zmk_output_matches_committed_shared_keymap() -> None:
-    expected = ZMK_KEYMAP.read_text(encoding="utf-8")
-    generated = _generate(
-        PROJECT_ROOT / "zmk_template.dtsi", generate_zmk_layer, generate_zmk_combos
+    generated = (
+        generate_zmk_keymap(layers, combos, PROJECT_ROOT / "zmk_template.dtsi") + "\n"
     )
     assert generated == expected
 

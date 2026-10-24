@@ -81,13 +81,11 @@ KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     "SHFT": FirmwareCodes("LSHFT", "KC_LSFT"),
     "CTRL": FirmwareCodes("LCTRL", "KC_LCTL"),
     "ALT": FirmwareCodes("LALT", "KC_LALT"),
+    "RALT": FirmwareCodes("RALT", "KC_RALT"),
+    "RGUI": FirmwareCodes("RGUI", "KC_RGUI"),
     # Apple Fn / Globe. Not one of the eight HID modifiers, so QMK cannot
     # hold it with MT(); the template turns a hold into LT(0, kc).
     "FN": FirmwareCodes("GLOBE", "APPLE_FN"),
-    # Function keys the app and OS layers chord with. Those chords use the
-    # F18_ and F19_ prefixes rather than these entries.
-    "F18": FirmwareCodes("F18", "KC_F18"),
-    "F19": FirmwareCodes("F19", "KC_F19"),
 }
 
 # Maps labels from the keymap grid to a ready-made binding in each firmware,

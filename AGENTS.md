@@ -168,9 +168,12 @@ Editing this file changes all three generated artifacts, so follow it with `make
 
 Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends read it. The
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
-`CMD_<anything mappable>` works without a table entry. `F18_` and `F19_` are chords, not
-modified keycodes: ZMK emits `&fn_key F18 <inner>` (the macro in `zmk_template.dtsi`) and QMK
-emits a custom keycode that `process_record_user` sends as the pair. `FN` is the Apple Fn key.
+`CMD_<anything mappable>` works without a table entry. A layer header `layer name + MOD`
+holds that modifier for the whole layer. ZMK cannot pass two parameters into a hold-tap's
+hold behavior, so the generator emits a one-parameter macro (`&lt_<name>`) that presses `&mo`
+and `&kp MOD` together and releases the modifier first. QMK keeps `LT(layer, kc)` and
+`process_layer_mod` registers the modifier while that layer-tap is a hold. Both firmwares
+count overlapping holds of the same modifier. `FN` is the Apple Fn key.
 ZMK holds it with `&mt_tp GLOBE <tap>` (`GLOBE` is consumer usage 0x029D, and the consumer
 report is already the full range, so that usage fits). QMK's `MT()` only holds the eight HID
 modifiers, so the template treats `LT(0, kc)` as "tap kc, hold Fn" and sends 0x029D with
@@ -194,10 +197,9 @@ Enter firing right after a burst of typing and would also gate Esc.
 
 Known gaps, deliberate:
 
-- F18/F19 chords are not refcounted. Holding two keys on the app or OS layer at once can
-  release the function key when the first of those keys comes up. The layers are tapped one
-  key at a time. ZMK's consumer report does the same for two overlapping Fn holds: releasing
-  one clears every slot of that usage. QMK counts the two Fn holds.
+- The app and OS holds are tap-preferred only. A `hp` flavor on `C/app` is rejected.
+  ZMK's consumer report still clears every slot of one usage when a Fn hold is released, so
+  two overlapping Fn holds drop the Globe key when the first comes up. QMK counts those.
 - `GLOBE` is the Fn key macOS accepts for Globe shortcuts (Globe-N, Globe-E, and the like).
   It does not reproduce every chord of the Fn key on an Apple keyboard, such as Fn-Backspace
   for forward delete or Fn-arrows for Home, End, Page Up, and Page Down.
