@@ -104,7 +104,7 @@
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
 &trans &mt_tp LSHFT A &mt_tp LCTRL R &mt_tp LALT S &mt_tp LGUI T &kp D &kp H &mt_tp LGUI N &mt_tp LALT E &mt_tp LCTRL I &mt_tp LSHFT O &trans
-&trans &lt_tp 4 Z &mt_tp RALT X &lt_tp 6 C &lt_tp 7 V &kp B &kp K &lt_tp 7 M &lt_tp 6 COMMA &mt_tp RALT DOT &lt_tp 4 SQT &trans
+&trans &lt_tp 4 Z &mt_tp GLOBE X &lt_tp 6 C &lt_tp 7 V &kp B &kp K &lt_tp 7 M &lt_tp 6 COMMA &mt_tp GLOBE DOT &lt_tp 4 SQT &trans
 &kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &olt_ 1 1 &kp SPC &trans
                     >;
             };

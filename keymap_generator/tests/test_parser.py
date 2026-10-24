@@ -304,14 +304,14 @@ class TestShippedKeymap:
         ]
         assert [(key.tap, key.hold) for key in default.rows[2]] == [
             ("Z", "ADJ"),
-            ("X", "RALT"),
+            ("X", "FN"),
             ("C", "APP"),
             ("V", "OS"),
             ("B", ""),
             ("K", ""),
             ("M", "OS"),
             (",", "APP"),
-            (".", "RALT"),
+            (".", "FN"),
             ("'", "ADJ"),
         ]
         assert combos == [Combo("W", "F", "ESC"), Combo("U", "Y", "RET")]

@@ -34,13 +34,13 @@ overlay homerow
 
 // Colemak, with special characters remapped to prioritize commonly used
 // characters in day-to-day writing.
-// X holds right option (tap-preferred, same as the home row). C holds the
-// app layer and V the OS layer; the right hand mirrors those holds onto
+// X holds Fn (tap-preferred, same as the home row). C holds the app
+// layer and V the OS layer; the right hand mirrors those holds onto
 // . , and M.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
-  Z/adj  X/ralt C/app  V/os   B          K      M/os   ,/app  ./ralt '/adj
+  Z/adj  X/fn   C/app  V/os   B          K      M/os   ,/app  ./fn   '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.

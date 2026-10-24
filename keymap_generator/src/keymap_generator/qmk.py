@@ -153,6 +153,13 @@ def map_key_to_qmk(key: Key) -> str:
         if tap_code:
             return f"LT({LAYER_LABELS[key.hold]},{tap_code})"
     else:
+        # Fn is the Apple Globe key, a consumer usage, so MT() cannot hold
+        # it. LT(0, kc) is the stand-in the template turns into "tap kc,
+        # hold Fn".
+        if key.hold == "FN" and not key.is_oneshot:
+            tap_code = get_qmk_key_press_code(key.tap)
+            if tap_code:
+                return f"LT(0,{tap_code})"
         hold_code = get_qmk_key_press_code(key.hold)
         if hold_code:
             hold_code = hold_code.replace("KC_", "MOD_")

@@ -89,8 +89,8 @@ HOLD_DISPLAY = {
     "SHFT": "⇧",  # U+21E7 UPWARDS WHITE ARROW
     "CMD": "⌘",  # U+2318 PLACE OF INTEREST SIGN
     "ALT": "⌥",  # U+2325 OPTION KEY
-    "RALT": "R⌥",
     "CTRL": "⌃",  # U+2303 UP ARROWHEAD
+    "FN": "fn",
     "HYP": "✦",  # U+2726 BLACK FOUR POINTED STAR
     "LWR": "⇊",  # U+21CA DOWNWARDS PAIRED ARROWS
     "RSE": "⇈",  # U+21C8 UPWARDS PAIRED ARROWS

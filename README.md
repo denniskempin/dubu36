@@ -44,7 +44,7 @@ keys, then the six thumb keys. Every whitespace separated cell is one key:
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
-  Z/adj  X/ralt C/app  V/os   B          K      M/os   ,/app  ./ralt '/adj
+  Z/adj  X/fn   C/app  V/os   B          K      M/os   ,/app  ./fn   '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 ```
 
@@ -68,10 +68,9 @@ The default layer is Colemak, with special characters remapped to prioritize com
 characters in day-to-day writing. The home row, pinky to index, is Shift, Control, Option,
 Command (`A R S T`), mirrored on the right. The inner index (`D` and `H`) is a plain tap.
 Modifiers and layer shifts used in fluent writing sit on the thumbs instead, to reduce issues
-with hold-tap timing. `X` holds right option, `C` holds the app layer and `V` the OS layer,
-mirrored onto `.`, `,` and `M`. Those two layers send F18 or F19 with the key, except
-`N E I U`, which are arrows in the same inverted-T as raise. Esc is the `W F` chord and Enter
-is `U Y`. The
+with hold-tap timing. `X` holds Fn, `C` holds the app layer and `V` the OS layer, mirrored
+onto `.`, `,` and `M`. Those two layers send F18 or F19 with the key, except `N E I U`, which
+are arrows in the same inverted-T as raise. Esc is the `W F` chord and Enter is `U Y`. The
 remaining layers cover navigation and numbers, symbols, window management, bluetooth, and left
 hand only shortcuts for when the right hand is on the mouse.
 

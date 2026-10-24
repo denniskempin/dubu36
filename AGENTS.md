@@ -170,7 +170,12 @@ Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
 `CMD_<anything mappable>` works without a table entry. `F18_` and `F19_` are chords, not
 modified keycodes: ZMK emits `&fn_key F18 <inner>` (the macro in `zmk_template.dtsi`) and QMK
-emits a custom keycode that `process_record_user` sends as the pair.
+emits a custom keycode that `process_record_user` sends as the pair. `FN` is the Apple Fn key.
+ZMK holds it with `&mt_tp GLOBE <tap>` (`GLOBE` is consumer usage 0x029D, and the consumer
+report is already the full range, so that usage fits). QMK's `MT()` only holds the eight HID
+modifiers, so the template treats `LT(0, kc)` as "tap kc, hold Fn" and sends 0x029D with
+`host_consumer_send`. `KEYBOARD_SHARED_EP` in the QMK rules is what lets macOS see that usage
+together with the next key.
 
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
@@ -191,7 +196,11 @@ Known gaps, deliberate:
 
 - F18/F19 chords are not refcounted. Holding two keys on the app or OS layer at once can
   release the function key when the first of those keys comes up. The layers are tapped one
-  key at a time.
+  key at a time. ZMK's consumer report does the same for two overlapping Fn holds: releasing
+  one clears every slot of that usage. QMK counts the two Fn holds.
+- `GLOBE` is the Fn key macOS accepts for Globe shortcuts (Globe-N, Globe-E, and the like).
+  It does not reproduce every chord of the Fn key on an Apple keyboard, such as Fn-Backspace
+  for forward delete or Fn-arrows for Home, End, Page Up, and Page Down.
 - Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
   `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
   emits the combos that exist.
