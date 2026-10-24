@@ -29,6 +29,15 @@ class TestZmkLabels:
         assert get_zmk_key_press_code("CMD_Q") == "LG(Q)"
         assert get_zmk_key_press_code("HYP_LEFT") == "LA(LS(LC(LG(LEFT))))"
 
+    def test_function_key_chords(self) -> None:
+        assert map_key_label_to_zmk("F18_Q") == "&fn_key F18 Q"
+        assert map_key_label_to_zmk("F19_LEFT") == "&fn_key F19 LEFT"
+        assert map_key_label_to_zmk("F18_*") == "&fn_key F18 LS(N8)"
+        assert map_key_label_to_zmk("F18_CMD_Q") == "&fn_key F18 LG(Q)"
+        assert map_key_to_zmk(Key("X", "F17", None)) == "&mt_tp F17 X"
+        assert map_key_to_zmk(Key("C", "APP", None)) == "&lt_tp 6 C"
+        assert map_key_to_zmk(Key("V", "OS", None)) == "&lt_tp 7 V"
+
     def test_special_and_blank(self) -> None:
         assert map_key_label_to_zmk("BT_0") == "&bt BT_SEL 0"
         assert map_key_label_to_zmk("") == "&trans"
@@ -122,7 +131,7 @@ class TestZmkCombos:
         assert "layers = <0>;" in rendered
 
     def test_idle_guard_is_left_out_while_it_is_zero(self) -> None:
-        assert COMBO_PRIOR_IDLE_MS == 0, "the combos in keymap.txt do not need one"
+        assert COMBO_PRIOR_IDLE_MS == 0, "zero omits the property from the keymap"
         rendered = generate_zmk_combos([self.esc_combo], grid_layer())
         assert "require-prior-idle-ms" not in rendered
 

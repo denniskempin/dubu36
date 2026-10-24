@@ -168,7 +168,11 @@ Editing this file changes all three generated artifacts, so follow it with `make
 
 Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends read it. The
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
-`CMD_<anything mappable>` works without a table entry.
+`CMD_<anything mappable>` works without a table entry. `F18_` and `F19_` are chords, not
+modified keycodes: ZMK emits `&fn_key F18 <inner>` (the macro in `zmk_template.dtsi`) and QMK
+emits a custom keycode that `process_record_user` sends as the pair. F17 is a plain hold.
+ZMK uses `&mt_tp F17 <tap>` because that behavior's bindings are both `&kp`. QMK's `MT()`
+only holds modifiers, so the template treats `LT(0, kc)` as "tap kc, hold F17".
 
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
@@ -176,17 +180,20 @@ against the keycode the keymap holds, so a trigger on the home row has to be nam
 `MT(...)` keycode rather than the plain key press it produces.
 
 What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
-pair the typist never rolls across cannot be triggered by accident. `, .` (Enter) and `X C`
-(Esc) are middle/ring pairs. Colemak's frequent rolls such as `st` or `ne` would fire a home-row
-combo constantly. Esc and Enter also sit on the raise layer at the outer and inner left thumbs,
-so a one-shot or held `rse` reaches them without a chord. Esc stays on lwr as well.
-`COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed; it is 0
-here, and left out of the generated keymap, because requiring idle time would stop Enter
-firing right after a burst of typing.
+pair the typist never rolls across cannot be triggered by accident. `W F` (Esc) is a top-row
+ring/middle pair Colemak does not roll. `U Y` (Enter) is the matching pair on the right, and
+it does occur in rolls such as `buy` and `guy`. Colemak's frequent rolls such as `st` or `ne`
+would fire a home-row combo constantly. Esc and Enter also sit on the raise layer at the outer
+and inner left thumbs, so a one-shot or held `rse` reaches them without a chord. Esc stays on
+lwr as well. `COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed;
+it is 0 here, and left out of the generated keymap, because requiring idle time would stop
+Enter firing right after a burst of typing and would also gate Esc.
 
 Known gaps, deliberate:
 
-- `qmk_template.c` only has `#LAYER_0#`..`#LAYER_2#`, so QMK gets the first three layers.
+- F18/F19 chords are not refcounted. Holding two keys on the app or OS layer at once can
+  release the function key when the first of those keys comes up. The layers are tapped one
+  key at a time.
 - Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
   `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
   emits the combos that exist.

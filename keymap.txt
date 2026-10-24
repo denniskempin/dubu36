@@ -24,18 +24,22 @@
 // Modifiers used primarily in shortcuts, mapped to the home-row. The modifiers
 // and layer shifts used in fluent writing live on the thumb keys instead, to
 // reduce issues with hold-tap timing.
+// Pinky to index, mirrored on the right: A shift, R control, S option,
+// T command. The inner index (D and H) is a plain tap.
 overlay homerow
   _      _      _      _      _          _      _      _      _      _
-  hyp    shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   hyp
+  shft   ctrl   alt    cmd    _          _      cmd    alt    ctrl   shft
   _      _      _      _      _          _      _      _      _      _
                 _      _      _          _      _      _
 
 // Colemak, with special characters remapped to prioritize commonly used
 // characters in day-to-day writing.
+// X holds F17 (tap-preferred, same as the home row). C holds the app layer
+// and V the OS layer; the right hand mirrors those holds onto . , and M.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
-  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+  Z/adj  X/F17  C/app  V/os   B          K      M/os   ,/app  ./F17  '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.
@@ -52,7 +56,8 @@ layer lwr: homerow
   _      >      ]      )      }          +      =      ?      !      "
                 _      _      _          SHFT_TAB  TAB     _
 
-// Window management and other Hyper key shortcuts.
+// Window management and other Hyper key shortcuts. No key holds this layer
+// now that the pinkies are shift; the HYP_ chords on raise still fire alone.
 layer hyp
   HYP_Q  HYP_W  HYP_F  HYP_P  HYP_G      HYP_1    HYP_2     HYP_3     HYP_4      HYP_5
   HYP_A  HYP_R  HYP_S  HYP_T  HYP_D      _        HYP_LEFT  HYP_UP    HYP_RIGHT  _
@@ -73,14 +78,32 @@ layer mou
   CMD_Z  CMD_X  CMD_C  CMD_V  _          _      _      _      _      _
                 _      _      _          _      _      _
 
+// App shortcuts, held from C and from comma. Every key sends F18 plus itself.
+// N E I U are plain arrows, the same inverted-T as raise: U up, N left,
+// E down, I right. They do not send F18.
+layer app
+  F18_Q  F18_W  F18_F  F18_P  F18_G      F18_J  F18_L  UP     F18_Y  F18_*
+  F18_A  F18_R  F18_S  F18_T  F18_D      F18_H  LEFT   DOWN   RIGHT  F18_O
+  F18_Z  F18_X  F18_C  F18_V  F18_B      F18_K  F18_M  F18_,  F18_.  F18_'
+                F18_BKSP _     _         _      F18_SPC _
+
+// OS shortcuts, held from V and from M. Same map as app, with F19.
+layer os
+  F19_Q  F19_W  F19_F  F19_P  F19_G      F19_J  F19_L  UP     F19_Y  F19_*
+  F19_A  F19_R  F19_S  F19_T  F19_D      F19_H  LEFT   DOWN   RIGHT  F19_O
+  F19_Z  F19_X  F19_C  F19_V  F19_B      F19_K  F19_M  F19_,  F19_.  F19_'
+                F19_BKSP _     _         _      F19_SPC _
+
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
 // the keys pressed together on the default layer.
 //
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word. A home-row pair like S+T would catch every `st`.
-// `, .` (Enter) and `X C` (Esc) are middle/ring pairs Colemak does not roll.
+// W+F (Esc) is a top-row ring/middle pair Colemak does not roll. U+Y (Enter)
+// is the matching pair on the right; it does occur in rolls such as "buy"
+// and "guy", so that chord can fire inside those words.
 // Esc and Enter also sit on rse (outer and inner left thumbs), so one-shot or
 // held raise plus that key types them without a chord. Esc stays on lwr as well.
 combos
-  , . -> RET
-  X C -> ESC
+  W F -> ESC
+  U Y -> RET

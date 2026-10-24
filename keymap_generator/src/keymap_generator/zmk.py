@@ -21,11 +21,11 @@ COMBO_TIMEOUT_MS = 50
 COMBO_LAYER = 0
 
 # How long the board must have been idle before a combo may fire at all. Zero
-# lets one fire mid-word, which is only safe while the combos here sit on key
-# pairs ordinary typing never rolls across. A combo on the home row would need
-# this raised to stop `st` or `ne` triggering it, and would then pay for it by
-# refusing to fire straight after a burst of typing -- which is exactly when
-# Esc gets pressed. Omitted from the output when zero, as that is ZMK's default.
+# lets one fire mid-word. That is safe for W+F (Esc), which Colemak does not
+# roll. U+Y (Enter) does occur in "buy" and "guy"; the guard stays off anyway,
+# because turning it on would also stop Esc, and would stop Enter from firing
+# straight after a burst of typing. A home-row combo such as `st` would need
+# this raised. Omitted from the output when zero, as that is ZMK's default.
 COMBO_PRIOR_IDLE_MS = 0
 
 
@@ -45,7 +45,27 @@ def get_zmk_key_press_code(label: str) -> str | None:
     return None
 
 
+# F18 and F19 are keys, not modifiers, so the app and OS layers chord them
+# with `&fn_key` (defined in the ZMK template) instead of a modified keycode.
+_FN_CHORDS = (("F18_", "F18"), ("F19_", "F19"))
+
+
+def fn_key_binding(label: str) -> str | None:
+    """`&fn_key F18 Q` for an `F18_Q` label, or None when it is not one."""
+    for prefix, function_key in _FN_CHORDS:
+        if not label.startswith(prefix):
+            continue
+        inner = get_zmk_key_press_code(label.removeprefix(prefix))
+        if inner is None:
+            return None
+        return f"&fn_key {function_key} {inner}"
+    return None
+
+
 def map_key_label_to_zmk(label: str) -> str:
+    chord = fn_key_binding(label)
+    if chord:
+        return chord
     code = get_zmk_key_press_code(label)
     if code:
         return f"&kp {code}"

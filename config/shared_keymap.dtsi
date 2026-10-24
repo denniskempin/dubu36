@@ -5,7 +5,7 @@
 
 / {
     // The hold-tap behaviors the keymap may use:
-    // - mt_  holds a modifier, taps a key
+    // - mt_  holds a key (a modifier, or a plain key such as F17), taps a key
     // - lt_  holds a layer, taps a key
     // - omt_ holds a modifier, one-shots it on tap
     // - olt_ holds a layer, one-shots it on tap
@@ -71,6 +71,31 @@
         };
     };
 
+    // App and OS layer keys send F18 or F19 together with another key. Neither
+    // function key is a modifier, so this holds both until the key is released
+    // and then lets the key up before the function key. A second chord of the
+    // same function key started before the first is released can drop it early;
+    // the layers are used one key at a time.
+    macros {
+        fn_key: fn_key {
+            compatible = "zmk,behavior-macro-two-param";
+            #binding-cells = <2>;
+            wait-ms = <15>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_press &kp MACRO_PLACEHOLDER>
+                , <&macro_param_2to1>
+                , <&macro_press &kp MACRO_PLACEHOLDER>
+                , <&macro_pause_for_release>
+                , <&macro_param_2to1>
+                , <&macro_release &kp MACRO_PLACEHOLDER>
+                , <&macro_param_1to1>
+                , <&macro_release &kp MACRO_PLACEHOLDER>
+                ;
+        };
+    };
+
     keymap {
             compatible = "zmk,keymap";
 
@@ -78,8 +103,8 @@
                     display-name = "Base";
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
-&trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
-&trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
+&trans &mt_tp LSHFT A &mt_tp LCTRL R &mt_tp LALT S &mt_tp LGUI T &kp D &kp H &mt_tp LGUI N &mt_tp LALT E &mt_tp LCTRL I &mt_tp LSHFT O &trans
+&trans &lt_tp 4 Z &mt_tp F17 X &lt_tp 6 C &lt_tp 7 V &kp B &kp K &lt_tp 7 M &lt_tp 6 COMMA &mt_tp F17 DOT &lt_tp 4 SQT &trans
 &kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &olt_ 1 1 &kp SPC &trans
                     >;
             };
@@ -88,7 +113,7 @@
                     display-name = "Nav/Num";
                     bindings = <
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
-&trans &mo 3 &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &lt_tp 3 LG(RBKT) &trans
+&trans &kp LSHFT &mt_tp LCTRL N4 &mt_tp LALT N5 &mt_tp LGUI N6 &trans &kp LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LCTRL RIGHT &mt_tp LSHFT LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
 &kp ESC &trans &kp RET &trans &trans &trans
                     >;
@@ -98,7 +123,7 @@
                     display-name = "Symbols";
                     bindings = <
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
-&trans &lt_tp 3 ESC &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &lt_tp 3 LS(N3) &trans
+&trans &mt_tp LSHFT ESC &mt_tp LCTRL LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &kp LS(LBKT) &kp KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LCTRL SEMI &mt_tp LSHFT LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
 &trans &trans &trans &kp LS(TAB) &kp TAB &trans
                     >;
@@ -133,19 +158,39 @@
 &trans &trans &trans &trans &trans &trans
                     >;
             };
+
+            app_layer {
+                    display-name = "App";
+                    bindings = <
+&trans &fn_key F18 Q &fn_key F18 W &fn_key F18 F &fn_key F18 P &fn_key F18 G &fn_key F18 J &fn_key F18 L &kp UP &fn_key F18 Y &fn_key F18 LS(N8) &trans
+&trans &fn_key F18 A &fn_key F18 R &fn_key F18 S &fn_key F18 T &fn_key F18 D &fn_key F18 H &kp LEFT &kp DOWN &kp RIGHT &fn_key F18 O &trans
+&trans &fn_key F18 Z &fn_key F18 X &fn_key F18 C &fn_key F18 V &fn_key F18 B &fn_key F18 K &fn_key F18 M &fn_key F18 COMMA &fn_key F18 DOT &fn_key F18 SQT &trans
+&fn_key F18 BKSP &trans &trans &trans &fn_key F18 SPC &trans
+                    >;
+            };
+
+            os_layer {
+                    display-name = "OS";
+                    bindings = <
+&trans &fn_key F19 Q &fn_key F19 W &fn_key F19 F &fn_key F19 P &fn_key F19 G &fn_key F19 J &fn_key F19 L &kp UP &fn_key F19 Y &fn_key F19 LS(N8) &trans
+&trans &fn_key F19 A &fn_key F19 R &fn_key F19 S &fn_key F19 T &fn_key F19 D &fn_key F19 H &kp LEFT &kp DOWN &kp RIGHT &fn_key F19 O &trans
+&trans &fn_key F19 Z &fn_key F19 X &fn_key F19 C &fn_key F19 V &fn_key F19 B &fn_key F19 K &fn_key F19 M &fn_key F19 COMMA &fn_key F19 DOT &fn_key F19 SQT &trans
+&fn_key F19 BKSP &trans &trans &trans &fn_key F19 SPC &trans
+                    >;
+            };
         };
     combos {
         compatible = "zmk,combos";
         combo_0 {
             timeout-ms = <50>;
-            key-positions = <32 33>;
-            bindings = <&kp RET>;
+            key-positions = <2 3>;
+            bindings = <&kp ESC>;
             layers = <0>;
         };
         combo_1 {
             timeout-ms = <50>;
-            key-positions = <26 27>;
-            bindings = <&kp ESC>;
+            key-positions = <8 9>;
+            bindings = <&kp RET>;
             layers = <0>;
         };
     };

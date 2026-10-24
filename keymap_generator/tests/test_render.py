@@ -83,6 +83,16 @@ def sample_keymap() -> str:
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
               _ _ _   _ _ _
+        layer app
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
+        layer os
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
         combos
           Q W -> RET
         """
@@ -122,6 +132,12 @@ class TestTapDisplay:
         assert tap_display("Q") == ("Q", None)
         assert tap_display("HYP_[") == ("HYP_[", None)
 
+    def test_function_key_chord_draws_the_inner_key(self) -> None:
+        assert tap_display("F18_Q") == ("Q", None)
+        assert tap_display("F18_*") == ("*", None)
+        assert tap_display("F19_LEFT") == ("", "left")
+        assert tap_display("F18_RET") == ("", "return")
+
 
 class TestHoldDisplay:
     def test_layer_holds_use_unicode(self) -> None:
@@ -145,6 +161,9 @@ class TestHoldDisplay:
 
     def test_other_holds_stay_text(self) -> None:
         assert hold_display("MOU") == ("mou", None)
+        assert hold_display("F17") == ("f17", None)
+        assert hold_display("APP") == ("app", None)
+        assert hold_display("OS") == ("os", None)
 
     def test_empty_hold(self) -> None:
         assert hold_display("") == ("", None)
@@ -350,9 +369,11 @@ class TestRenderOutput:
         written = render_diagrams(keymap, tmp_path, no_png=True)
         names = sorted(path.name for path in written)
         assert names == [
+            "layer-app.svg",
             "layer-default.svg",
             "layer-lwr.svg",
             "layer-mou.svg",
+            "layer-os.svg",
             "layer-rse.svg",
             "legend.svg",
             "reference.svg",

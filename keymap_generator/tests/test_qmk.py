@@ -7,6 +7,8 @@ import pytest
 from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
     COMBO_SLOTS,
+    apply_fn_chords,
+    fn_enum_name,
     generate_qmk_combos,
     generate_qmk_layer,
     get_qmk_key_press_code,
@@ -24,6 +26,19 @@ class TestQmkLabels:
         assert get_qmk_key_press_code("SHFT_TAB") == "S(KC_TAB)"
         assert get_qmk_key_press_code("CMD_Q") == "G(KC_Q)"
         assert get_qmk_key_press_code("HYP_LEFT") == "G(S(A(C(KC_LEFT))))"
+
+    def test_function_key_chords(self) -> None:
+        assert fn_enum_name("F18_Q") == "FN_F18_Q"
+        assert fn_enum_name("F18_,") == "FN_F18_COMMA"
+        assert fn_enum_name("F18_.") == "FN_F18_DOT"
+        assert fn_enum_name("F18_'") == "FN_F18_SQT"
+        assert fn_enum_name("F19_*") == "FN_F19_STAR"
+        assert map_key_label_to_qmk("F18_Q") == "FN_F18_Q"
+        assert map_key_label_to_qmk("F19_,") == "FN_F19_COMMA"
+        assert map_key_to_qmk(Key("X", "F17", None)) == "LT(0,KC_X)"
+        assert map_key_to_qmk(Key(".", "F17", None)) == "LT(0,KC_DOT)"
+        assert map_key_to_qmk(Key("C", "APP", None)) == "LT(6,KC_C)"
+        assert map_key_to_qmk(Key("V", "OS", None)) == "LT(7,KC_V)"
 
     def test_special_and_blank(self) -> None:
         assert map_key_label_to_qmk("BT_0") == "KC_NO"
@@ -96,6 +111,24 @@ class TestQmkCombos:
     def test_unknown_trigger_label(self) -> None:
         with pytest.raises(KeyError, match="taps NOPE"):
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
+
+
+class TestFnChords:
+    def test_enum_and_cases_follow_the_labels(self) -> None:
+        layers = [
+            Layer(
+                "app",
+                [[Key("F18_Q", "", None), Key("F19_,", "", None)]],
+            )
+        ]
+        text = apply_fn_chords("#FN_ENUM#\n#FN_CASES#\n", layers)
+        assert "FN_F18_Q," in text
+        assert "FN_F19_COMMA," in text
+        assert "case FN_F18_Q: fn_chord(KC_F18, KC_Q, record); return false;" in text
+        assert (
+            "case FN_F19_COMMA: fn_chord(KC_F19, KC_COMMA, record); return false;"
+            in text
+        )
 
 
 class TestQmkGeneration:

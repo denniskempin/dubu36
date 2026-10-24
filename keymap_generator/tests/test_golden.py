@@ -10,7 +10,7 @@ from keymap_generator.generate import (
     generate_keymap,
 )
 from keymap_generator.parser import parse_keymap
-from keymap_generator.qmk import generate_qmk_combos, generate_qmk_layer
+from keymap_generator.qmk import generate_qmk_keymap
 from keymap_generator.render import render_diagrams
 from keymap_generator.zmk import generate_zmk_combos, generate_zmk_layer
 
@@ -41,8 +41,9 @@ def test_zmk_output_matches_committed_shared_keymap() -> None:
 
 def test_qmk_output_matches_committed_keymap() -> None:
     expected = QMK_KEYMAP.read_text(encoding="utf-8")
-    generated = _generate(
-        PROJECT_ROOT / "qmk_template.c", generate_qmk_layer, generate_qmk_combos
+    layers, combos = parse_keymap(REPO_ROOT / "keymap.txt")
+    generated = (
+        generate_qmk_keymap(layers, combos, PROJECT_ROOT / "qmk_template.c") + "\n"
     )
     assert generated == expected
 

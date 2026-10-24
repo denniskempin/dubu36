@@ -20,8 +20,8 @@ from keymap_generator.parser import (
     unescape,
 )
 
-# Minimal six-layer keymap that satisfies LAYER_LABELS ordering.
-LAYER_NAMES = ("default", "rse", "lwr", "hyp", "adj", "mou")
+# Minimal keymap that satisfies LAYER_LABELS ordering.
+LAYER_NAMES = ("default", "rse", "lwr", "hyp", "adj", "mou", "app", "os")
 
 
 def blank_layer(name: str, overlays: str = "") -> str:
@@ -38,7 +38,7 @@ def blank_layer(name: str, overlays: str = "") -> str:
 
 
 def full_keymap(*extra_blocks: str) -> str:
-    """A keymap with the required six layers, plus any extra blocks first."""
+    """A keymap with every required layer, plus any extra blocks first."""
     layers = "".join(blank_layer(name) for name in LAYER_NAMES)
     return "\n".join([*extra_blocks, layers])
 
@@ -110,6 +110,18 @@ class TestParseKeymapHappyPath:
               _ _ _ _ _   _ _ _ _ _
                   _ _ _   _ _ _
 
+            layer app
+              _ _ _ _ _   _ _ _ _ _
+              _ _ _ _ _   _ _ _ _ _
+              _ _ _ _ _   _ _ _ _ _
+                  _ _ _   _ _ _
+
+            layer os
+              _ _ _ _ _   _ _ _ _ _
+              _ _ _ _ _   _ _ _ _ _
+              _ _ _ _ _   _ _ _ _ _
+                  _ _ _   _ _ _
+
             combos
               Q W -> ESC
             """
@@ -174,7 +186,7 @@ class TestParseKeymapHappyPath:
         path = tmp_path / "keymap.txt"
         path.write_text(full_keymap())
         layers, combos = parse_keymap(path)
-        assert len(layers) == 6
+        assert len(layers) == len(LAYER_NAMES)
         assert combos == []
 
 
@@ -270,6 +282,55 @@ class TestParseErrors:
     def test_content_before_block(self) -> None:
         with pytest.raises(ParseError, match="expected an overlay"):
             parse_source("Q W F\n")
+
+
+class TestShippedKeymap:
+    def test_home_row_combos_and_function_layers(self) -> None:
+        root = Path(__file__).resolve().parents[2]
+        layers, combos = parse_keymap(root / "keymap.txt")
+        default = layers[0]
+
+        assert [key.hold for key in default.rows[1]] == [
+            "SHFT",
+            "CTRL",
+            "ALT",
+            "CMD",
+            "",
+            "",
+            "CMD",
+            "ALT",
+            "CTRL",
+            "SHFT",
+        ]
+        assert [(key.tap, key.hold) for key in default.rows[2]] == [
+            ("Z", "ADJ"),
+            ("X", "F17"),
+            ("C", "APP"),
+            ("V", "OS"),
+            ("B", ""),
+            ("K", ""),
+            ("M", "OS"),
+            (",", "APP"),
+            (".", "F17"),
+            ("'", "ADJ"),
+        ]
+        assert combos == [Combo("W", "F", "ESC"), Combo("U", "Y", "RET")]
+
+        app = layers[6]
+        assert app.name == "app"
+        assert app.rows[0][7].tap == "UP"
+        assert [key.tap for key in app.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
+        assert app.rows[0][0].tap == "F18_Q"
+        assert app.rows[0][9].tap == "F18_*"
+        assert app.rows[2][7].tap == "F18_,"
+        assert app.rows[3][0].tap == "F18_BKSP"
+        assert app.rows[3][4].tap == "F18_SPC"
+
+        os_layer = layers[7]
+        assert os_layer.name == "os"
+        assert os_layer.rows[0][0].tap == "F19_Q"
+        assert os_layer.rows[0][7].tap == "UP"
+        assert [key.tap for key in os_layer.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
 
 
 class TestFindKeyPosition:

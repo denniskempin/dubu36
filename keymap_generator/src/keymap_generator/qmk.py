@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 from keymap_generator.codes import KEY_PRESS_CODES, LAYER_LABELS, SPECIAL_LABELS
+from keymap_generator.generate import generate_keymap
 from keymap_generator.parser import Combo, Key, Layer, find_key_position
 
 # QMK sizes its combo table with the compile time COMBO_COUNT, so the generated
@@ -25,7 +28,104 @@ def get_qmk_key_press_code(label: str) -> str | None:
     return None
 
 
+# Characters that cannot sit in a C identifier, spelled out so F18_, becomes
+# FN_F18_COMMA. Anything else in an F18_/F19_ label is a generator bug.
+_FN_SLUG = {
+    ",": "COMMA",
+    ".": "DOT",
+    "'": "SQT",
+    "*": "STAR",
+    "/": "SLASH",
+    "\\": "BSLH",
+    ";": "SEMI",
+    "-": "MINUS",
+    "=": "EQUAL",
+    "[": "LBKT",
+    "]": "RBKT",
+    "`": "GRAVE",
+}
+
+# F18_ and F19_ chord a function key with another key. QMK has no keycode for
+# that, so each label becomes a custom keycode the template's
+# process_record_user sends as the pair.
+_FN_KEYS = (("F18_", "KC_F18"), ("F19_", "KC_F19"))
+
+
+def fn_enum_name(label: str) -> str:
+    """C identifier for an F18_/F19_ chord label, such as `FN_F18_Q`."""
+    parts: list[str] = []
+    for char in label:
+        if char.isalnum() or char == "_":
+            parts.append(char)
+        elif char in _FN_SLUG:
+            parts.append(_FN_SLUG[char])
+        else:
+            raise KeyError(f"Cannot name a QMK chord for {label!r}.")
+    return "FN_" + "".join(parts)
+
+
+def fn_chord(label: str) -> tuple[str, str, str] | None:
+    """`(enum name, function key, inner key)` for an F18_/F19_ label."""
+    for prefix, function_key in _FN_KEYS:
+        if not label.startswith(prefix):
+            continue
+        inner = get_qmk_key_press_code(label.removeprefix(prefix))
+        if inner is None:
+            return None
+        return fn_enum_name(label), function_key, inner
+    return None
+
+
+def fn_labels(layers: list[Layer]) -> list[str]:
+    """Every F18_/F19_ label used in `layers`, in a stable order."""
+    found: set[str] = set()
+    for layer in layers:
+        for row in layer.rows:
+            for key in row:
+                for label in (key.tap, key.hold or ""):
+                    if fn_chord(label):
+                        found.add(label)
+    return sorted(found)
+
+
+def apply_fn_chords(text: str, layers: list[Layer]) -> str:
+    """Fill `#FN_ENUM#` and `#FN_CASES#` from the chords `layers` use."""
+    enum_lines: list[str] = []
+    case_lines: list[str] = []
+    for label in fn_labels(layers):
+        chord = fn_chord(label)
+        if chord is None:
+            continue
+        name, function_key, inner = chord
+        enum_lines.append(f"    {name},")
+        case_lines.append(
+            f"    case {name}: fn_chord({function_key}, {inner}, record); return false;"
+        )
+    return text.replace("#FN_ENUM#", "\n".join(enum_lines)).replace(
+        "#FN_CASES#", "\n".join(case_lines)
+    )
+
+
+def generate_qmk_keymap(
+    layers: list[Layer],
+    combos: list[Combo],
+    template_path: str | Path,
+) -> str:
+    """Fill the QMK template, including the function-key chord table."""
+    text = generate_keymap(
+        layers,
+        combos,
+        template_path,
+        generate_qmk_layer,
+        generate_qmk_combos,
+    )
+    return apply_fn_chords(text, layers)
+
+
 def map_key_label_to_qmk(label: str) -> str:
+    chord = fn_chord(label)
+    if chord:
+        return chord[0]
     code = get_qmk_key_press_code(label)
     if code:
         return code
@@ -53,6 +153,12 @@ def map_key_to_qmk(key: Key) -> str:
         if tap_code:
             return f"LT({LAYER_LABELS[key.hold]},{tap_code})"
     else:
+        # F17 is not a modifier, so MT() cannot hold it. LT(0, kc) is the
+        # stand-in the template turns into "tap kc, hold F17".
+        if key.hold == "F17":
+            tap_code = get_qmk_key_press_code(key.tap)
+            if tap_code:
+                return f"LT(0,{tap_code})"
         hold_code = get_qmk_key_press_code(key.hold)
         if hold_code:
             hold_code = hold_code.replace("KC_", "MOD_")

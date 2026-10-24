@@ -27,6 +27,14 @@ keymaps using the [`keymap_generator`](keymap_generator/) tool.
 
 ![mou layer](diagrams/layer-mou.svg)
 
+### app (F18)
+
+![app layer](diagrams/layer-app.svg)
+
+### os (F19)
+
+![os layer](diagrams/layer-os.svg)
+
 ## Keymap
 
 Each layer is a grid of the 36 keys, laid out the way they sit on the keyboard: three rows of ten
@@ -36,7 +44,7 @@ keys, then the six thumb keys. Every whitespace separated cell is one key:
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
-  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+  Z/adj  X/F17  C/app  V/os   B          K      M/os   ,/app  ./F17  '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 ```
 
@@ -57,10 +65,14 @@ between layers without repeating them; a cell can still define its own hold to o
 inherited one, or use `/_` to drop it.
 
 The default layer is Colemak, with special characters remapped to prioritize commonly used
-characters in day-to-day writing. Holding a key on the home-row gives the modifiers used in
-shortcuts; the modifiers and layer shifts used in fluent writing sit on the thumbs instead, to
-reduce issues with hold-tap timing. The remaining layers cover navigation and numbers, symbols,
-window management, bluetooth, and left hand only shortcuts for when the right hand is on the mouse.
+characters in day-to-day writing. The home row, pinky to index, is Shift, Control, Option,
+Command (`A R S T`), mirrored on the right. The inner index (`D` and `H`) is a plain tap.
+Modifiers and layer shifts used in fluent writing sit on the thumbs instead, to reduce issues
+with hold-tap timing. `X` holds F17, `C` holds the app layer and `V` the OS layer, mirrored
+onto `.`, `,` and `M`. Those two layers send F18 or F19 with the key, except `N E I U`, which
+are arrows in the same inverted-T as raise. Esc is the `W F` chord and Enter is `U Y`. The
+remaining layers cover navigation and numbers, symbols, window management, bluetooth, and left
+hand only shortcuts for when the right hand is on the mouse.
 
 ## Keyboards
 

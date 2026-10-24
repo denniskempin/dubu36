@@ -81,6 +81,12 @@ KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     "SHFT": FirmwareCodes("LSHFT", "KC_LSFT"),
     "CTRL": FirmwareCodes("LCTRL", "KC_LCTL"),
     "ALT": FirmwareCodes("LALT", "KC_LALT"),
+    # Function keys held as shortcuts. F17 is a plain hold. F18 and F19 are
+    # also the keys the app and OS layers chord with; those chords use the
+    # F18_ and F19_ prefixes rather than these entries.
+    "F17": FirmwareCodes("F17", "KC_F17"),
+    "F18": FirmwareCodes("F18", "KC_F18"),
+    "F19": FirmwareCodes("F19", "KC_F19"),
 }
 
 # Maps labels from the keymap grid to a ready-made binding in each firmware,
@@ -101,6 +107,8 @@ LAYER_LABELS: dict[str, int] = {
     "HYP": 3,
     "ADJ": 4,
     "MOU": 5,
+    "APP": 6,
+    "OS": 7,
 }
 
 # Hold-tap flavors a key may ask for, matching the suffix of the behaviors in
