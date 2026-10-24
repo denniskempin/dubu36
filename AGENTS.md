@@ -168,7 +168,17 @@ Editing this file changes all three generated artifacts, so follow it with `make
 
 Adding a label usually means one entry in `KEY_PRESS_CODES`, since both backends read it. The
 `CMD_` and `HYP_` prefixes are handled structurally in `get_*_key_press_code`, so
-`CMD_<anything mappable>` works without a table entry.
+`CMD_<anything mappable>` works without a table entry. A layer header `layer name + MOD`
+holds that modifier for the whole layer. ZMK cannot pass two parameters into a hold-tap's
+hold behavior, so the generator emits a one-parameter macro (`&lt_<name>`) that presses `&mo`
+and `&kp MOD` together and releases the modifier first. QMK keeps `LT(layer, kc)` and
+`process_layer_mod` registers the modifier while that layer-tap is a hold. Both firmwares
+count overlapping holds of the same modifier. `FN` is the Apple Fn key.
+ZMK holds it with `&mt_tp GLOBE <tap>` (`GLOBE` is consumer usage 0x029D, and the consumer
+report is already the full range, so that usage fits). QMK's `MT()` only holds the eight HID
+modifiers, so the template treats `LT(0, kc)` as "tap kc, hold Fn" and sends 0x029D with
+`host_consumer_send`. `KEYBOARD_SHARED_EP` in the QMK rules is what lets macOS see that usage
+together with the next key.
 
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
@@ -176,17 +186,23 @@ against the keycode the keymap holds, so a trigger on the home row has to be nam
 `MT(...)` keycode rather than the plain key press it produces.
 
 What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
-pair the typist never rolls across cannot be triggered by accident. `, .` (Enter) and `X C`
-(Esc) are middle/ring pairs. Colemak's frequent rolls such as `st` or `ne` would fire a home-row
-combo constantly. Esc and Enter also sit on the raise layer at the outer and inner left thumbs,
-so a one-shot or held `rse` reaches them without a chord. Esc stays on lwr as well.
-`COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed; it is 0
-here, and left out of the generated keymap, because requiring idle time would stop Enter
-firing right after a burst of typing.
+pair the typist never rolls across cannot be triggered by accident. `W F` (Esc) is a top-row
+ring/middle pair Colemak does not roll. `U Y` (Enter) is the matching pair on the right, and
+it does occur in rolls such as `buy` and `guy`. Colemak's frequent rolls such as `st` or `ne`
+would fire a home-row combo constantly. Esc and Enter also sit on the raise layer at the outer
+and inner left thumbs, so a one-shot or held `rse` reaches them without a chord. Esc stays on
+lwr as well. `COMBO_PRIOR_IDLE_MS` in `zmk.py` is the fallback if a riskier pair is ever needed;
+it is 0 here, and left out of the generated keymap, because requiring idle time would stop
+Enter firing right after a burst of typing and would also gate Esc.
 
 Known gaps, deliberate:
 
-- `qmk_template.c` only has `#LAYER_0#`..`#LAYER_2#`, so QMK gets the first three layers.
+- The app and OS holds are tap-preferred only. A `hp` flavor on `C/app` is rejected.
+  ZMK's consumer report still clears every slot of one usage when a Fn hold is released, so
+  two overlapping Fn holds drop the Globe key when the first comes up. QMK counts those.
+- `GLOBE` is the Fn key macOS accepts for Globe shortcuts (Globe-N, Globe-E, and the like).
+  It does not reproduce every chord of the Fn key on an Apple keyboard, such as Fn-Backspace
+  for forward delete or Fn-arrows for Home, End, Page Up, and Page Down.
 - Combo count is hard-coded in two places that must agree: `COMBO_SLOTS` in `qmk.py` and
   `COMBO_COUNT` in `dubu36-ergo/qmk/dubu36ergo/config.h`. ZMK needs no count, so it only
   emits the combos that exist.

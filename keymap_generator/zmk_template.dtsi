@@ -68,7 +68,16 @@
             tapping-term-ms = <200>;
             bindings = <&mo>, <&sl>;
         };
+
+        // One hold-tap per `layer name + MOD`. Its hold side is the macro
+        // below: press the layer and the modifier together, and release the
+        // modifier before the layer. A hold-tap can pass the hold behavior
+        // only one parameter, so the modifier is fixed in the macro and the
+        // parameter is the layer number.
+#LAYER_MOD_HOLDS#
     };
+
+#LAYER_MOD_MACROS#
 
     keymap {
             compatible = "zmk,keymap";
@@ -112,6 +121,20 @@
                     display-name = "Mou";
                     bindings = <
 #LAYER_5#
+                    >;
+            };
+
+            app_layer {
+                    display-name = "App";
+                    bindings = <
+#LAYER_6#
+                    >;
+            };
+
+            os_layer {
+                    display-name = "OS";
+                    bindings = <
+#LAYER_7#
                     >;
             };
         };

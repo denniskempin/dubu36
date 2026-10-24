@@ -83,6 +83,16 @@ def sample_keymap() -> str:
           _ _ _ _ _   _ _ _ _ _
           _ _ _ _ _   _ _ _ _ _
               _ _ _   _ _ _
+        layer app
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
+        layer os
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+          _ _ _ _ _   _ _ _ _ _
+              _ _ _   _ _ _
         combos
           Q W -> RET
         """
@@ -145,6 +155,9 @@ class TestHoldDisplay:
 
     def test_other_holds_stay_text(self) -> None:
         assert hold_display("MOU") == ("mou", None)
+        assert hold_display("FN") == ("fn", None)
+        assert hold_display("APP") == ("R⌘", None)
+        assert hold_display("OS") == ("R⌥", None)
 
     def test_empty_hold(self) -> None:
         assert hold_display("") == ("", None)
@@ -350,9 +363,11 @@ class TestRenderOutput:
         written = render_diagrams(keymap, tmp_path, no_png=True)
         names = sorted(path.name for path in written)
         assert names == [
+            "layer-app.svg",
             "layer-default.svg",
             "layer-lwr.svg",
             "layer-mou.svg",
+            "layer-os.svg",
             "layer-rse.svg",
             "legend.svg",
             "reference.svg",

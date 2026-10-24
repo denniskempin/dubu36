@@ -81,6 +81,11 @@ KEY_PRESS_CODES: dict[str, FirmwareCodes] = {
     "SHFT": FirmwareCodes("LSHFT", "KC_LSFT"),
     "CTRL": FirmwareCodes("LCTRL", "KC_LCTL"),
     "ALT": FirmwareCodes("LALT", "KC_LALT"),
+    "RALT": FirmwareCodes("RALT", "KC_RALT"),
+    "RGUI": FirmwareCodes("RGUI", "KC_RGUI"),
+    # Apple Fn / Globe. Not one of the eight HID modifiers, so QMK cannot
+    # hold it with MT(); the template turns a hold into LT(0, kc).
+    "FN": FirmwareCodes("GLOBE", "APPLE_FN"),
 }
 
 # Maps labels from the keymap grid to a ready-made binding in each firmware,
@@ -101,6 +106,8 @@ LAYER_LABELS: dict[str, int] = {
     "HYP": 3,
     "ADJ": 4,
     "MOU": 5,
+    "APP": 6,
+    "OS": 7,
 }
 
 # Hold-tap flavors a key may ask for, matching the suffix of the behaviors in

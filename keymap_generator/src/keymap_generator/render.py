@@ -94,6 +94,9 @@ HOLD_DISPLAY = {
     "LWR": "⇊",  # U+21CA DOWNWARDS PAIRED ARROWS
     "RSE": "⇈",  # U+21C8 UPWARDS PAIRED ARROWS
     "MOU": "mou",
+    "APP": "R⌘",
+    "OS": "R⌥",
+    "FN": "fn",
 }
 
 # Hold-box / hold-label accent. Only holds that themselves switch to the

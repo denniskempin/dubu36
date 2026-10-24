@@ -7,6 +7,7 @@ import pytest
 from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
     COMBO_SLOTS,
+    apply_layer_mods,
     generate_qmk_combos,
     generate_qmk_layer,
     get_qmk_key_press_code,
@@ -24,6 +25,13 @@ class TestQmkLabels:
         assert get_qmk_key_press_code("SHFT_TAB") == "S(KC_TAB)"
         assert get_qmk_key_press_code("CMD_Q") == "G(KC_Q)"
         assert get_qmk_key_press_code("HYP_LEFT") == "G(S(A(C(KC_LEFT))))"
+
+    def test_function_and_layer_holds(self) -> None:
+        assert map_key_label_to_qmk("FN") == "APPLE_FN"
+        assert map_key_to_qmk(Key("X", "FN", None)) == "LT(0,KC_X)"
+        assert map_key_to_qmk(Key(".", "FN", None)) == "LT(0,KC_DOT)"
+        assert map_key_to_qmk(Key("C", "APP", None)) == "LT(6,KC_C)"
+        assert map_key_to_qmk(Key("V", "OS", None)) == "LT(7,KC_V)"
 
     def test_special_and_blank(self) -> None:
         assert map_key_label_to_qmk("BT_0") == "KC_NO"
@@ -96,6 +104,21 @@ class TestQmkCombos:
     def test_unknown_trigger_label(self) -> None:
         with pytest.raises(KeyError, match="taps NOPE"):
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
+
+
+class TestLayerMods:
+    def test_hold_registers_the_layers_modifier(self) -> None:
+        layers = [
+            Layer("default", []),
+            Layer("app", [], "RGUI"),
+            Layer("os", [], "RALT"),
+        ]
+        text = apply_layer_mods("#LAYER_MODS#", layers)
+        assert "static uint8_t holds_rgui;" in text
+        assert "static uint8_t holds_ralt;" in text
+        assert "case 1:" in text
+        assert "counted_mod(&holds_rgui, MOD_RGUI, record->event.pressed);" in text
+        assert "counted_mod(&holds_ralt, MOD_RALT, record->event.pressed);" in text
 
 
 class TestQmkGeneration:

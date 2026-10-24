@@ -108,13 +108,13 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">A</text>
-<text class="hold tap-preferred mod symbol dejavu" x="15.0" y="45.336000000000006">✦</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(60.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">R</text>
-<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(120.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -130,15 +130,11 @@
 </g>
 <g transform="translate(240.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">D</text>
-<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(330.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
-<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">H</text>
-<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(390.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -156,13 +152,13 @@
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">I</text>
-<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⌃</text>
 </g>
 <g transform="translate(570.00,56.67)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
 <rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">O</text>
-<text class="hold tap-preferred mod symbol dejavu" x="15.0" y="45.336000000000006">✦</text>
+<text class="hold tap-preferred mod symbol" x="15.0" y="45.336000000000006">⇧</text>
 </g>
 <g transform="translate(0.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -172,15 +168,21 @@
 </g>
 <g transform="translate(60.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">X</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">fn</text>
 </g>
 <g transform="translate(120.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">C</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">R⌘</text>
 </g>
 <g transform="translate(180.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">V</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">R⌥</text>
 </g>
 <g transform="translate(240.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
@@ -192,15 +194,21 @@
 </g>
 <g transform="translate(390.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">M</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">R⌥</text>
 </g>
 <g transform="translate(450.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">,</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">R⌘</text>
 </g>
 <g transform="translate(510.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>
+<rect class="hold-box tap-preferred mod" x="1.0" y="35.00200000000001" width="28.0" height="20.667999999999992" rx="4.0" ry="4.0"/>
 <text class="base" x="15.0" y="18.1344">.</text>
+<text class="hold tap-preferred mod" x="15.0" y="45.336000000000006">fn</text>
 </g>
 <g transform="translate(570.00,113.34)">
 <rect class="keycap" x="1.0" y="1.0" width="58.0" height="54.67" rx="4.0" ry="4.0"/>

@@ -6,7 +6,7 @@ from collections.abc import Iterable, Sequence
 from pathlib import Path
 from typing import NamedTuple
 
-from keymap_generator.codes import FLAVORS, LAYER_LABELS
+from keymap_generator.codes import FLAVORS, KEY_PRESS_CODES, LAYER_LABELS
 
 # Number of keys in each row of the grid: three rows of ten, then the thumbs.
 ROW_SIZES: tuple[int, ...] = (10, 10, 10, 6)
@@ -48,10 +48,15 @@ class Key(NamedTuple):
 
 
 class Layer(NamedTuple):
-    """A named layer, as rows of keys matching ROW_SIZES."""
+    """A named layer, as rows of keys matching ROW_SIZES.
+
+    `modifier` is the key held for the whole time this layer is held, or
+    empty when the layer is only a layer.
+    """
 
     name: str
     rows: list[list[Key]]
+    modifier: str = ""
 
 
 class Block(NamedTuple):
@@ -59,11 +64,13 @@ class Block(NamedTuple):
 
     `keyword` is one of `overlay`, `layer` or `combos`; `name` is empty for a
     `combos` block; `overlays` lists the overlays a `layer` inherits holds from.
+    `modifier` is the key a `layer` holds alongside itself.
     """
 
     keyword: str
     name: str
     overlays: list[str]
+    modifier: str = ""
 
 
 class ParseError(Exception):
@@ -164,7 +171,15 @@ class KeymapParser:
         return self.layers, self.combos
 
     def start_block(self, keyword: str, rest: str) -> None:
-        name, separator, overlays = rest.partition(":")
+        body, plus, modifier_field = rest.partition("+")
+        if plus and keyword != "layer":
+            raise self.error(f"{keyword} blocks cannot hold a modifier")
+        modifier = parse_label(modifier_field.strip()) if plus else ""
+        if plus and not modifier:
+            raise self.error("expected a modifier after '+'")
+        if modifier and modifier not in KEY_PRESS_CODES:
+            raise self.error(f"unknown modifier {modifier_field.strip()!r}")
+        name, separator, overlays = body.partition(":")
         overlays_list = (
             [o.strip() for o in overlays.split(",") if o.strip()] if separator else []
         )
@@ -178,13 +193,13 @@ class KeymapParser:
             raise self.error(f"{keyword} blocks take no name")
         if keyword != "combos" and not name:
             raise self.error(f"{keyword} blocks need a name")
-        self.block = Block(keyword, name, overlays_list)
+        self.block = Block(keyword, name, overlays_list, modifier)
         self.rows = []
 
     def end_block(self) -> None:
         if self.block is None:
             return
-        keyword, name, overlays = self.block
+        keyword, name, overlays, modifier = self.block
         if keyword != "combos":
             if len(self.rows) != len(ROW_SIZES):
                 raise self.error(
@@ -195,7 +210,7 @@ class KeymapParser:
                 self.overlays[name] = self.rows
             else:
                 self.layers.append(
-                    Layer(name, self.apply_overlays(self.rows, overlays))
+                    Layer(name, self.apply_overlays(self.rows, overlays), modifier)
                 )
         self.block = None
         self.rows = []
@@ -220,7 +235,7 @@ class KeymapParser:
 
     def parse_row(self, cells: Sequence[str]) -> list[Key]:
         assert self.block is not None
-        keyword, name, _ = self.block
+        keyword, name, *_ = self.block
         row_number = len(self.rows)
         if row_number >= len(ROW_SIZES):
             raise self.error(f"{keyword} {name} has more than {len(ROW_SIZES)} rows")

@@ -2,12 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Mapping
+from pathlib import Path
+
 from keymap_generator.codes import (
     DEFAULT_FLAVOR,
     KEY_PRESS_CODES,
     LAYER_LABELS,
     SPECIAL_LABELS,
 )
+from keymap_generator.generate import generate_keymap
 from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer, find_key_position
 
 # The three main rows of the grid, and how wide each becomes once
@@ -21,11 +25,11 @@ COMBO_TIMEOUT_MS = 50
 COMBO_LAYER = 0
 
 # How long the board must have been idle before a combo may fire at all. Zero
-# lets one fire mid-word, which is only safe while the combos here sit on key
-# pairs ordinary typing never rolls across. A combo on the home row would need
-# this raised to stop `st` or `ne` triggering it, and would then pay for it by
-# refusing to fire straight after a burst of typing -- which is exactly when
-# Esc gets pressed. Omitted from the output when zero, as that is ZMK's default.
+# lets one fire mid-word. That is safe for W+F (Esc), which Colemak does not
+# roll. U+Y (Enter) does occur in "buy" and "guy"; the guard stays off anyway,
+# because turning it on would also stop Esc, and would stop Enter from firing
+# straight after a burst of typing. A home-row combo such as `st` would need
+# this raised. Omitted from the output when zero, as that is ZMK's default.
 COMBO_PRIOR_IDLE_MS = 0
 
 
@@ -58,19 +62,34 @@ def map_key_label_to_zmk(label: str) -> str:
     raise KeyError(f"Cannot map label {label} to zmk.")
 
 
-def map_key_to_zmk(key: Key) -> str:
+def map_key_to_zmk(key: Key, layer_mods: Mapping[str, str] | None = None) -> str:
+    """Bind one key.
+
+    `layer_mods` maps a layer's hold label to the modifier that layer holds
+    for its whole lifetime, as declared with `layer name + MOD`. A hold of
+    such a layer uses the generated `&lt_<name>` behavior instead of `&lt_`.
+    """
     if not key.hold:
         return map_key_label_to_zmk(key.tap)
     if not key.tap:
         return map_key_label_to_zmk(key.hold)
 
     # All defined in the ZMK template: mt/lt hold a modifier/layer and are named
-    # after their flavor; omt/olt hold it and one-shot it on tap.
+    # after their flavor; omt/olt hold it and one-shot it on tap. A layer that
+    # declares a modifier uses the hold-tap generated for that layer.
     if key.hold in LAYER_LABELS:
         layer = LAYER_LABELS[key.hold]
         if key.is_oneshot:
             return f"&olt_ {layer} {layer}"
+        modifier = (layer_mods or {}).get(key.hold, "")
         tap_code = get_zmk_key_press_code(key.tap)
+        if modifier and tap_code:
+            if (key.flavor or DEFAULT_FLAVOR) != "tp":
+                raise KeyError(
+                    f"Layer {key.hold.lower()} holds {modifier}, which is "
+                    "tap-preferred only."
+                )
+            return f"&lt_{key.hold.lower()} {layer} {tap_code}"
         if tap_code:
             return f"&lt_{key.flavor or DEFAULT_FLAVOR} {layer} {tap_code}"
     else:
@@ -132,12 +151,96 @@ def generate_zmk_combos(combos: list[Combo], default_layer: Layer) -> str:
     )
 
 
-def generate_zmk_layer(layer: Layer) -> str:
+def generate_zmk_layer(
+    layer: Layer, layer_mods: Mapping[str, str] | None = None
+) -> str:
     rows: list[str] = []
     for row in layer.rows[:3]:
         # Add padding since this is a 5 row layout with a 6 row corne firmware
         rows.append(
-            "&trans " + " ".join(map_key_to_zmk(key) for key in row) + " &trans"
+            "&trans "
+            + " ".join(map_key_to_zmk(key, layer_mods) for key in row)
+            + " &trans"
         )
-    rows.append(" ".join(map_key_to_zmk(key) for key in layer.rows[3]))
+    rows.append(" ".join(map_key_to_zmk(key, layer_mods) for key in layer.rows[3]))
     return "\n".join(rows)
+
+
+def _modified_layers(layers: list[Layer]) -> list[tuple[Layer, str]]:
+    """Layers that hold a modifier, with that modifier's ZMK keycode."""
+    found: list[tuple[Layer, str]] = []
+    for layer in layers:
+        if not layer.modifier:
+            continue
+        code = get_zmk_key_press_code(layer.modifier)
+        if code is None:
+            raise KeyError(f"Cannot hold {layer.modifier} with layer {layer.name}.")
+        found.append((layer, code))
+    return found
+
+
+def _layer_mod_macro(name: str, code: str) -> str:
+    """A macro that holds `code` for as long as layer parameter 1 is held."""
+    return "\n".join(
+        [
+            f"        {name}_lm: {name}_lm {{",
+            '            compatible = "zmk,behavior-macro-one-param";',
+            "            #binding-cells = <1>;",
+            "            wait-ms = <0>;",
+            "            tap-ms = <0>;",
+            "            bindings",
+            "                = <&macro_param_1to1>",
+            "                , <&macro_press &mo MACRO_PLACEHOLDER>",
+            f"                , <&macro_press &kp {code}>",
+            "                , <&macro_pause_for_release>",
+            f"                , <&macro_release &kp {code}>",
+            "                , <&macro_param_1to1>",
+            "                , <&macro_release &mo MACRO_PLACEHOLDER>",
+            "                ;",
+            "        };",
+        ]
+    )
+
+
+def generate_layer_mod_macros(layers: list[Layer]) -> str:
+    """The `macros` node for layers declared with `+ MOD`, or nothing."""
+    modified = _modified_layers(layers)
+    if not modified:
+        return ""
+    bodies = "\n".join(_layer_mod_macro(layer.name, code) for layer, code in modified)
+    return "\n".join(["    macros {", bodies, "    };"])
+
+
+def generate_layer_mod_holds(layers: list[Layer]) -> str:
+    """Tap-preferred hold-taps whose hold side is that layer's macro."""
+    return "\n".join(
+        "\n".join(
+            [
+                f"        lt_{layer.name}: lt_{layer.name} {{",
+                '            compatible = "zmk,behavior-hold-tap";',
+                "            #binding-cells = <2>;",
+                '            flavor = "tap-preferred";',
+                "            tapping-term-ms = <200>;",
+                f"            bindings = <&{layer.name}_lm>, <&kp>;",
+                "        };",
+            ]
+        )
+        for layer, _code in _modified_layers(layers)
+    )
+
+
+def generate_zmk_keymap(
+    layers: list[Layer],
+    combos: list[Combo],
+    template_path: str | Path,
+) -> str:
+    """Fill the ZMK template, including layer-modifier hold behaviors."""
+    mods = {layer.name.upper(): layer.modifier for layer in layers if layer.modifier}
+
+    def layer_fn(layer: Layer) -> str:
+        return generate_zmk_layer(layer, mods)
+
+    text = generate_keymap(layers, combos, template_path, layer_fn, generate_zmk_combos)
+    return text.replace("#LAYER_MOD_HOLDS#", generate_layer_mod_holds(layers)).replace(
+        "#LAYER_MOD_MACROS#", generate_layer_mod_macros(layers)
+    )

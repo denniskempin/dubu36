@@ -69,6 +69,59 @@
             tapping-term-ms = <200>;
             bindings = <&mo>, <&sl>;
         };
+
+        // One hold-tap per `layer name + MOD`. Its hold side is the macro
+        // below: press the layer and the modifier together, and release the
+        // modifier before the layer. A hold-tap can pass the hold behavior
+        // only one parameter, so the modifier is fixed in the macro and the
+        // parameter is the layer number.
+        lt_app: lt_app {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&app_lm>, <&kp>;
+        };
+        lt_os: lt_os {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <200>;
+            bindings = <&os_lm>, <&kp>;
+        };
+    };
+
+    macros {
+        app_lm: app_lm {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_press &mo MACRO_PLACEHOLDER>
+                , <&macro_press &kp RGUI>
+                , <&macro_pause_for_release>
+                , <&macro_release &kp RGUI>
+                , <&macro_param_1to1>
+                , <&macro_release &mo MACRO_PLACEHOLDER>
+                ;
+        };
+        os_lm: os_lm {
+            compatible = "zmk,behavior-macro-one-param";
+            #binding-cells = <1>;
+            wait-ms = <0>;
+            tap-ms = <0>;
+            bindings
+                = <&macro_param_1to1>
+                , <&macro_press &mo MACRO_PLACEHOLDER>
+                , <&macro_press &kp RALT>
+                , <&macro_pause_for_release>
+                , <&macro_release &kp RALT>
+                , <&macro_param_1to1>
+                , <&macro_release &mo MACRO_PLACEHOLDER>
+                ;
+        };
     };
 
     keymap {
@@ -78,8 +131,8 @@
                     display-name = "Base";
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp U &kp Y &kp LS(N8) &trans
-&trans &lt_tp 3 A &mt_tp LSHFT R &mt_tp LALT S &mt_tp LGUI T &mt_tp LCTRL D &mt_tp LCTRL H &mt_tp LGUI N &mt_tp LALT E &mt_tp LSHFT I &lt_tp 3 O &trans
-&trans &lt_tp 4 Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &lt_tp 4 SQT &trans
+&trans &mt_tp LSHFT A &mt_tp LCTRL R &mt_tp LALT S &mt_tp LGUI T &kp D &kp H &mt_tp LGUI N &mt_tp LALT E &mt_tp LCTRL I &mt_tp LSHFT O &trans
+&trans &lt_tp 4 Z &mt_tp GLOBE X &lt_app 6 C &lt_os 7 V &kp B &kp K &lt_os 7 M &lt_app 6 COMMA &mt_tp GLOBE DOT &lt_tp 4 SQT &trans
 &kp BKSP &omt_ LSHFT LSHFT &olt_ 2 2 &olt_ 1 1 &kp SPC &trans
                     >;
             };
@@ -88,7 +141,7 @@
                     display-name = "Nav/Num";
                     bindings = <
 &trans &trans &kp N7 &kp N8 &kp N9 &trans &kp HOME &kp LA(LEFT) &kp UP &kp LA(RIGHT) &kp END &trans
-&trans &mo 3 &mt_tp LSHFT N4 &mt_tp LALT N5 &mt_tp LGUI N6 &kp LCTRL &mt_tp LCTRL LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LSHFT RIGHT &lt_tp 3 LG(RBKT) &trans
+&trans &kp LSHFT &mt_tp LCTRL N4 &mt_tp LALT N5 &mt_tp LGUI N6 &trans &kp LG(LBKT) &mt_tp LGUI LEFT &mt_tp LALT DOWN &mt_tp LCTRL RIGHT &mt_tp LSHFT LG(RBKT) &trans
 &trans &kp N0 &kp N1 &kp N2 &kp N3 &trans &kp LG(LS(LBKT)) &kp LA(LS(LC(LG(LBKT)))) &kp LA(LS(LC(LG(BSLH)))) &kp LA(LS(LC(LG(RBKT)))) &kp LG(LS(RBKT)) &trans
 &kp ESC &trans &kp RET &trans &trans &trans
                     >;
@@ -98,7 +151,7 @@
                     display-name = "Symbols";
                     bindings = <
 &trans &kp LS(GRAVE) &kp LS(N6) &kp LS(N2) &kp LS(N4) &kp LS(N5) &kp LS(N7) &kp FSLH &kp BSLH &kp LS(BSLH) &kp GRAVE &trans
-&trans &lt_tp 3 ESC &mt_tp LSHFT LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &mt_tp LCTRL LS(LBKT) &mt_tp LCTRL KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LSHFT SEMI &lt_tp 3 LS(N3) &trans
+&trans &mt_tp LSHFT ESC &mt_tp LCTRL LS(COMMA) &mt_tp LALT LBKT &mt_tp LGUI LS(N9) &kp LS(LBKT) &kp KP_MINUS &mt_tp LGUI LS(MINUS) &mt_tp LALT LS(SEMI) &mt_tp LCTRL SEMI &mt_tp LSHFT LS(N3) &trans
 &trans &trans &kp LS(DOT) &kp RBKT &kp LS(N0) &kp LS(RBKT) &kp LS(EQUAL) &kp EQUAL &kp LS(FSLH) &kp LS(N1) &kp LS(SQT) &trans
 &trans &trans &trans &kp LS(TAB) &kp TAB &trans
                     >;
@@ -133,19 +186,39 @@
 &trans &trans &trans &trans &trans &trans
                     >;
             };
+
+            app_layer {
+                    display-name = "App";
+                    bindings = <
+&trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp UP &kp Y &kp LS(N8) &trans
+&trans &kp A &kp R &kp S &kp T &kp D &kp H &kp LEFT &kp DOWN &kp RIGHT &kp O &trans
+&trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
+&kp BKSP &trans &trans &trans &kp SPC &trans
+                    >;
+            };
+
+            os_layer {
+                    display-name = "OS";
+                    bindings = <
+&trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp L &kp UP &kp Y &kp LS(N8) &trans
+&trans &kp A &kp R &kp S &kp T &kp D &kp H &kp LEFT &kp DOWN &kp RIGHT &kp O &trans
+&trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
+&kp BKSP &trans &trans &trans &kp SPC &trans
+                    >;
+            };
         };
     combos {
         compatible = "zmk,combos";
         combo_0 {
             timeout-ms = <50>;
-            key-positions = <32 33>;
-            bindings = <&kp RET>;
+            key-positions = <2 3>;
+            bindings = <&kp ESC>;
             layers = <0>;
         };
         combo_1 {
             timeout-ms = <50>;
-            key-positions = <26 27>;
-            bindings = <&kp ESC>;
+            key-positions = <8 9>;
+            bindings = <&kp RET>;
             layers = <0>;
         };
     };

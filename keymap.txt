@@ -17,6 +17,9 @@
 //
 // A layer inherits the holds of every overlay listed after its name, unless the
 // cell defines its own hold. Use `LABEL/_` to drop an inherited hold.
+// `layer name + MOD` holds MOD the whole time that layer is held. The
+// modifier goes down when the hold is decided and stays down until the
+// hold key is released, so every key on the layer is sent with it.
 //
 // Labels that clash with the `/`, `:` or `_` syntax are escaped with a
 // backslash: `\/`, `\:`, `\_`, and `\\` for the backslash key itself.
@@ -24,18 +27,23 @@
 // Modifiers used primarily in shortcuts, mapped to the home-row. The modifiers
 // and layer shifts used in fluent writing live on the thumb keys instead, to
 // reduce issues with hold-tap timing.
+// Pinky to index, mirrored on the right: A shift, R control, S option,
+// T command. The inner index (D and H) is a plain tap.
 overlay homerow
   _      _      _      _      _          _      _      _      _      _
-  hyp    shft   alt    cmd    ctrl       ctrl   cmd    alt    shft   hyp
+  shft   ctrl   alt    cmd    _          _      cmd    alt    ctrl   shft
   _      _      _      _      _          _      _      _      _      _
                 _      _      _          _      _      _
 
 // Colemak, with special characters remapped to prioritize commonly used
 // characters in day-to-day writing.
+// X holds Fn (tap-preferred, same as the home row). C holds the app
+// layer and V the OS layer; the right hand mirrors those holds onto
+// . , and M. App holds right command and OS holds right option.
 layer default: homerow
   Q      W      F      P      G          J      L      U      Y      *
   A      R      S      T      D          H      N      E      I      O
-  Z/adj  X      C      V      B          K      M      ,      .      '/adj
+  Z/adj  X/fn   C/app  V/os   B          K      M/os   ,/app  ./fn   '/adj
           BKSP shft/shft lwr/lwr         rse/rse  SPC      _
 
 // Navigation and numbers.
@@ -52,7 +60,8 @@ layer lwr: homerow
   _      >      ]      )      }          +      =      ?      !      "
                 _      _      _          SHFT_TAB  TAB     _
 
-// Window management and other Hyper key shortcuts.
+// Window management and other Hyper key shortcuts. No key holds this layer
+// now that the pinkies are shift; the HYP_ chords on raise still fire alone.
 layer hyp
   HYP_Q  HYP_W  HYP_F  HYP_P  HYP_G      HYP_1    HYP_2     HYP_3     HYP_4      HYP_5
   HYP_A  HYP_R  HYP_S  HYP_T  HYP_D      _        HYP_LEFT  HYP_UP    HYP_RIGHT  _
@@ -73,14 +82,33 @@ layer mou
   CMD_Z  CMD_X  CMD_C  CMD_V  _          _      _      _      _      _
                 _      _      _          _      _      _
 
+// App shortcuts, held from C and from comma. Right command is down for
+// the whole hold, so every key here is sent with it, arrows included.
+// U N E I are the same inverted-T as raise: U up, N left, E down, I right.
+layer app + rgui
+  Q      W      F      P      G          J      L      UP     Y      *
+  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  Z      X      C      V      B          K      M      ,      .      '
+                BKSP   _      _          _      SPC    _
+
+// OS shortcuts, held from V and from M. Same keys as app, with right
+// option held instead of right command.
+layer os + ralt
+  Q      W      F      P      G          J      L      UP     Y      *
+  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  Z      X      C      V      B          K      M      ,      .      '
+                BKSP   _      _          _      SPC    _
+
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
 // the keys pressed together on the default layer.
 //
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word. A home-row pair like S+T would catch every `st`.
-// `, .` (Enter) and `X C` (Esc) are middle/ring pairs Colemak does not roll.
+// W+F (Esc) is a top-row ring/middle pair Colemak does not roll. U+Y (Enter)
+// is the matching pair on the right; it does occur in rolls such as "buy"
+// and "guy", so that chord can fire inside those words.
 // Esc and Enter also sit on rse (outer and inner left thumbs), so one-shot or
 // held raise plus that key types them without a chord. Esc stays on lwr as well.
 combos
-  , . -> RET
-  X C -> ESC
+  W F -> ESC
+  U Y -> RET
