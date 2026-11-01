@@ -341,10 +341,19 @@ class TestShippedKeymap:
         app = layers[6]
         assert app.name == "app"
         assert app.modifier == "RGUI"
-        assert app.rows[0][0].tap == "Q"
-        assert app.rows[0][7].tap == "UP"
+        assert [key.tap for key in app.rows[0]] == [
+            "Q",
+            "W",
+            "F",
+            "P",
+            "G",
+            "J",
+            ";",
+            "UP",
+            "'",
+            "*",
+        ]
         assert [key.tap for key in app.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
-        assert app.rows[0][9].tap == "*"
         assert app.rows[2][7].tap == ","
         assert app.rows[3][0].tap == "BKSP"
         assert app.rows[3][4].tap == "SPC"
@@ -352,8 +361,18 @@ class TestShippedKeymap:
         os_layer = layers[7]
         assert os_layer.name == "os"
         assert os_layer.modifier == "RALT"
-        assert os_layer.rows[0][0].tap == "Q"
-        assert os_layer.rows[0][7].tap == "UP"
+        assert [key.tap for key in os_layer.rows[0]] == [
+            "Q",
+            "W",
+            "F",
+            "P",
+            "G",
+            "J",
+            ";",
+            "UP",
+            "'",
+            "*",
+        ]
         assert [key.tap for key in os_layer.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
 
 
