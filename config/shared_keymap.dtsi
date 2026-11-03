@@ -191,7 +191,7 @@
                     display-name = "App";
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp SEMI &kp UP &kp SQT &kp LS(N8) &trans
-&trans &kp A &kp R &kp S &kp T &kp D &kp H &kp LEFT &kp DOWN &kp RIGHT &kp O &trans
+&trans &kp A &kp R &kp S &kp T &kp D &kp LBKT &kp LEFT &kp DOWN &kp RIGHT &kp RBKT &trans
 &trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
 &kp BKSP &trans &trans &trans &kp SPC &trans
                     >;
@@ -201,7 +201,7 @@
                     display-name = "OS";
                     bindings = <
 &trans &kp Q &kp W &kp F &kp P &kp G &kp J &kp SEMI &kp UP &kp SQT &kp LS(N8) &trans
-&trans &kp A &kp R &kp S &kp T &kp D &kp H &kp LEFT &kp DOWN &kp RIGHT &kp O &trans
+&trans &kp A &kp R &kp S &kp T &kp D &kp LBKT &kp LEFT &kp DOWN &kp RIGHT &kp RBKT &trans
 &trans &kp Z &kp X &kp C &kp V &kp B &kp K &kp M &kp COMMA &kp DOT &kp SQT &trans
 &kp BKSP &trans &trans &trans &kp SPC &trans
                     >;
