@@ -383,7 +383,13 @@ class TestShippedKeymap:
             "'",
             "*",
         ]
-        assert [key.tap for key in app.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
+        assert [key.tap for key in app.rows[1][5:]] == [
+            "[",
+            "LEFT",
+            "DOWN",
+            "RIGHT",
+            "]",
+        ]
         assert app.rows[2][7].tap == ","
         assert app.rows[3][0].tap == "BKSP"
         assert app.rows[3][4].tap == "SPC"
@@ -403,7 +409,13 @@ class TestShippedKeymap:
             "'",
             "*",
         ]
-        assert [key.tap for key in os_layer.rows[1][6:9]] == ["LEFT", "DOWN", "RIGHT"]
+        assert [key.tap for key in os_layer.rows[1][5:]] == [
+            "[",
+            "LEFT",
+            "DOWN",
+            "RIGHT",
+            "]",
+        ]
 
 
 class TestFindKeyPosition:
