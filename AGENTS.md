@@ -183,7 +183,11 @@ together with the next key.
 Combos reach both firmwares, but by different routes. ZMK numbers them by key position, so
 `zmk_key_position` has to map a grid cell through the `&trans` padding below; QMK matches them
 against the keycode the keymap holds, so a trigger on the home row has to be named by its whole
-`MT(...)` keycode rather than the plain key press it produces.
+`MT(...)` keycode rather than the plain key press it produces. The same positions fire on every
+layer. ZMK omits `layers`: a mask of zero is active on whichever layer is on top, and an explicit
+list would miss a layer added later. QMK would otherwise match the active layer's keycodes, so
+`config.h` sets `COMBO_ONLY_FROM_LAYER` to 0. That define has to live there, because
+`process_combo.c` is a separate translation unit and never sees the generated keymap.
 
 What keeps a combo from firing during ordinary typing is the choice of keys, not the timing: a
 pair the typist never rolls across cannot be triggered by accident. `W F` (Esc) is a top-row

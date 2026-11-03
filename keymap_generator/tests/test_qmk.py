@@ -2,10 +2,13 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 from keymap_generator.parser import Combo, Key, Layer
 from keymap_generator.qmk import (
+    COMBO_ONLY_FROM_LAYER,
     COMBO_SLOTS,
     apply_layer_mods,
     generate_qmk_combos,
@@ -14,6 +17,8 @@ from keymap_generator.qmk import (
     map_key_label_to_qmk,
     map_key_to_qmk,
 )
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
 
 
 class TestQmkLabels:
@@ -104,6 +109,15 @@ class TestQmkCombos:
     def test_unknown_trigger_label(self) -> None:
         with pytest.raises(KeyError, match="taps NOPE"):
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
+
+    def test_base_layer_keycodes_match_on_every_layer(self) -> None:
+        # The combo table itself only names layer 0. process_combo.c reads
+        # COMBO_ONLY_FROM_LAYER from config.h to keep using those keycodes
+        # while another layer is active.
+        config = (REPO_ROOT / "dubu36-ergo/qmk/dubu36ergo/config.h").read_text(
+            encoding="utf-8"
+        )
+        assert f"#define COMBO_ONLY_FROM_LAYER {COMBO_ONLY_FROM_LAYER}" in config
 
 
 class TestLayerMods:

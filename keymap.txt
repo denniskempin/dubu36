@@ -101,7 +101,8 @@ layer os + ralt
                 BKSP   _      _          _      SPC    _
 
 // Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
-// the keys pressed together on the default layer.
+// the keys pressed together on the default layer. Those same positions send
+// the result on every layer.
 //
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word. A home-row pair like S+T would catch every `st`.

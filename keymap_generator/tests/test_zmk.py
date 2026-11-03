@@ -125,10 +125,13 @@ class TestZmkCombos:
         assert "key-positions = <15 16>;" in rendered
         assert "bindings = <&kp ESC>;" in rendered
 
-    def test_combo_is_timed_and_base_layer_only(self) -> None:
+    def test_combo_is_timed_and_active_on_every_layer(self) -> None:
         rendered = generate_zmk_combos([self.esc_combo], grid_layer())
         assert f"timeout-ms = <{COMBO_TIMEOUT_MS}>;" in rendered
-        assert "layers = <0>;" in rendered
+        # A missing `layers` mask is ZMK's global scope. Listing layer 0, or
+        # writing an empty list, would keep the chord off the other layers.
+        assert "layers =" not in rendered
+        assert "fire on every layer" in rendered
 
     def test_idle_guard_is_left_out_while_it_is_zero(self) -> None:
         assert COMBO_PRIOR_IDLE_MS == 0, "zero omits the property from the keymap"
