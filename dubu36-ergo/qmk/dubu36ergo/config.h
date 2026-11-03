@@ -29,6 +29,12 @@
 /* Matches the combo timeout ZMK is given, which is also QMK's own default. */
 #define COMBO_TERM 50
 
+/* Match combo keys against layer 0 on every layer, so W+F and U+Y stay Esc
+ * and Enter while another layer is active. Must match COMBO_ONLY_FROM_LAYER
+ * in keymap_generator/src/keymap_generator/qmk.py. A define in keymap.c would
+ * not reach process_combo.c. */
+#define COMBO_ONLY_FROM_LAYER 0
+
 /* 
  * Tap-Hold configuration
  * Strongly biased to prefer tap over hold to make home-row mods usable

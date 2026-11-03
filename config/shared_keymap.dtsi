@@ -209,17 +209,16 @@
         };
     combos {
         compatible = "zmk,combos";
+        // `layers` is omitted so these positions fire on every layer.
         combo_0 {
             timeout-ms = <50>;
             key-positions = <2 3>;
             bindings = <&kp ESC>;
-            layers = <0>;
         };
         combo_1 {
             timeout-ms = <50>;
             key-positions = <8 9>;
             bindings = <&kp RET>;
-            layers = <0>;
         };
     };
 };

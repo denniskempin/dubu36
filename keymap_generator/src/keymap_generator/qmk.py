@@ -13,6 +13,12 @@ from keymap_generator.parser import Combo, Key, Layer, find_key_position
 # that cannot fire. Must match COMBO_COUNT in dubu36-ergo/qmk/dubu36ergo/config.h.
 COMBO_SLOTS = 5
 
+# Combos name the keycodes on the default layer. config.h defines
+# COMBO_ONLY_FROM_LAYER to this so those same positions match on every layer.
+# The define has to live in config.h: process_combo.c is compiled separately
+# and never sees the generated keymap.
+COMBO_ONLY_FROM_LAYER = 0
+
 
 def get_qmk_key_press_code(label: str) -> str | None:
     if label.startswith("SHFT_"):
@@ -181,7 +187,11 @@ def generate_qmk_combo_trigger(combo: Combo | None, default_layer: Layer) -> str
 
 
 def generate_qmk_combos(combos: list[Combo], default_layer: Layer) -> str:
-    """Render the combo table, padded out to the slots COMBO_COUNT promises."""
+    """Render the combo table, padded out to the slots COMBO_COUNT promises.
+
+    Triggers stay the default layer's keycodes. `COMBO_ONLY_FROM_LAYER` in
+    config.h is what makes those positions fire while another layer is active.
+    """
     slots = [combos[i] if i < len(combos) else None for i in range(COMBO_SLOTS)]
     triggers = "\n".join(
         f"const uint16_t PROGMEM combo{i}[] = "

@@ -72,7 +72,7 @@ with hold-tap timing. `X` holds Fn, `C` holds the app layer and `V` the OS layer
 onto `.`, `,` and `M`. Holding app presses right command, and holding OS presses right
 option, from the moment the hold is decided until the hold key is released. Every key on
 those layers, including the `N E I U` arrows and `;` and `'` on `L` and `Y`,
-is sent with that modifier. Esc is the `W F` chord and Enter is `U Y`. The
+is sent with that modifier. Esc is the `W F` chord and Enter is `U Y`, on every layer. The
 remaining layers cover navigation and numbers, symbols, window management, bluetooth, and left
 hand only shortcuts for when the right hand is on the mouse.
 

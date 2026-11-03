@@ -19,10 +19,11 @@ from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer, find_key_posit
 MAIN_ROW_SIZES = ROW_SIZES[:3]
 PADDED_ROW_WIDTH = MAIN_ROW_SIZES[0] + 2
 
-# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other,
-# and COMBO_LAYER keeps combos off every layer but the base one.
+# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other.
+# `layers` is omitted on purpose. ZMK treats a missing mask as active on every
+# layer, whichever one is currently on top. An explicit list would have to name
+# every layer, and an empty or negative value does not compile.
 COMBO_TIMEOUT_MS = 50
-COMBO_LAYER = 0
 
 # How long the board must have been idle before a combo may fire at all. Zero
 # lets one fire mid-word. That is safe for W+F (Esc), which Colemak does not
@@ -116,7 +117,10 @@ def zmk_key_position(row: int, column: int) -> int:
 
 
 def generate_zmk_combo(combo: Combo, default_layer: Layer, index: int) -> str:
-    """Render one combo as a child of the `combos` node."""
+    """Render one combo as a child of the `combos` node.
+
+    No `layers` property: ZMK then keeps the combo active on every layer.
+    """
     positions = " ".join(
         str(zmk_key_position(*find_key_position(default_layer, label)))
         for label in (combo.a, combo.b)
@@ -127,7 +131,6 @@ def generate_zmk_combo(combo: Combo, default_layer: Layer, index: int) -> str:
     properties += [
         f"key-positions = <{positions}>;",
         f"bindings = <{map_key_label_to_zmk(combo.result)}>;",
-        f"layers = <{COMBO_LAYER}>;",
     ]
     return "\n".join(
         [
@@ -147,7 +150,13 @@ def generate_zmk_combos(combos: list[Combo], default_layer: Layer) -> str:
         for index, combo in enumerate(combos)
     )
     return "\n".join(
-        ["    combos {", '        compatible = "zmk,combos";', children, "    };"]
+        [
+            "    combos {",
+            '        compatible = "zmk,combos";',
+            "        // `layers` is omitted so these positions fire on every layer.",
+            children,
+            "    };",
+        ]
     )
 
 
