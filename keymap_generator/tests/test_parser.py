@@ -13,6 +13,7 @@ from keymap_generator.parser import (
     KeymapParser,
     Layer,
     ParseError,
+    combo_layer_indices,
     find_key_position,
     parse_keymap,
     split_unescaped,
@@ -256,6 +257,32 @@ class TestParseErrors:
         with pytest.raises(ParseError, match="take no name"):
             parse_source(source)
 
+    def test_combos_list_extra_layers(self) -> None:
+        source = full_keymap() + "combos: app, os\n  Q W -> ESC\n"
+        _, combos = parse_source(source)
+        assert combos == [Combo("Q", "W", "ESC", ("app", "os"))]
+        assert combo_layer_indices(combos[0]) == (0, 6, 7)
+
+    def test_combo_layer_names_are_canonical(self) -> None:
+        source = full_keymap() + "combos: APP, Os\n  Q W -> ESC\n"
+        _, combos = parse_source(source)
+        assert combos[0].layers == ("app", "os")
+
+    def test_unknown_combo_layer(self) -> None:
+        source = full_keymap() + "combos: nope\n  Q W -> ESC\n"
+        with pytest.raises(ParseError, match="unknown combo layer 'nope'"):
+            parse_source(source)
+
+    def test_base_layer_is_not_listed_on_combos(self) -> None:
+        source = full_keymap() + "combos: default\n  Q W -> ESC\n"
+        with pytest.raises(ParseError, match="base layer"):
+            parse_source(source)
+
+    def test_combo_layer_listed_twice(self) -> None:
+        source = full_keymap() + "combos: app, app\n  Q W -> ESC\n"
+        with pytest.raises(ParseError, match="listed twice"):
+            parse_source(source)
+
     def test_layer_modifier(self) -> None:
         chunks = []
         for name in LAYER_NAMES:
@@ -336,7 +363,10 @@ class TestShippedKeymap:
             (".", "FN"),
             ("'", "ADJ"),
         ]
-        assert combos == [Combo("W", "F", "ESC"), Combo("U", "Y", "RET")]
+        assert combos == [
+            Combo("W", "F", "ESC", ("app", "os")),
+            Combo("U", "Y", "RET", ("app", "os")),
+        ]
 
         app = layers[6]
         assert app.name == "app"

@@ -6,7 +6,13 @@ from pathlib import Path
 
 from keymap_generator.codes import KEY_PRESS_CODES, LAYER_LABELS, SPECIAL_LABELS
 from keymap_generator.generate import generate_keymap
-from keymap_generator.parser import Combo, Key, Layer, find_key_position
+from keymap_generator.parser import (
+    Combo,
+    Key,
+    Layer,
+    combo_layer_indices,
+    find_key_position,
+)
 
 # QMK sizes its combo table with the compile time COMBO_COUNT, so the generated
 # table always has this many entries and any spare slot is filled with a combo
@@ -180,6 +186,39 @@ def generate_qmk_combo_trigger(combo: Combo | None, default_layer: Layer) -> str
     )
 
 
+def generate_qmk_combo_reference(combos: list[Combo]) -> str:
+    """Read chords from the base layer on every extra combo layer.
+
+    QMK matches a combo against keycodes. A layer that remaps the keys under
+    a chord would miss it, so those layers are read from the base layer, where
+    the chord's positions still send the keys it was named with.
+    """
+    indices: list[int] = []
+    for combo in combos:
+        for index in combo_layer_indices(combo)[1:]:
+            if index not in indices:
+                indices.append(index)
+    if not indices:
+        return ""
+    cases = "\n".join(f"    case {index}:" for index in indices)
+    return "\n".join(
+        [
+            "// Layers named on the combos block remap keys the chords use,",
+            "// so match those chords against the base layer's positions.",
+            "uint8_t combo_ref_from_layer(uint8_t layer) {",
+            "    switch (layer) {",
+            cases,
+            "        return 0;",
+            "    default:",
+            "        return layer;",
+            "    }",
+            "}",
+            "",
+            "",
+        ]
+    )
+
+
 def generate_qmk_combos(combos: list[Combo], default_layer: Layer) -> str:
     """Render the combo table, padded out to the slots COMBO_COUNT promises."""
     slots = [combos[i] if i < len(combos) else None for i in range(COMBO_SLOTS)]
@@ -192,7 +231,9 @@ def generate_qmk_combos(combos: list[Combo], default_layer: Layer) -> str:
         f"\tCOMBO(combo{i}, {map_key_label_to_qmk(combo.result) if combo else 'KC_NO'})"
         for i, combo in enumerate(slots)
     )
-    return f"{triggers}\n\ncombo_t key_combos[COMBO_COUNT] = {{\n{entries}\n}};"
+    reference = generate_qmk_combo_reference(combos)
+    table = f"{triggers}\n\ncombo_t key_combos[COMBO_COUNT] = {{\n{entries}\n}};"
+    return f"{reference}{table}"
 
 
 def generate_qmk_layer(layer: Layer) -> str:

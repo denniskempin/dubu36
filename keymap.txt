@@ -23,6 +23,10 @@
 //
 // Labels that clash with the `/`, `:` or `_` syntax are escaped with a
 // backslash: `\/`, `\:`, `\_`, and `\\` for the backslash key itself.
+//
+// A `combos` block is `KEY KEY -> RESULT`. The two keys are named by what
+// they tap on the base layer. `combos: layer, layer` also enables those
+// chords on the named layers, on the same physical keys.
 
 // Modifiers used primarily in shortcuts, mapped to the home-row. The modifiers
 // and layer shifts used in fluent writing live on the thumb keys instead, to
@@ -100,8 +104,9 @@ layer os + ralt
   Z      X      C      V      B          K      M      ,      .      '
                 BKSP   _      _          _      SPC    _
 
-// Chords, written as `KEY KEY -> RESULT`, where the two keys are the labels of
-// the keys pressed together on the default layer.
+// Chords, written as `KEY KEY -> RESULT`. The two keys are the labels of
+// the keys pressed together on the base layer, and the same physical keys
+// on every layer named after `combos`.
 //
 // The pair has to be one that never gets typed back to back, or the chord
 // fires by accident mid-word. A home-row pair like S+T would catch every `st`.
@@ -110,6 +115,10 @@ layer os + ralt
 // and "guy", so that chord can fire inside those words.
 // Esc and Enter also sit on rse (outer and inner left thumbs), so one-shot or
 // held raise plus that key types them without a chord. Esc stays on lwr as well.
-combos
+// App and OS remap U and Y to up and quote. The chords stay on the same
+// fingers there, so Esc and Enter are still one chord away while the layer
+// is held. The layer's modifier stays down, so app sends them with right
+// command and OS sends them with right option.
+combos: app, os
   W F -> ESC
   U Y -> RET

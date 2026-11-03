@@ -130,6 +130,11 @@ class TestZmkCombos:
         assert f"timeout-ms = <{COMBO_TIMEOUT_MS}>;" in rendered
         assert "layers = <0>;" in rendered
 
+    def test_extra_layers_follow_the_base_layer(self) -> None:
+        combo = Combo("M", "N", "ESC", ("app", "os"))
+        rendered = generate_zmk_combos([combo], grid_layer())
+        assert "layers = <0 6 7>;" in rendered
+
     def test_idle_guard_is_left_out_while_it_is_zero(self) -> None:
         assert COMBO_PRIOR_IDLE_MS == 0, "zero omits the property from the keymap"
         rendered = generate_zmk_combos([self.esc_combo], grid_layer())

@@ -18,11 +18,16 @@ COMMENT = "//"
 
 
 class Combo(NamedTuple):
-    """A chord: press `a` and `b` together to produce `result`."""
+    """A chord: press `a` and `b` together to produce `result`.
+
+    `layers` names the layers, besides the base layer, on which the same
+    physical keys also produce `result`.
+    """
 
     a: str
     b: str
     result: str
+    layers: tuple[str, ...] = ()
 
 
 class Key(NamedTuple):
@@ -141,6 +146,8 @@ class KeymapParser:
         self.overlays: dict[str, list[list[Key]]] = {}
         self.layers: list[Layer] = []
         self.combos: list[Combo] = []
+        self.combo_layers: list[str] = []
+        self.combo_header_line = 0
         self.block: Block | None = None
         self.rows: list[list[Key]] = []
 
@@ -155,6 +162,16 @@ class KeymapParser:
             parts = line.split(None, 1)
             keyword = parts[0]
             rest = parts[1].strip() if len(parts) > 1 else ""
+            # `combos: app, os` glues the colon to the keyword. Split it back
+            # off so the tail is parsed the same way as `layer name: overlay`.
+            glued_colon = keyword.endswith(":") and keyword[:-1] in (
+                "overlay",
+                "layer",
+                "combos",
+            )
+            if glued_colon:
+                keyword = keyword[:-1]
+                rest = f":{rest}" if rest else ":"
             if keyword in ("overlay", "layer", "combos"):
                 self.end_block()
                 self.start_block(keyword, rest)
@@ -168,6 +185,7 @@ class KeymapParser:
                 self.rows.append(self.parse_row(line.split()))
         self.end_block()
         self.check_layers()
+        self.check_combo_layers()
         return self.layers, self.combos
 
     def start_block(self, keyword: str, rest: str) -> None:
@@ -179,20 +197,30 @@ class KeymapParser:
             raise self.error("expected a modifier after '+'")
         if modifier and modifier not in KEY_PRESS_CODES:
             raise self.error(f"unknown modifier {modifier_field.strip()!r}")
-        name, separator, overlays = body.partition(":")
-        overlays_list = (
-            [o.strip() for o in overlays.split(",") if o.strip()] if separator else []
+        name, separator, tail = body.partition(":")
+        tail_list = (
+            [item.strip() for item in tail.split(",") if item.strip()]
+            if separator
+            else []
         )
-        for overlay in overlays_list:
-            if overlay not in self.overlays:
-                raise self.error(f"unknown overlay {overlay!r}")
-        if overlays_list and keyword != "layer":
-            raise self.error(f"{keyword} blocks cannot use overlays")
         name = name.strip()
-        if keyword == "combos" and name:
-            raise self.error(f"{keyword} blocks take no name")
-        if keyword != "combos" and not name:
-            raise self.error(f"{keyword} blocks need a name")
+        if keyword == "combos":
+            # Names after the colon are layers the chords also fire on.
+            # The base layer is always included, so it is not listed here.
+            if name:
+                raise self.error(f"{keyword} blocks take no name")
+            self.combo_layers = tail_list
+            self.combo_header_line = self.line_number
+            overlays_list: list[str] = []
+        else:
+            if not name:
+                raise self.error(f"{keyword} blocks need a name")
+            overlays_list = tail_list
+            for overlay in overlays_list:
+                if overlay not in self.overlays:
+                    raise self.error(f"unknown overlay {overlay!r}")
+            if overlays_list and keyword != "layer":
+                raise self.error(f"{keyword} blocks cannot use overlays")
         self.block = Block(keyword, name, overlays_list, modifier)
         self.rows = []
 
@@ -279,7 +307,41 @@ class KeymapParser:
     def parse_combo(self, cells: Sequence[str]) -> Combo:
         if len(cells) != 4 or cells[2] != "->":
             raise self.error("expected a combo of the form `KEY KEY -> RESULT`")
-        return Combo(*(parse_label(cell) for cell in [*cells[:2], cells[3]]))
+        a, b, result = (parse_label(cell) for cell in (*cells[:2], cells[3]))
+        return Combo(a, b, result, tuple(self.combo_layers))
+
+    def check_combo_layers(self) -> None:
+        """Extra combo layers must name a real layer other than the base one."""
+        if not self.layers:
+            return
+        base = self.layers[0].name.lower()
+        known = {layer.name.lower(): layer.name for layer in self.layers}
+        rewritten: list[Combo] = []
+        for combo in self.combos:
+            canonical: list[str] = []
+            seen: set[str] = set()
+            for name in combo.layers:
+                key = name.lower()
+                if key == base:
+                    raise self.combo_layer_error(
+                        f"combo layer {name!r} is the base layer, which always "
+                        "has the chords"
+                    )
+                if key not in known or known[key].upper() not in LAYER_LABELS:
+                    raise self.combo_layer_error(f"unknown combo layer {name!r}")
+                if key in seen:
+                    raise self.combo_layer_error(
+                        f"combo layer {name!r} is listed twice"
+                    )
+                seen.add(key)
+                canonical.append(known[key])
+            rewritten.append(combo._replace(layers=tuple(canonical)))
+        self.combos = rewritten
+
+    def combo_layer_error(self, message: str) -> ParseError:
+        if self.combo_header_line:
+            self.line_number = self.combo_header_line
+        return self.error(message)
 
     def check_layers(self) -> None:
         """Layers are referenced by their position, so the order matters."""
@@ -289,6 +351,11 @@ class KeymapParser:
                     f"layer {index} must be named {name.lower()!r}, as it is the "
                     f"layer used by the {name.lower()} hold"
                 )
+
+
+def combo_layer_indices(combo: Combo) -> tuple[int, ...]:
+    """Layer indices a combo fires on: the base layer, then each extra layer."""
+    return (0, *(LAYER_LABELS[name.upper()] for name in combo.layers))
 
 
 def find_key_position(layer: Layer, label: str) -> tuple[int, int]:

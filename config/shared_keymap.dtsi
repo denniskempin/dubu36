@@ -213,13 +213,13 @@
             timeout-ms = <50>;
             key-positions = <2 3>;
             bindings = <&kp ESC>;
-            layers = <0>;
+            layers = <0 6 7>;
         };
         combo_1 {
             timeout-ms = <50>;
             key-positions = <8 9>;
             bindings = <&kp RET>;
-            layers = <0>;
+            layers = <0 6 7>;
         };
     };
 };
