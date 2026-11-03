@@ -89,10 +89,10 @@ layer mou
 // App shortcuts, held from C and from comma. Right command is down for
 // the whole hold, so every key here is sent with it, arrows included.
 // U N E I are the same inverted-T as raise: U up, N left, E down, I right.
-// L types ; and Y types '.
+// H types [ and O types ], flanking those arrows. L types ; and Y types '.
 layer app + rgui
   Q      W      F      P      G          J      ;      UP     '      *
-  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  A      R      S      T      D          [      LEFT   DOWN   RIGHT  ]
   Z      X      C      V      B          K      M      ,      .      '
                 BKSP   _      _          _      SPC    _
 
@@ -100,7 +100,7 @@ layer app + rgui
 // option held instead of right command.
 layer os + ralt
   Q      W      F      P      G          J      ;      UP     '      *
-  A      R      S      T      D          H      LEFT   DOWN   RIGHT  O
+  A      R      S      T      D          [      LEFT   DOWN   RIGHT  ]
   Z      X      C      V      B          K      M      ,      .      '
                 BKSP   _      _          _      SPC    _
 
