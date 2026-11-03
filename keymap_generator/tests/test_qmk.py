@@ -105,6 +105,19 @@ class TestQmkCombos:
         with pytest.raises(KeyError, match="taps NOPE"):
             generate_qmk_combos([Combo("NOPE", "W", "ESC")], combo_layer())
 
+    def test_base_layer_only_has_no_reference_hook(self) -> None:
+        rendered = generate_qmk_combos([Combo("Q", "W", "ESC")], combo_layer())
+        assert "combo_ref_from_layer" not in rendered
+
+    def test_extra_layers_resolve_from_the_base_layer(self) -> None:
+        rendered = generate_qmk_combos(
+            [Combo("Q", "W", "ESC", ("app", "os"))], combo_layer()
+        )
+        assert "uint8_t combo_ref_from_layer(uint8_t layer)" in rendered
+        assert "case 6:" in rendered
+        assert "case 7:" in rendered
+        assert "return 0;" in rendered
+
 
 class TestLayerMods:
     def test_hold_registers_the_layers_modifier(self) -> None:

@@ -12,17 +12,25 @@ from keymap_generator.codes import (
     SPECIAL_LABELS,
 )
 from keymap_generator.generate import generate_keymap
-from keymap_generator.parser import ROW_SIZES, Combo, Key, Layer, find_key_position
+from keymap_generator.parser import (
+    ROW_SIZES,
+    Combo,
+    Key,
+    Layer,
+    combo_layer_indices,
+    find_key_position,
+)
 
 # The three main rows of the grid, and how wide each becomes once
 # `generate_zmk_layer` has padded it out to the corne's matrix.
 MAIN_ROW_SIZES = ROW_SIZES[:3]
 PADDED_ROW_WIDTH = MAIN_ROW_SIZES[0] + 2
 
-# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other,
-# and COMBO_LAYER keeps combos off every layer but the base one.
+# Both keys of a combo have to go down within COMBO_TIMEOUT_MS of each other.
+# The combo fires on the base layer and on every extra layer named in the
+# combos block. Matching is by key position, so a chord still works after
+# one of those layers remaps the keys.
 COMBO_TIMEOUT_MS = 50
-COMBO_LAYER = 0
 
 # How long the board must have been idle before a combo may fire at all. Zero
 # lets one fire mid-word. That is safe for W+F (Esc), which Colemak does not
@@ -121,13 +129,14 @@ def generate_zmk_combo(combo: Combo, default_layer: Layer, index: int) -> str:
         str(zmk_key_position(*find_key_position(default_layer, label)))
         for label in (combo.a, combo.b)
     )
+    layer_list = " ".join(str(index) for index in combo_layer_indices(combo))
     properties = [f"timeout-ms = <{COMBO_TIMEOUT_MS}>;"]
     if COMBO_PRIOR_IDLE_MS:
         properties.append(f"require-prior-idle-ms = <{COMBO_PRIOR_IDLE_MS}>;")
     properties += [
         f"key-positions = <{positions}>;",
         f"bindings = <{map_key_label_to_zmk(combo.result)}>;",
-        f"layers = <{COMBO_LAYER}>;",
+        f"layers = <{layer_list}>;",
     ]
     return "\n".join(
         [

@@ -137,6 +137,18 @@ KC_BSPC, KC_NO, KC_NO, KC_NO, KC_SPC, KC_NO
 };
 
 
+// Layers named on the combos block remap keys the chords use,
+// so match those chords against the base layer's positions.
+uint8_t combo_ref_from_layer(uint8_t layer) {
+    switch (layer) {
+    case 6:
+    case 7:
+        return 0;
+    default:
+        return layer;
+    }
+}
+
 const uint16_t PROGMEM combo0[] = {KC_W, KC_F, COMBO_END};
 const uint16_t PROGMEM combo1[] = {KC_U, KC_Y, COMBO_END};
 const uint16_t PROGMEM combo2[] = {KC_NO, COMBO_END};
